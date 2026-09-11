@@ -2,6 +2,10 @@
 
 A collection of prompts for popular AI models, written for workforce development boards. This is a self contained file so there are no accounts, or server setup.
 
+[https://kylehamilton.github.io/AI-Prompts/](https://kylehamilton.github.io/AI-Prompts/)
+
+
+
 ## Files
 
 | File | What it is |
