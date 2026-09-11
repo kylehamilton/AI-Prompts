@@ -1,0 +1,327 @@
+{
+  "schema_version": "1.0",
+  "generated": "2026-09-11",
+  "collection": "Prompt Cookbook",
+  "taxonomy": {
+    "functions": [
+      { "id": "case-management", "label": "Case Management", "tab": "#2F6E4E" },
+      { "id": "business-services", "label": "Business Services", "tab": "#8A5A2B" },
+      { "id": "fiscal", "label": "Fiscal & Contracts", "tab": "#35577D" },
+      { "id": "grants", "label": "Grants & Program", "tab": "#6B3F72" },
+      { "id": "research", "label": "Research & Policy", "tab": "#1F6F72" },
+      { "id": "admin", "label": "Administration", "tab": "#5B5F66" }
+    ],
+    "categories": [
+      { "id": "draft", "label": "Draft" },
+      { "id": "review", "label": "Review & QA" },
+      { "id": "analyze", "label": "Analyze" },
+      { "id": "summarize", "label": "Summarize" },
+      { "id": "plan", "label": "Plan & Automate" }
+    ],
+    "sensitivity": {
+      "none": "No participant data involved.",
+      "deidentify": "Remove PPI such as names, SSNs, CalJOBS IDs, and dates of birth before pasting.",
+      "prohibited": "Never paste source records into a public model. Work from summaries only."
+    }
+  },
+  "prompts": [
+    {
+      "id": "follow-up-outreach-script",
+      "title": "Write follow-up contact attempts for exited participants",
+      "summary": "Produces a short call script, a text message, and an email for second and fourth quarter follow-up contact.",
+      "functions": ["case-management"],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": ["follow-up", "performance", "exit"],
+      "blocks": {
+        "role": "You write participant-facing outreach for {{BOARD_NAME}} at a sixth-grade reading level in a warm, non-bureaucratic voice.",
+        "context": "This is routine follow-up contact after program exit, used to confirm employment status and offer continued help. It is not a survey and not a collections call. Participants often ignore unknown numbers, so the first sentence has to say who is calling and why it is worth answering.",
+        "steps": [
+          "Write a phone script under 90 seconds, including a voicemail version under 20 seconds.",
+          "Write a text message under 300 characters with one clear question and an opt-out line.",
+          "Write an email under 120 words with a subject line under 50 characters.",
+          "Provide a short variant of each for a participant who has already declined contact once."
+        ],
+        "output": "Four labeled blocks: Phone, Voicemail, Text, Email. Then the declined-contact variants.",
+        "constraints": [
+          "Do not imply that benefits, payment, or future services depend on responding.",
+          "Do not ask for a Social Security number or any identifier by text or email.",
+          "Offer a Spanish version of the text and email."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "employer-ojt-pitch",
+      "title": "Build an OJT pitch for a specific employer",
+      "summary": "Turns basic employer facts into a one-page on-the-job training pitch with objection handling.",
+      "functions": ["business-services"],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["OJT", "employer engagement", "business services"],
+      "blocks": {
+        "role": "You are a business services representative at {{BOARD_NAME}} pitching on-the-job training to a hiring manager who has never worked with a workforce board.",
+        "context": "The employer is {{EMPLOYER}}, hiring for {{OCCUPATION}}. OJT reimburses a negotiated share of wages during a training period in exchange for the employer hiring the participant first and training to a documented skill plan.",
+        "steps": [
+          "Open with the employer's hiring problem as they would describe it, not as the board describes it.",
+          "Explain OJT in three sentences with no acronyms and no statute citations.",
+          "Lay out what the employer does, in order, with the time each step takes.",
+          "Answer the four objections this employer is most likely to raise, including paperwork burden and what happens if the hire does not work out.",
+          "Close with a single next step that takes the employer less than ten minutes."
+        ],
+        "output": "One page: a headline, three short paragraphs, a numbered employer checklist, an objections table with columns Concern and Response, and a closing line with the next step.",
+        "constraints": [
+          "Do not state a reimbursement percentage or dollar figure; negotiation is per agreement.",
+          "Do not promise a candidate pipeline volume the board has not verified.",
+          "Keep it to language a hiring manager would read on a phone."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" },
+        { "key": "EMPLOYER", "label": "Employer", "default": "" },
+        { "key": "OCCUPATION", "label": "Occupation", "default": "" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "layoff-aversion-brief",
+      "title": "Build a rapid response brief from a WARN notice",
+      "summary": "Turns a layoff notice into a situation brief with affected occupations, transferable skill targets, and a response sequence.",
+      "functions": ["business-services", "research"],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["Rapid Response", "WARN", "layoff aversion", "dislocated worker"],
+      "blocks": {
+        "role": "You are a rapid response coordinator preparing an internal brief for {{BOARD_NAME}} leadership within 48 hours of a layoff notice.",
+        "context": "The brief drives three decisions: who we contact first, what services we stage, and whether a dislocated worker grant application is worth pursuing. Leadership reads one page and asks for the rest only if the first page earns it.",
+        "steps": [
+          "Summarize the notice: employer, location, effective dates, affected headcount, and whether the separation is permanent, temporary, or a closure.",
+          "Infer the likely occupational mix from the job titles listed, mapping each to an O*NET-SOC code, and state where you are uncertain.",
+          "For the three largest occupation groups, identify target occupations in the regional labor market that share skill profiles and would not require long-term training.",
+          "Assess layoff aversion potential: note any signal in the notice that suggests the separation is avoidable or partial.",
+          "Lay out a response sequence with owners and timing, from employer contact through worker orientation.",
+          "State what data the board must pull next and from which system to confirm the assumptions in this brief."
+        ],
+        "output": "Page one: a 150-word situation summary, a table of affected occupations with counts and SOC codes, and a five-line recommended sequence. Page two: transferable skill targets, layoff aversion assessment, data to confirm, and an explicit list of assumptions.",
+        "constraints": [
+          "Label every inferred figure as an estimate and never present it as reported.",
+          "Do not recommend a specific training provider or a specific grant award amount.",
+          "If the notice does not name job titles, say so and limit the occupational analysis accordingly."
+        ],
+        "data": "Paste the WARN notice text and any employer correspondence below."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": "Use with a model that has a large context window when the notice comes with attachments."
+    },
+    {
+      "id": "nofo-compliance-matrix",
+      "title": "Turn a NOFO into a compliance matrix",
+      "summary": "Extracts every scored requirement, attachment, and deadline from a funding announcement into a matrix the proposal team can assign and track.",
+      "functions": ["grants", "research"],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["NOFO", "SGA", "grant development", "compliance matrix"],
+      "blocks": {
+        "role": "You are a grant developer building the compliance matrix that the proposal team will work from for the entire application period.",
+        "context": "Applications lose points on requirements that were stated once, in a different section from the scoring rubric. The matrix must reconcile the narrative instructions, the scoring criteria, and the attachment list so nothing sits in only one of the three.",
+        "steps": [
+          "Extract every requirement, including those stated only in the eligibility, format, or attachment sections.",
+          "For each requirement, record the source section, the page or section reference, the point value if scored, the page or character limit, and whether it is a narrative element, an attachment, or a form.",
+          "Reconcile the narrative instructions against the scoring rubric and flag any scored criterion with no matching narrative instruction, and any instruction with no points attached.",
+          "Extract every date, including the deadline, any letter of intent, any question window, and the period of performance.",
+          "List eligibility conditions and, for each, the evidence the applicant must supply.",
+          "Flag ambiguities that warrant a written question to the funder before the question window closes."
+        ],
+        "output": "A matrix with columns: Requirement | Source section | Page or section reference | Type | Points | Limit | Owner (blank) | Status (blank). Then three short lists: Dates, Eligibility evidence, Questions for the funder.",
+        "constraints": [
+          "Quote the source language for any requirement whose wording is consequential, and keep the quotation to a single line with its reference.",
+          "Never summarize away a page limit, a font requirement, or a submission format detail.",
+          "If a page reference is unclear, mark it for verification rather than approximating."
+        ],
+        "data": "Paste or attach the full announcement below. Include all appendices."
+      },
+      "placeholders": [],
+      "notes": "Best run on a model with a large context window so the whole announcement fits in one pass."
+    },
+    {
+      "id": "performance-narrative",
+      "title": "Draft a program year performance narrative",
+      "summary": "Builds a narrative around performance results that explains variance honestly and ties it to actions already underway.",
+      "functions": ["grants", "admin"],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["performance", "reporting", "program year"],
+      "blocks": {
+        "role": "You are writing the performance narrative section of {{BOARD_NAME}}'s program year report for a reader at the state who compares it against the data before reading a word of it.",
+        "context": "The reader already has the numbers. The narrative earns credit by explaining variance with evidence and naming what changed in response, not by restating the table in prose.",
+        "steps": [
+          "For each indicator, state the result against the negotiated level in one clause, then spend the rest of the paragraph on why.",
+          "Distinguish variance caused by cohort composition, by labor market conditions, and by service delivery.",
+          "For each indicator below the negotiated level, name the action already underway and when it started.",
+          "Identify the one indicator most at risk next year and say what the board is doing about it now.",
+          "Keep each indicator to under 150 words."
+        ],
+        "output": "One section per indicator with a bolded indicator name, followed by a short closing paragraph titled Outlook.",
+        "constraints": [
+          "Use only the figures provided. Do not compute rates that were not supplied.",
+          "Do not attribute shortfalls to participants.",
+          "Avoid language that promises improvement without naming a mechanism."
+        ],
+        "data": "Performance table and any context notes: paste below."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "wsd-staff-bulletin",
+      "title": "Turn a state directive into a staff bulletin",
+      "summary": "Converts a Workforce Services Directive into a one-page bulletin with what changed, who is affected, and what staff must do by when.",
+      "functions": ["research", "admin"],
+      "category": "summarize",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["WSD", "EDD", "policy", "staff communication"],
+      "blocks": {
+        "role": "You write internal policy bulletins for {{BOARD_NAME}} staff who will not read the directive itself.",
+        "context": "Staff need three things: what changed from current practice, whether it affects their role, and what they must do differently starting when. Everything else is reference.",
+        "steps": [
+          "State what the directive changes, in one sentence, at the top.",
+          "List the specific practice changes, each tied to the role that performs it.",
+          "Give the effective date and any transition period, and say explicitly what happens to cases in progress.",
+          "Note any new form, field, or documentation requirement, and where staff will find it.",
+          "List what did not change but is commonly confused with what did.",
+          "Close with the directive number, the date, and who to ask."
+        ],
+        "output": "A one-page bulletin with a headline, a What changed line, a table of Role, What you do differently, Starting when; then Cases in progress, New documentation, Unchanged, and a reference footer.",
+        "constraints": [
+          "Cite the directive section for each stated change so staff can verify it.",
+          "If the directive is silent on cases in progress, say it is silent rather than inferring.",
+          "Do not soften a mandatory requirement into a recommendation."
+        ],
+        "data": "Paste the full directive text below, including attachments."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": "Long directives run better on a large-context model. Ask for the section reference on every line so staff can spot-check."
+    },
+    {
+      "id": "etpl-provider-performance-review",
+      "title": "Review an ETPL provider application or renewal",
+      "summary": "Checks an eligible training provider submission against list criteria and produces a reviewer worksheet with follow-up questions.",
+      "functions": ["research", "grants"],
+      "category": "review",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["ETPL", "training providers", "eligibility"],
+      "blocks": {
+        "role": "You are the ETPL coordinator reviewing a training provider's application for inclusion or continued eligibility on the state list.",
+        "context": "The review has to be reproducible. Another reviewer looking at the same packet should reach the same conclusion, so the worksheet records what was checked, what was found, and what remains open.",
+        "steps": [
+          "Check the packet for each required element and mark present, incomplete, or missing.",
+          "Compare the program description against the occupation it claims to train for and note whether the claimed credential is recognized and portable.",
+          "Review the reported performance data for internal consistency: do completions, credential attainment, and employment figures reconcile against enrollment?",
+          "Check whether the cost information is complete enough to support an ITA obligation, including all required fees.",
+          "List follow-up questions for the provider, written so each can be answered with a document.",
+          "Give a reviewer recommendation with the conditions attached to it."
+        ],
+        "output": "A worksheet: Element checklist; Program and credential assessment; Data consistency notes with any figure that does not reconcile; Cost completeness; Provider follow-up questions; Recommendation with conditions.",
+        "constraints": [
+          "Do not approve or deny. Produce the reviewer worksheet the coordinator signs.",
+          "Where the packet is silent, record it as not provided rather than assuming compliance.",
+          "Flag any performance figure that appears rounded, estimated, or self-reported without a source."
+        ],
+        "data": "Paste the provider packet contents and reported performance data below."
+      },
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "lmi-demand-occupation-brief",
+      "title": "Write a demand occupation brief from labor market data",
+      "summary": "Turns projection and wage data into a two-page brief supporting a demand occupation determination.",
+      "functions": ["research"],
+      "category": "analyze",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["LMI", "demand occupations", "projections", "self-sufficiency"],
+      "blocks": {
+        "role": "You are a research analyst writing the brief that supports adding {{OCCUPATION}} to the local demand occupation list for {{AREA}}.",
+        "context": "The brief has to survive a board committee question and a later audit. That means every figure carries its source and vintage, and the recommendation states the criteria it was tested against.",
+        "steps": [
+          "Summarize the occupation: typical duties, entry-level education, and typical training path.",
+          "Present the demand evidence: projected openings, growth rate, and current postings volume, each with source and time period.",
+          "Present the wage evidence against the local self-sufficiency benchmark, stating the benchmark used.",
+          "Assess training supply: whether programs exist on the state list locally and whether capacity matches projected openings.",
+          "State the criteria the occupation was tested against and whether it meets each one.",
+          "Note the limitations of the data, including anything that would change the conclusion."
+        ],
+        "output": "A brief with sections: Occupation summary; Demand evidence with a sourced table; Wage and self-sufficiency; Training supply; Criteria test as a pass or fail list; Limitations; Recommendation.",
+        "constraints": [
+          "Every number carries a source and a period. Any figure without one is marked unsourced.",
+          "Do not compute a projection or a wage percentile that was not supplied.",
+          "State clearly when data are suppressed or unavailable at the local level rather than substituting a state figure silently."
+        ],
+        "data": "Paste the projections, wage, and postings data below."
+      },
+      "placeholders": [
+        { "key": "OCCUPATION", "label": "Occupation", "default": "" },
+        { "key": "AREA", "label": "Local area", "default": "Fresno County" }
+      ],
+      "notes": "If the source data is a CSV, use a model with a data analysis tool and have it show the computation."
+    },
+    {
+      "id": "board-item-summary",
+      "title": "Summarize an item for the board agenda",
+      "summary": "Condenses a long staff document into the agenda item format: recommendation, background, fiscal impact, and the decision being asked for.",
+      "functions": ["admin", "grants"],
+      "category": "summarize",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["board", "agenda", "governance"],
+      "blocks": {
+        "role": "You write board agenda items for volunteer board members who read the packet the night before.",
+        "context": "Board members need to know what they are voting on in the first two sentences. Everything else exists to answer the questions that follow.",
+        "steps": [
+          "Write the recommended action as a single sentence beginning with a verb.",
+          "Give the background in under 200 words, covering why this is coming to the board now.",
+          "State the fiscal impact, including the funding source and whether it was budgeted.",
+          "Note any required approval, deadline, or consequence of not acting.",
+          "List the attachments a member would need to evaluate the item."
+        ],
+        "output": "An agenda item with headings: Recommended action, Background, Fiscal impact, Timing and requirements, Attachments.",
+        "constraints": [
+          "Do not include a fiscal figure that is not in the source document.",
+          "Write without acronyms on first use.",
+          "Keep the entire item under one page."
+        ],
+        "data": "Paste the staff document below."
+      },
+      "placeholders": [],
+      "notes": ""
+    }
+  ]
+}

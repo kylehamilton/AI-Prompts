@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Cookbook — workforce prompt library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* flat surfaces only — no gradients, no glows, no shadows */
+  --paper:#FFFFFF;
+  --app:#F2F2F0;
+  --wash:#EAEAE6;
+  --ink:#16191C;
+  --ink-2:#4A5057;
+  --ink-3:#868D94;
+  --rule:#D8D8D3;
+  --rule-strong:#B7B7B0;
+  --marker:#9E3B2E;
+  --verify:#1C5E45;
+  --notice:#F7F1E1;
+  --notice-ink:#6E5312;
+
+  --serif:"Newsreader","Iowan Old Style",Georgia,serif;
+  --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono","Cascadia Mono",Consolas,ui-monospace,monospace;
+
+  --rail:236px;
+  --head:60px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--app);color:var(--ink);
+  font:13.5px/1.55 var(--sans);
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+button,input,select,textarea{font:inherit;color:inherit;border-radius:0}
+:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+
+/* micro-label: the one repeated typographic device */
+.micro{
+  font:500 10.5px/1 var(--mono);
+  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+}
+
+/* ---------- topbar ---------- */
+.topbar{
+  flex:0 0 auto;height:var(--head);background:var(--paper);
+  border-bottom:1px solid var(--rule-strong);
+  display:grid;grid-template-columns:var(--rail) minmax(0,1fr) auto;
+  align-items:center;gap:20px;padding-right:20px;
+}
+.wordmark{
+  margin:0;padding:0 18px;height:100%;display:flex;align-items:center;gap:9px;
+  border-right:1px solid var(--rule);
+  font:600 16px/1 var(--serif);letter-spacing:-.015em;
+}
+.searchwrap{position:relative;max-width:520px}
+.searchwrap svg{position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+#q{
+  width:100%;padding:7px 44px 7px 24px;border:0;border-bottom:1px solid var(--rule);
+  background:transparent;font-size:14.5px;
+}
+#q::placeholder{color:var(--ink-3)}
+#q:focus{outline:none;border-bottom-color:var(--ink)}
+.slash{
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  font:400 10.5px/1 var(--mono);color:var(--ink-3);border:1px solid var(--rule);padding:3px 5px;
+}
+.format{display:flex;align-items:center;gap:12px}
+.seg{display:inline-flex;border:1px solid var(--rule-strong)}
+.seg button{
+  border:0;border-right:1px solid var(--rule);background:var(--paper);
+  padding:6px 14px;cursor:pointer;font-size:12.5px;color:var(--ink-2);
+}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--wash)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);font-weight:500}
+
+/* ---------- notice strip ---------- */
+.notice{
+  flex:0 0 auto;background:var(--notice);border-bottom:1px solid var(--rule);
+  padding:5px 20px;display:flex;align-items:center;gap:12px;
+  font-size:12px;color:var(--notice-ink);
+}
+.notice .micro{color:var(--notice-ink);opacity:.75;flex:0 0 auto}
+.drawer-toggle{display:none;border:1px solid var(--rule-strong);background:var(--paper);padding:5px 11px;font-size:12.5px;cursor:pointer}
+
+/* ---------- workspace ---------- */
+.workspace{
+  flex:1 1 auto;min-height:0;
+  display:grid;grid-template-columns:var(--rail) minmax(300px,1fr) minmax(0,1.25fr);
+}
+.drawer{
+  border-right:1px solid var(--rule-strong);background:var(--app);
+  overflow-y:auto;padding-bottom:28px;
+}
+.drawer h2{
+  font:500 10.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  margin:0;padding:16px 18px 7px;border-bottom:1px solid var(--rule);
+}
+.filt{
+  display:flex;align-items:center;gap:9px;width:100%;
+  padding:5px 18px;border:0;background:transparent;cursor:pointer;text-align:left;
+  font-size:13px;color:var(--ink-2);
+}
+.filt:hover{background:var(--wash);color:var(--ink)}
+.filt[aria-pressed="true"]{background:var(--paper);color:var(--ink);font-weight:600;box-shadow:inset 3px 0 0 var(--ink)}
+.filt .count{margin-left:auto;font:400 11px/1 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.filt[aria-pressed="true"] .count{color:var(--ink-2)}
+.filt .tab{width:8px;height:8px;flex:0 0 auto}
+.drawer .tools{border-top:1px solid var(--rule);margin-top:14px;padding-top:10px}
+.linkish{
+  display:flex;align-items:center;gap:8px;width:100%;
+  background:none;border:0;padding:5px 18px;text-align:left;cursor:pointer;
+  font-size:12.5px;color:var(--ink-2);
+}
+.linkish:hover{color:var(--ink);background:var(--wash)}
+.linkish svg{flex:0 0 auto;color:var(--ink-3)}
+.linkish:hover svg{color:var(--ink)}
+
+/* ---------- index ---------- */
+.index{overflow-y:auto;border-right:1px solid var(--rule-strong);background:var(--paper)}
+.index-head{
+  position:sticky;top:0;z-index:2;background:var(--paper);
+  border-bottom:1px solid var(--rule-strong);
+  padding:9px 18px;display:flex;align-items:center;gap:12px;
+  font:500 10.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+}
+.chip{
+  margin-left:auto;border:1px solid var(--rule);background:var(--paper);
+  padding:3px 8px;font:500 10px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  color:var(--ink-2);cursor:pointer;
+}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.row{
+  display:grid;grid-template-columns:3px minmax(0,1fr) auto;gap:0 13px;
+  border-bottom:1px solid var(--rule);cursor:pointer;width:100%;text-align:left;
+  background:var(--paper);
+}
+.row:nth-of-type(even){background:#F8F8F5}   /* alternating stripes, not cards */
+.row:hover{background:var(--wash)}
+.row[aria-current="true"]{background:var(--wash)}
+.rowtab{grid-row:1/3;height:100%;width:3px}
+.rowbody{padding:13px 0;min-width:0}
+.row h3{font:500 16px/1.3 var(--serif);letter-spacing:-.01em;margin:0 0 3px}
+.row p{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink-2);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rowmeta{display:flex;align-items:center;gap:8px;margin-top:8px}
+.pill-tag{
+  font:400 10.5px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-2);border:1px solid var(--rule);padding:3px 6px;
+}
+.pill-tag.state{border-color:var(--ink);color:var(--ink)}
+.notches{display:inline-flex;gap:2px;align-items:flex-end;margin-right:2px}
+.notches i{display:block;width:3px;background:var(--ink-2)}
+.notches i:nth-child(1){height:4px}
+.notches i:nth-child(2){height:7px}
+.notches i:nth-child(3){height:10px}
+.notches i.off{background:var(--rule)}
+.rowside{padding:13px 14px 13px 0}
+.star{background:none;border:0;cursor:pointer;padding:0;line-height:1;color:var(--rule-strong);font-size:15px}
+.star[aria-pressed="true"],.star:hover{color:var(--marker)}
+.empty{padding:44px 22px;color:var(--ink-2);font-size:13.5px;max-width:44ch}
+.empty strong{display:block;font:500 20px/1.3 var(--serif);letter-spacing:-.015em;margin-bottom:6px;color:var(--ink)}
+
+/* ---------- reader ---------- */
+.reader{overflow-y:auto;background:var(--paper)}
+.reader-inner{padding:0 0 60px;max-width:880px}
+.reader-header{padding:26px 30px 20px;border-bottom:1px solid var(--rule-strong)}
+.reader h1{font:500 30px/1.18 var(--serif);letter-spacing:-.022em;margin:0 0 10px}
+.reader .lede{font-size:14.5px;line-height:1.6;color:var(--ink-2);margin:0 0 18px;max-width:62ch}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font:400 10.5px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;
+  border:1px solid var(--rule);padding:4px 7px;color:var(--ink-2);
+}
+.badge b{width:7px;height:7px;display:inline-block}
+.sens{
+  display:flex;gap:9px;align-items:flex-start;
+  border-left:3px solid var(--marker);background:var(--notice);
+  padding:9px 12px;font-size:12.5px;color:var(--notice-ink);margin:0 0 18px;
+}
+.sens svg{flex:0 0 auto;margin-top:1px;color:var(--marker)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  padding:8px 15px;cursor:pointer;font-size:13px;font-weight:500;
+}
+.btn:hover{background:#000}
+.btn.ghost{background:var(--paper);color:var(--ink-2);border-color:var(--rule-strong)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--ink);background:var(--wash)}
+.btn.copied{background:var(--verify);border-color:var(--verify);color:#fff}
+.btn.danger:hover{color:var(--marker);border-color:var(--marker)}
+
+/* panels are rule-delimited sections, not floating cards */
+.panel{border-bottom:1px solid var(--rule-strong)}
+.panel-head{
+  display:flex;align-items:center;gap:9px;
+  padding:10px 30px;border-bottom:1px solid var(--rule);background:var(--app);
+}
+.panel-head svg{color:var(--ink-3);flex:0 0 auto}
+.panel-head .right{margin-left:auto}
+.panel-body{padding:2px 30px 14px}
+
+.field{
+  display:grid;grid-template-columns:minmax(140px,220px) minmax(0,1fr);
+  align-items:center;gap:16px;padding:9px 0;border-bottom:1px solid var(--rule);
+}
+.field:last-child{border-bottom:0}
+.field label{font-size:12.5px;color:var(--ink-2)}
+.field input{
+  width:100%;padding:6px 8px;border:1px solid var(--rule);background:var(--paper);font-size:13px;
+}
+.field input:focus{border-color:var(--ink);outline:none;background:#FFFDF7}
+.hint{margin:10px 0 2px;font-size:12px;color:var(--ink-3);max-width:70ch}
+
+pre.compose{
+  margin:0;padding:20px 30px;background:var(--paper);
+  font:400 12.5px/1.75 var(--mono);white-space:pre-wrap;word-break:break-word;
+}
+pre.compose mark{background:#F6ECC9;color:var(--ink);padding:0 3px;box-shadow:inset 0 -1px 0 #D8C27E}
+.placeholder-note{
+  display:flex;gap:8px;align-items:center;
+  padding:10px 30px;border-top:1px solid var(--rule);margin:0;
+  font-size:12px;color:var(--ink-3);
+}
+.placeholder-note svg{flex:0 0 auto}
+.reader footer{padding:18px 30px;font-size:12.5px;color:var(--ink-2);border-top:1px solid var(--rule)}
+.reader footer strong{font-weight:600;color:var(--ink)}
+
+/* ---------- editor ---------- */
+.editor{padding:26px 30px 60px}
+.editor label{display:block;margin:16px 0 5px;font:500 10.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.editor input[type=text],.editor textarea,.editor select{
+  width:100%;padding:8px 10px;border:1px solid var(--rule);background:var(--paper);font-size:13.5px;
+}
+.editor textarea{font:400 12.5px/1.7 var(--mono);resize:vertical}
+.editor .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ---------- guide ---------- */
+.guide{padding:30px 36px 70px;max-width:78ch;margin:0 auto}
+.guide h1{font:500 32px/1.15 var(--serif);letter-spacing:-.022em;margin:0 0 12px}
+.guide h2{font:500 22px/1.25 var(--serif);letter-spacing:-.018em;margin:36px 0 8px;
+  padding-top:14px;border-top:1px solid var(--rule-strong)}
+.guide h3{font:500 10.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:18px 0 7px}
+.guide p{margin:0 0 13px;max-width:70ch;line-height:1.65}
+.guide ul{margin:0 0 16px;padding-left:0;list-style:none;max-width:70ch}
+.guide li{padding:7px 0 7px 16px;border-top:1px solid var(--rule);line-height:1.6;position:relative}
+.guide li:before{content:"";position:absolute;left:0;top:15px;width:6px;height:1px;background:var(--ink-3)}
+.guide pre{background:var(--app);border-left:2px solid var(--ink);padding:14px 16px;
+  font:400 12px/1.7 var(--mono);white-space:pre-wrap;margin:0 0 16px;overflow-x:auto}
+.guide a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.guide a:hover{color:var(--marker);text-decoration-color:var(--marker)}
+.guide code{font:400 12px/1 var(--mono);background:var(--wash);padding:1px 4px}
+.guide .card{border-left:3px solid var(--marker);background:var(--notice);padding:14px 16px;margin:0 0 20px}
+.guide .card h3{margin-top:0;color:var(--notice-ink);opacity:.8}
+.guide .card p{margin-bottom:0;color:var(--notice-ink)}
+body.guide-mode #workspace{grid-template-columns:var(--rail) minmax(0,1fr)}
+body.guide-mode .index{display:none}
+body.guide-mode .backlink{display:inline-flex}
+
+.backlink{display:none;margin:0 0 16px;margin-left:0}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--ink);color:var(--paper);padding:9px 16px;
+  font:400 12.5px/1 var(--sans);opacity:0;pointer-events:none;
+  transition:opacity .15s linear;z-index:60;
+}
+.toast.show{opacity:1}
+.toast.warn{background:var(--marker)}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){
+  .workspace{grid-template-columns:var(--rail) minmax(0,1fr)}
+  .reader{position:fixed;inset:0;z-index:50;display:none;border-left:1px solid var(--rule-strong)}
+  body.reading .reader{display:block}
+  body.reading .reader .backlink{display:inline-flex}
+  .reader-inner{max-width:none}
+}
+@media (max-width:820px){
+  .topbar{grid-template-columns:1fr;height:auto;padding:10px 16px;gap:10px}
+  .wordmark{padding:0;border-right:0}
+  .format{justify-content:space-between}
+  .workspace{grid-template-columns:1fr}
+  .drawer{display:none;border-right:0;border-bottom:1px solid var(--rule-strong)}
+  body.drawer-open .drawer{display:block}
+  .drawer-toggle{display:inline-block}
+  .index{border-right:0}
+  .reader-header,.panel-head,.panel-body,pre.compose,.placeholder-note,.reader footer,.editor{padding-left:18px;padding-right:18px}
+  .guide{padding:22px 18px 60px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1 class="wordmark">Prompt Cookbook</h1>
+  <div class="searchwrap">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4" stroke-linecap="round"/></svg>
+    <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search by task, function, or keyword">
+    <span class="slash" aria-hidden="true">/</span>
+  </div>
+  <div class="format">
+    <span class="micro">AI Model</span>
+    <div class="seg" role="group" aria-label="Target model">
+      <button type="button" data-model="claude" aria-pressed="true">Claude</button>
+      <button type="button" data-model="chatgpt" aria-pressed="false">ChatGPT</button>
+      <button type="button" data-model="gemini" aria-pressed="false">Gemini</button>
+    </div>
+    <button class="drawer-toggle" type="button" id="drawerToggle">Filters</button>
+  </div>
+</header>
+<!-- 
+<div class="notice">
+  <span class="micro">Notice</span>
+  <span>Participant data stays out of public models. De-identify first, and a person signs off on anything that leaves the building.</span>
+</div>
+-->
+<div class="workspace" id="workspace">
+  <nav class="drawer" id="drawer" aria-label="Filters"></nav>
+  <section class="index" id="index" aria-label="Prompt index"></section>
+  <section class="reader" id="reader" aria-label="Prompt detail" aria-live="polite"></section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="application/json" id="seed">{
+  "schema_version": "1.0",
+  "generated": "2026-09-11",
+  "collection": "Prompt Cookbook",
+  "taxonomy": {
+    "functions": [
+      { "id": "case-management", "label": "Case Management", "tab": "#2F6E4E" },
+      { "id": "business-services", "label": "Business Services", "tab": "#8A5A2B" },
+      { "id": "fiscal", "label": "Fiscal & Contracts", "tab": "#35577D" },
+      { "id": "grants", "label": "Grants & Program", "tab": "#6B3F72" },
+      { "id": "research", "label": "Research & Policy", "tab": "#1F6F72" },
+      { "id": "admin", "label": "Administration", "tab": "#5B5F66" }
+    ],
+    "categories": [
+      { "id": "draft", "label": "Draft" },
+      { "id": "review", "label": "Review & QA" },
+      { "id": "analyze", "label": "Analyze" },
+      { "id": "summarize", "label": "Summarize" },
+      { "id": "plan", "label": "Plan & Automate" }
+    ],
+    "sensitivity": {
+      "none": "No participant data involved.",
+      "deidentify": "Strip names, SSNs, CalJOBS IDs, and dates of birth before pasting.",
+      "prohibited": "Never paste source records into a public model. Work from summaries only."
+    }
+  },
+  "prompts": [
+    {
+      "id": "iss-goal-drafting",
+      "title": "Draft ISS goals from an intake summary",
+      "summary": "Turns a de-identified intake summary into SMART individual service strategy goals with service linkages and review dates.",
+      "functions": ["case-management"],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": ["WIOA Title I", "ISS", "IEP", "career services"],
+      "blocks": {
+        "role": "You are an experienced WIOA Title I career planner at {{BOARD_NAME}}. You write individual service strategies that satisfy 20 CFR 680.180 and hold up under state monitoring.",
+        "context": "The participant is enrolled in {{PROGRAM}}. Local priority of service and the board's enrolled-population policies apply. The service strategy must connect every goal to a service the board actually funds or brokers.",
+        "steps": [
+          "Read the de-identified intake summary and list the participant's stated employment goal, assessed skill gaps, and documented barriers.",
+          "Write 3 to 5 goals in SMART form, each with a target date expressed in weeks from enrollment rather than a calendar date.",
+          "For each goal, name the specific service that supports it (career service, training service, or supportive service) and the staff action required to open it.",
+          "Identify which goals, if achieved, would document a measurable skill gain, and name the MSG type.",
+          "Flag any goal that depends on a service the participant is not yet eligible for, and state what documentation would establish eligibility.",
+          "Propose a review cadence and the trigger conditions that would require an ISS modification."
+        ],
+        "output": "Return a table with columns: Goal | SMART statement | Supporting service | Staff action | Target (weeks) | MSG type if applicable. Follow the table with a short paragraph titled Documentation gaps listing anything a monitor would ask for that the intake summary does not cover.",
+        "constraints": [
+          "Do not invent assessment results, test scores, or credentials that are not in the source text.",
+          "Do not write goals that commit the board to a specific dollar amount or vendor.",
+          "Write at a reading level the participant can follow; goals are co-signed, not filed.",
+          "If the intake summary is too thin to support a goal, say so rather than padding."
+        ],
+        "data": "Paste the de-identified intake summary below the instructions."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" },
+        { "key": "PROGRAM", "label": "Program / funding stream", "default": "WIOA Title I Adult" }
+      ],
+      "notes": "Pair with the case note QA prompt before the file goes to monitoring."
+    },
+    {
+      "id": "case-note-qa",
+      "title": "Quality-check a case note against documentation standards",
+      "summary": "Reviews a drafted case note for completeness, service linkage, and objective language before it is entered into the case file.",
+      "functions": ["case-management"],
+      "category": "review",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": ["case notes", "monitoring", "documentation"],
+      "blocks": {
+        "role": "You are a monitoring reviewer for {{BOARD_NAME}} who reads case notes the way a state or federal reviewer does: looking for the service, the date, the participant response, and the next step.",
+        "context": "A case note is acceptable when a reader who has never met the participant can tell what service was delivered, when, why it was delivered, how the participant responded, and what happens next. Opinion, diagnosis, and speculation do not belong in the file.",
+        "steps": [
+          "Check the draft note for each required element: date of contact, contact method, service delivered, participant response, next step with a date, and staff identifier.",
+          "Flag any sentence that states an opinion, a diagnosis, or an inference presented as fact, and rewrite it as an observation.",
+          "Flag any service reference that does not match a service the board can record in the case management system.",
+          "Check that the note connects to the participant's service strategy rather than standing alone.",
+          "Rewrite the note in corrected form, keeping the staff member's voice and no longer than the original."
+        ],
+        "output": "Return three sections: Missing elements as a checklist with pass or fail for each required element; Language flags as a two-column list of original sentence and suggested rewrite; Corrected note as clean text ready to paste.",
+        "constraints": [
+          "Never add facts that are not in the draft. If an element is missing, mark it missing rather than filling it in.",
+          "Keep protected characteristics out of the rewrite unless they are the documented basis for an eligibility determination.",
+          "Do not editorialize about the participant's motivation or character."
+        ],
+        "data": "Paste the draft case note below, with identifiers removed."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "barrier-triage-referral",
+      "title": "Triage barriers and build a referral shortlist",
+      "summary": "Sorts documented barriers by what blocks placement soonest and matches each to a referral type.",
+      "functions": ["case-management"],
+      "category": "analyze",
+      "complexity": "low",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": ["supportive services", "referrals", "barriers"],
+      "blocks": {
+        "role": "You are a career coach triaging barriers to employment for a participant served in {{COUNTY}}.",
+        "context": "",
+        "steps": [
+          "Rank the listed barriers by how directly each one blocks the participant's stated employment goal in the next 30 days.",
+          "For each barrier, name the type of referral that addresses it (partner agency category, supportive service, or internal service) without naming a specific vendor.",
+          "Note which barriers must be resolved before training enrollment and which can be worked in parallel.",
+          "List the documentation staff should collect for each barrier that affects eligibility or priority of service."
+        ],
+        "output": "A ranked list. For each barrier: what it blocks, referral type, sequence (before training or parallel), documentation needed.",
+        "constraints": [
+          "Do not diagnose. Describe barriers only as the participant or staff documented them.",
+          "Do not recommend specific providers; the board maintains its own referral list."
+        ],
+        "data": "Barriers as documented: {{BARRIER_LIST}}"
+      },
+      "placeholders": [
+        { "key": "COUNTY", "label": "County / service area", "default": "Fresno County" },
+        { "key": "BARRIER_LIST", "label": "Documented barriers", "default": "" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "follow-up-outreach-script",
+      "title": "Write follow-up contact attempts for exited participants",
+      "summary": "Produces a short call script, a text message, and an email for second and fourth quarter follow-up contact.",
+      "functions": ["case-management"],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": ["follow-up", "performance", "exit"],
+      "blocks": {
+        "role": "You write participant-facing outreach for {{BOARD_NAME}} at a sixth-grade reading level in a warm, non-bureaucratic voice.",
+        "context": "This is routine follow-up contact after program exit, used to confirm employment status and offer continued help. It is not a survey and not a collections call. Participants often ignore unknown numbers, so the first sentence has to say who is calling and why it is worth answering.",
+        "steps": [
+          "Write a phone script under 90 seconds, including a voicemail version under 20 seconds.",
+          "Write a text message under 300 characters with one clear question and an opt-out line.",
+          "Write an email under 120 words with a subject line under 50 characters.",
+          "Provide a short variant of each for a participant who has already declined contact once."
+        ],
+        "output": "Four labeled blocks: Phone, Voicemail, Text, Email. Then the declined-contact variants.",
+        "constraints": [
+          "Do not imply that benefits, payment, or future services depend on responding.",
+          "Do not ask for a Social Security number or any identifier by text or email.",
+          "Offer a Spanish version of the text and email."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "employer-ojt-pitch",
+      "title": "Build an OJT pitch for a specific employer",
+      "summary": "Turns basic employer facts into a one-page on-the-job training pitch with objection handling.",
+      "functions": ["business-services"],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["OJT", "employer engagement", "business services"],
+      "blocks": {
+        "role": "You are a business services representative at {{BOARD_NAME}} pitching on-the-job training to a hiring manager who has never worked with a workforce board.",
+        "context": "The employer is {{EMPLOYER}}, hiring for {{OCCUPATION}}. OJT reimburses a negotiated share of wages during a training period in exchange for the employer hiring the participant first and training to a documented skill plan.",
+        "steps": [
+          "Open with the employer's hiring problem as they would describe it, not as the board describes it.",
+          "Explain OJT in three sentences with no acronyms and no statute citations.",
+          "Lay out what the employer does, in order, with the time each step takes.",
+          "Answer the four objections this employer is most likely to raise, including paperwork burden and what happens if the hire does not work out.",
+          "Close with a single next step that takes the employer less than ten minutes."
+        ],
+        "output": "One page: a headline, three short paragraphs, a numbered employer checklist, an objections table with columns Concern and Response, and a closing line with the next step.",
+        "constraints": [
+          "Do not state a reimbursement percentage or dollar figure; negotiation is per agreement.",
+          "Do not promise a candidate pipeline volume the board has not verified.",
+          "Keep it to language a hiring manager would read on a phone."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" },
+        { "key": "EMPLOYER", "label": "Employer", "default": "" },
+        { "key": "OCCUPATION", "label": "Occupation", "default": "" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "job-order-rewrite",
+      "title": "Rewrite a job order for clarity and reach",
+      "summary": "Cleans up an employer-supplied job posting, aligns the duties to O*NET language, and flags screening requirements that shrink the applicant pool.",
+      "functions": ["business-services"],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["job orders", "O*NET", "CalJOBS"],
+      "blocks": {
+        "role": "You are a job order specialist who rewrites employer postings so they attract qualified applicants and post cleanly in a state labor exchange system.",
+        "context": "The posting will appear in {{SYSTEM}} and be seen by job seekers with a wide range of reading levels. Screening requirements that are not legally or operationally necessary reduce the applicant pool without improving quality.",
+        "steps": [
+          "Identify the likely O*NET-SOC occupation and state your confidence and the alternates you considered.",
+          "Rewrite the duties using task language recognizable from that O*NET occupation, keeping anything employer-specific.",
+          "Separate requirements into Required and Preferred, and flag any requirement that looks like credential inflation for this occupation.",
+          "Flag any language that risks a discriminatory screen or that would violate ban-the-box practice.",
+          "Rewrite the posting at an eighth-grade reading level and give a 300-character summary for text and social distribution."
+        ],
+        "output": "Sections: Occupation match with alternates; Rewritten posting; Requirements split into Required and Preferred; Flags as a list of issue and why it matters; Short summary.",
+        "constraints": [
+          "Keep every legally required element the employer supplied, including wage and location disclosures.",
+          "Do not invent a wage range, benefits, or shift details that the employer did not provide.",
+          "Note where employer input is still needed rather than guessing."
+        ],
+        "data": "Paste the employer's original posting below."
+      },
+      "placeholders": [
+        { "key": "SYSTEM", "label": "Labor exchange system", "default": "CalJOBS" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "layoff-aversion-brief",
+      "title": "Build a rapid response brief from a WARN notice",
+      "summary": "Turns a layoff notice into a situation brief with affected occupations, transferable skill targets, and a response sequence.",
+      "functions": ["business-services", "research"],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["Rapid Response", "WARN", "layoff aversion", "dislocated worker"],
+      "blocks": {
+        "role": "You are a rapid response coordinator preparing an internal brief for {{BOARD_NAME}} leadership within 48 hours of a layoff notice.",
+        "context": "The brief drives three decisions: who we contact first, what services we stage, and whether a dislocated worker grant application is worth pursuing. Leadership reads one page and asks for the rest only if the first page earns it.",
+        "steps": [
+          "Summarize the notice: employer, location, effective dates, affected headcount, and whether the separation is permanent, temporary, or a closure.",
+          "Infer the likely occupational mix from the job titles listed, mapping each to an O*NET-SOC code, and state where you are uncertain.",
+          "For the three largest occupation groups, identify target occupations in the regional labor market that share skill profiles and would not require long-term training.",
+          "Assess layoff aversion potential: note any signal in the notice that suggests the separation is avoidable or partial.",
+          "Lay out a response sequence with owners and timing, from employer contact through worker orientation.",
+          "State what data the board must pull next and from which system to confirm the assumptions in this brief."
+        ],
+        "output": "Page one: a 150-word situation summary, a table of affected occupations with counts and SOC codes, and a five-line recommended sequence. Page two: transferable skill targets, layoff aversion assessment, data to confirm, and an explicit list of assumptions.",
+        "constraints": [
+          "Label every inferred figure as an estimate and never present it as reported.",
+          "Do not recommend a specific training provider or a specific grant award amount.",
+          "If the notice does not name job titles, say so and limit the occupational analysis accordingly."
+        ],
+        "data": "Paste the WARN notice text and any employer correspondence below."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": "Use with a model that has a large context window when the notice comes with attachments."
+    },
+    {
+      "id": "cost-allocation-memo",
+      "title": "Draft a cost allocation memo",
+      "summary": "Produces a defensible memo explaining how a shared cost is allocated across funding streams, with the basis and the recalculation trigger.",
+      "functions": ["fiscal"],
+      "category": "draft",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["2 CFR 200", "cost allocation", "fiscal"],
+      "blocks": {
+        "role": "You are a fiscal analyst drafting a cost allocation memo for {{BOARD_NAME}} that will be read by an auditor, not by a colleague.",
+        "context": "The memo covers {{COST_ITEM}} shared across {{FUNDING_STREAMS}}. A defensible allocation states the basis, shows the basis is measurable and applied consistently, and says when it gets recalculated.",
+        "steps": [
+          "State the cost, the period, and the total amount.",
+          "State the allocation basis and explain why that basis reflects the relative benefit each stream receives.",
+          "Show the calculation with the inputs, including where each input comes from and who maintains it.",
+          "Identify the applicable cost principles the allocation relies on and state them in plain language rather than by citation alone.",
+          "Name the recalculation trigger and the review cadence.",
+          "List the records retained to support the allocation and where they live."
+        ],
+        "output": "A memo with headings: Purpose, Cost and period, Allocation basis, Calculation, Authority, Recalculation and review, Supporting records. Under 700 words.",
+        "constraints": [
+          "Do not cite a regulation section unless you are certain of the citation; describe the principle and mark the citation for staff verification.",
+          "Do not present the calculation as approved; the memo is a draft for the fiscal officer.",
+          "Flag any input that is an estimate rather than a measured figure."
+        ],
+        "data": "Cost inputs and current figures: paste below."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" },
+        { "key": "COST_ITEM", "label": "Shared cost", "default": "" },
+        { "key": "FUNDING_STREAMS", "label": "Funding streams", "default": "WIOA Adult, Dislocated Worker, Youth" }
+      ],
+      "notes": "Always route through the fiscal officer. The model is drafting, not determining allowability."
+    },
+    {
+      "id": "monitoring-cap-response",
+      "title": "Draft a corrective action plan response to a monitoring finding",
+      "summary": "Converts a finding into a response with root cause, corrective action, responsible party, and evidence of completion.",
+      "functions": ["fiscal", "grants"],
+      "category": "draft",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["monitoring", "corrective action", "compliance"],
+      "blocks": {
+        "role": "You are a compliance analyst drafting the board's response to a monitoring finding issued by {{MONITOR}}.",
+        "context": "A response that only promises to do better gets rejected. A response that identifies why the control failed, what changed, who owns it, and what evidence proves it closes the finding.",
+        "steps": [
+          "Restate the finding in one sentence, including the condition, the criteria cited, and the effect.",
+          "Separate what the board agrees with from what it disputes, and note the basis for any disagreement.",
+          "State the root cause at the process level rather than the individual level.",
+          "Write the corrective action as discrete steps with a responsible position title and a completion date for each.",
+          "Name the evidence that will demonstrate completion and where it will be filed.",
+          "Describe the ongoing control that prevents recurrence, and how it will be tested."
+        ],
+        "output": "A response document with headings: Finding, Board response, Root cause, Corrective action with a table of Step, Owner, Due date, Root cause addressed; Evidence of completion; Preventive control.",
+        "constraints": [
+          "Do not admit to a violation the finding did not allege.",
+          "Do not name individual staff. Use position titles.",
+          "Do not commit to a date without marking it as proposed for management approval.",
+          "If the finding text is ambiguous about the criteria, flag it rather than assuming."
+        ],
+        "data": "Paste the finding text and any related policy excerpts below."
+      },
+      "placeholders": [
+        { "key": "MONITOR", "label": "Monitoring entity", "default": "EDD Compliance Review Office" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "procurement-sole-source-review",
+      "title": "Review a sole source justification",
+      "summary": "Stress-tests a sole source or noncompetitive procurement justification before it reaches the board.",
+      "functions": ["fiscal"],
+      "category": "review",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["procurement", "2 CFR 200", "sole source"],
+      "blocks": {
+        "role": "You are a procurement reviewer who reads noncompetitive justifications skeptically and asks the questions an auditor will ask.",
+        "context": "Noncompetitive procurement is allowable only in narrow circumstances. The justification must establish which circumstance applies and document that competition was genuinely infeasible, not merely inconvenient.",
+        "steps": [
+          "Identify which noncompetitive circumstance the justification is claiming, or note that it never states one.",
+          "Test each factual assertion: is it evidenced in the document, evidenced elsewhere, or unsupported?",
+          "Identify the strongest counterargument an auditor would make.",
+          "List the specific documentation that would close each gap.",
+          "Give a recommendation: ready to submit, revise, or compete."
+        ],
+        "output": "Sections: Claimed basis; Assertion test as a table of Assertion, Support, Status; Auditor counterargument; Documentation to add; Recommendation with one paragraph of reasoning.",
+        "constraints": [
+          "Do not render a legal determination. This is a readiness review for staff, not an approval.",
+          "Say clearly when the justification appears to describe a preference rather than an infeasibility."
+        ],
+        "data": "Paste the draft justification below."
+      },
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "nofo-compliance-matrix",
+      "title": "Turn a NOFO into a compliance matrix",
+      "summary": "Extracts every scored requirement, attachment, and deadline from a funding announcement into a matrix the proposal team can assign and track.",
+      "functions": ["grants", "research"],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["NOFO", "SGA", "grant development", "compliance matrix"],
+      "blocks": {
+        "role": "You are a grant developer building the compliance matrix that the proposal team will work from for the entire application period.",
+        "context": "Applications lose points on requirements that were stated once, in a different section from the scoring rubric. The matrix must reconcile the narrative instructions, the scoring criteria, and the attachment list so nothing sits in only one of the three.",
+        "steps": [
+          "Extract every requirement, including those stated only in the eligibility, format, or attachment sections.",
+          "For each requirement, record the source section, the page or section reference, the point value if scored, the page or character limit, and whether it is a narrative element, an attachment, or a form.",
+          "Reconcile the narrative instructions against the scoring rubric and flag any scored criterion with no matching narrative instruction, and any instruction with no points attached.",
+          "Extract every date, including the deadline, any letter of intent, any question window, and the period of performance.",
+          "List eligibility conditions and, for each, the evidence the applicant must supply.",
+          "Flag ambiguities that warrant a written question to the funder before the question window closes."
+        ],
+        "output": "A matrix with columns: Requirement | Source section | Page or section reference | Type | Points | Limit | Owner (blank) | Status (blank). Then three short lists: Dates, Eligibility evidence, Questions for the funder.",
+        "constraints": [
+          "Quote the source language for any requirement whose wording is consequential, and keep the quotation to a single line with its reference.",
+          "Never summarize away a page limit, a font requirement, or a submission format detail.",
+          "If a page reference is unclear, mark it for verification rather than approximating."
+        ],
+        "data": "Paste or attach the full announcement below. Include all appendices."
+      },
+      "placeholders": [],
+      "notes": "Best run on a model with a large context window so the whole announcement fits in one pass."
+    },
+    {
+      "id": "performance-narrative",
+      "title": "Draft a program year performance narrative",
+      "summary": "Builds a narrative around performance results that explains variance honestly and ties it to actions already underway.",
+      "functions": ["grants", "admin"],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["performance", "reporting", "program year"],
+      "blocks": {
+        "role": "You are writing the performance narrative section of {{BOARD_NAME}}'s program year report for a reader at the state who compares it against the data before reading a word of it.",
+        "context": "The reader already has the numbers. The narrative earns credit by explaining variance with evidence and naming what changed in response, not by restating the table in prose.",
+        "steps": [
+          "For each indicator, state the result against the negotiated level in one clause, then spend the rest of the paragraph on why.",
+          "Distinguish variance caused by cohort composition, by labor market conditions, and by service delivery.",
+          "For each indicator below the negotiated level, name the action already underway and when it started.",
+          "Identify the one indicator most at risk next year and say what the board is doing about it now.",
+          "Keep each indicator to under 150 words."
+        ],
+        "output": "One section per indicator with a bolded indicator name, followed by a short closing paragraph titled Outlook.",
+        "constraints": [
+          "Use only the figures provided. Do not compute rates that were not supplied.",
+          "Do not attribute shortfalls to participants.",
+          "Avoid language that promises improvement without naming a mechanism."
+        ],
+        "data": "Performance table and any context notes: paste below."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "wsd-staff-bulletin",
+      "title": "Turn a state directive into a staff bulletin",
+      "summary": "Converts a Workforce Services Directive into a one-page bulletin with what changed, who is affected, and what staff must do by when.",
+      "functions": ["research", "admin"],
+      "category": "summarize",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["WSD", "EDD", "policy", "staff communication"],
+      "blocks": {
+        "role": "You write internal policy bulletins for {{BOARD_NAME}} staff who will not read the directive itself.",
+        "context": "Staff need three things: what changed from current practice, whether it affects their role, and what they must do differently starting when. Everything else is reference.",
+        "steps": [
+          "State what the directive changes, in one sentence, at the top.",
+          "List the specific practice changes, each tied to the role that performs it.",
+          "Give the effective date and any transition period, and say explicitly what happens to cases in progress.",
+          "Note any new form, field, or documentation requirement, and where staff will find it.",
+          "List what did not change but is commonly confused with what did.",
+          "Close with the directive number, the date, and who to ask."
+        ],
+        "output": "A one-page bulletin with a headline, a What changed line, a table of Role, What you do differently, Starting when; then Cases in progress, New documentation, Unchanged, and a reference footer.",
+        "constraints": [
+          "Cite the directive section for each stated change so staff can verify it.",
+          "If the directive is silent on cases in progress, say it is silent rather than inferring.",
+          "Do not soften a mandatory requirement into a recommendation."
+        ],
+        "data": "Paste the full directive text below, including attachments."
+      },
+      "placeholders": [
+        { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
+      ],
+      "notes": "Long directives run better on a large-context model. Ask for the section reference on every line so staff can spot-check."
+    },
+    {
+      "id": "etpl-provider-performance-review",
+      "title": "Review an ETPL provider application or renewal",
+      "summary": "Checks an eligible training provider submission against list criteria and produces a reviewer worksheet with follow-up questions.",
+      "functions": ["research", "grants"],
+      "category": "review",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["ETPL", "training providers", "eligibility"],
+      "blocks": {
+        "role": "You are the ETPL coordinator reviewing a training provider's application for inclusion or continued eligibility on the state list.",
+        "context": "The review has to be reproducible. Another reviewer looking at the same packet should reach the same conclusion, so the worksheet records what was checked, what was found, and what remains open.",
+        "steps": [
+          "Check the packet for each required element and mark present, incomplete, or missing.",
+          "Compare the program description against the occupation it claims to train for and note whether the claimed credential is recognized and portable.",
+          "Review the reported performance data for internal consistency: do completions, credential attainment, and employment figures reconcile against enrollment?",
+          "Check whether the cost information is complete enough to support an ITA obligation, including all required fees.",
+          "List follow-up questions for the provider, written so each can be answered with a document.",
+          "Give a reviewer recommendation with the conditions attached to it."
+        ],
+        "output": "A worksheet: Element checklist; Program and credential assessment; Data consistency notes with any figure that does not reconcile; Cost completeness; Provider follow-up questions; Recommendation with conditions.",
+        "constraints": [
+          "Do not approve or deny. Produce the reviewer worksheet the coordinator signs.",
+          "Where the packet is silent, record it as not provided rather than assuming compliance.",
+          "Flag any performance figure that appears rounded, estimated, or self-reported without a source."
+        ],
+        "data": "Paste the provider packet contents and reported performance data below."
+      },
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "lmi-demand-occupation-brief",
+      "title": "Write a demand occupation brief from labor market data",
+      "summary": "Turns projection and wage data into a two-page brief supporting a demand occupation determination.",
+      "functions": ["research"],
+      "category": "analyze",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["LMI", "demand occupations", "projections", "self-sufficiency"],
+      "blocks": {
+        "role": "You are a research analyst writing the brief that supports adding {{OCCUPATION}} to the local demand occupation list for {{AREA}}.",
+        "context": "The brief has to survive a board committee question and a later audit. That means every figure carries its source and vintage, and the recommendation states the criteria it was tested against.",
+        "steps": [
+          "Summarize the occupation: typical duties, entry-level education, and typical training path.",
+          "Present the demand evidence: projected openings, growth rate, and current postings volume, each with source and time period.",
+          "Present the wage evidence against the local self-sufficiency benchmark, stating the benchmark used.",
+          "Assess training supply: whether programs exist on the state list locally and whether capacity matches projected openings.",
+          "State the criteria the occupation was tested against and whether it meets each one.",
+          "Note the limitations of the data, including anything that would change the conclusion."
+        ],
+        "output": "A brief with sections: Occupation summary; Demand evidence with a sourced table; Wage and self-sufficiency; Training supply; Criteria test as a pass or fail list; Limitations; Recommendation.",
+        "constraints": [
+          "Every number carries a source and a period. Any figure without one is marked unsourced.",
+          "Do not compute a projection or a wage percentile that was not supplied.",
+          "State clearly when data are suppressed or unavailable at the local level rather than substituting a state figure silently."
+        ],
+        "data": "Paste the projections, wage, and postings data below."
+      },
+      "placeholders": [
+        { "key": "OCCUPATION", "label": "Occupation", "default": "" },
+        { "key": "AREA", "label": "Local area", "default": "Fresno County" }
+      ],
+      "notes": "If the source data is a CSV, use a model with a data analysis tool and have it show the computation."
+    },
+    {
+      "id": "board-item-summary",
+      "title": "Summarize an item for the board agenda",
+      "summary": "Condenses a long staff document into the agenda item format: recommendation, background, fiscal impact, and the decision being asked for.",
+      "functions": ["admin", "grants"],
+      "category": "summarize",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": ["board", "agenda", "governance"],
+      "blocks": {
+        "role": "You write board agenda items for volunteer board members who read the packet the night before.",
+        "context": "Board members need to know what they are voting on in the first two sentences. Everything else exists to answer the questions that follow.",
+        "steps": [
+          "Write the recommended action as a single sentence beginning with a verb.",
+          "Give the background in under 200 words, covering why this is coming to the board now.",
+          "State the fiscal impact, including the funding source and whether it was budgeted.",
+          "Note any required approval, deadline, or consequence of not acting.",
+          "List the attachments a member would need to evaluate the item."
+        ],
+        "output": "An agenda item with headings: Recommended action, Background, Fiscal impact, Timing and requirements, Attachments.",
+        "constraints": [
+          "Do not include a fiscal figure that is not in the source document.",
+          "Write without acronyms on first use.",
+          "Keep the entire item under one page."
+        ],
+        "data": "Paste the staff document below."
+      },
+      "placeholders": [],
+      "notes": ""
+    }
+  ]
+}
+</script>
+<script>
+(function () {
+'use strict';
+
+/* ------------------------------------------------------------------
+   Storage
+------------------------------------------------------------------ */
+var LS = {
+  fav: 'wpv.favorites', custom: 'wpv.custom', over: 'wpv.overrides',
+  hidden: 'wpv.hidden', recents: 'wpv.recents', values: 'wpv.values',
+  settings: 'wpv.settings'
+};
+
+function load(key, fallback) {
+  try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+  catch (e) { return fallback; }
+}
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch (e) { toast('Storage is blocked or full, so that change will not survive a refresh.', true); return false; }
+}
+
+var S = {
+  base: [], taxonomy: null, collection: 'Prompt Cookbook',
+  favorites: load(LS.fav, []),
+  custom: load(LS.custom, []),
+  overrides: load(LS.over, {}),
+  hidden: load(LS.hidden, []),
+  recents: load(LS.recents, []),
+  values: load(LS.values, {}),
+  settings: Object.assign({ model: 'claude' }, load(LS.settings, {})),
+  q: '', fn: [], cat: [], cx: [], view: 'all',
+  selected: null, mode: 'read', draft: null
+};
+
+/* ------------------------------------------------------------------
+   Small helpers
+------------------------------------------------------------------ */
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+function el(id) { return document.getElementById(id); }
+function uniq(a) { return a.filter(function (v, i) { return a.indexOf(v) === i; }); }
+function toggleIn(arr, v) {
+  var i = arr.indexOf(v);
+  if (i === -1) arr.push(v); else arr.splice(i, 1);
+  return arr;
+}
+var toastTimer;
+function toast(msg, warn) {
+  var t = el('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (warn ? ' warn' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.className = 'toast'; }, 2600);
+}
+
+/* ------------------------------------------------------------------
+   Data assembly: published + user overrides + user prompts
+------------------------------------------------------------------ */
+function prompts() {
+  var out = [];
+  S.base.forEach(function (p) {
+    if (S.hidden.indexOf(p.id) !== -1) return;
+    var o = S.overrides[p.id];
+    out.push(o ? Object.assign({}, p, o, { edited: true }) : p);
+  });
+  S.custom.forEach(function (p) { out.push(Object.assign({ source: 'user' }, p)); });
+  return out;
+}
+function byId(id) {
+  var all = prompts();
+  for (var i = 0; i < all.length; i++) if (all[i].id === id) return all[i];
+  return null;
+}
+function fnMeta(id) {
+  var f = S.taxonomy.functions.filter(function (x) { return x.id === id; })[0];
+  return f || { id: id, label: id, tab: '#8794A0' };
+}
+function catLabel(id) {
+  var c = S.taxonomy.categories.filter(function (x) { return x.id === id; })[0];
+  return c ? c.label : id;
+}
+
+/* ------------------------------------------------------------------
+   Placeholders
+------------------------------------------------------------------ */
+var PH = /\{\{([A-Z0-9_]+)\}\}/g;
+
+function collectKeys(p) {
+  var text = JSON.stringify(p.blocks || {}) + JSON.stringify(p.placeholders || []);
+  var keys = [], m;
+  PH.lastIndex = 0;
+  while ((m = PH.exec(text)) !== null) keys.push(m[1]);
+  (p.placeholders || []).forEach(function (x) { keys.push(x.key); });
+  return uniq(keys);
+}
+function phMeta(p, key) {
+  var d = (p.placeholders || []).filter(function (x) { return x.key === key; })[0];
+  return d || { key: key, label: key.replace(/_/g, ' ').toLowerCase(), default: '' };
+}
+function valueFor(p, key) {
+  if (S.values[key] !== undefined && S.values[key] !== '') return S.values[key];
+  var d = phMeta(p, key).default;
+  return d || '';
+}
+function fill(text, p) {
+  if (!text) return '';
+  return String(text).replace(PH, function (whole, key) {
+    var v = valueFor(p, key);
+    return v ? v : whole;
+  });
+}
+
+/* ------------------------------------------------------------------
+   Model adapters — one structured prompt, three renderings
+------------------------------------------------------------------ */
+
+/* ------------------------------------------------------------------
+   Inline icons. Functional only: each one sits on the same baseline as
+   the label it belongs to. No tinted tiles, no decoration.
+------------------------------------------------------------------ */
+var ICON = {
+  plus:   'M12 5v14M5 12h14',
+  guide:  'M4 4h11l5 5v11H4z M15 4v5h5',
+  down:   'M12 3v12M7 10l5 5 5-5M4 19h16',
+  up:     'M12 15V3M7 8l5-5 5 5M4 19h16',
+  copy:   'M9 9h11v11H9z M5 15H4V4h11v1',
+  edit:   'M4 20h4L20 8l-4-4L4 16z',
+  dup:    'M8 8h12v12H8z M4 16V4h12',
+  vars:   'M20 7h-9M14 17H5M17 12H3',
+  code:   'M16 18l6-6-6-6M8 6l-6 6 6 6',
+  info:   'M12 11v5M12 7.5v.5',
+  shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'
+};
+function icon(name, size) {
+  var d = ICON[name] || '';
+  var extra = name === 'info' ? '<circle cx="12" cy="12" r="9"/>' : '';
+  return '<svg width="' + (size || 13) + '" height="' + (size || 13) + '" viewBox="0 0 24 24" ' +
+    'fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square" aria-hidden="true">' +
+    extra + '<path d="' + d + '"/></svg>';
+}
+
+var MODELS = {
+  claude:  { label: 'Claude',  arch: 'XML-tagged structure',
+             note: 'Structure carried in XML tags; source material before the instructions.' },
+  chatgpt: { label: 'ChatGPT', arch: 'Markdown sections',
+             note: 'Markdown headings, numbered task list, data-analysis handoff for files.' },
+  gemini:  { label: 'Gemini',  arch: 'Source-first framing',
+             note: 'Source first, brief second, instruction restated at the end for long inputs.' }
+};
+
+function blocks(p) {
+  var b = p.blocks || {};
+  return {
+    role: fill(b.role, p),
+    context: fill(b.context, p),
+    steps: (b.steps || []).map(function (s) { return fill(s, p); }),
+    output: fill(b.output, p),
+    constraints: (b.constraints || []).map(function (s) { return fill(s, p); }),
+    data: fill(b.data, p)
+  };
+}
+
+function composeClaude(p) {
+  var b = blocks(p), out = [];
+  if (b.role) out.push('<role>\n' + b.role + '\n</role>');
+  if (b.context) out.push('<context>\n' + b.context + '\n</context>');
+  if (b.data) out.push('<source_material>\n' + b.data + '\n\n[Paste the material here, or attach the file.]\n</source_material>');
+  if (b.steps.length) {
+    out.push('<instructions>\n' + b.steps.map(function (s, i) { return (i + 1) + '. ' + s; }).join('\n') + '\n</instructions>');
+  }
+  if (b.output) out.push('<output_format>\n' + b.output + '\n</output_format>');
+  if (b.constraints.length) {
+    out.push('<constraints>\n' + b.constraints.map(function (c) { return '- ' + c; }).join('\n') + '\n</constraints>');
+  }
+  if (p.complexity === 'high') {
+    out.push('Work through the material in <scratchpad> tags first, then give the finished product in <answer> tags. If something required is missing from the source, say so inside <gaps> tags rather than filling it in.');
+  } else {
+    out.push('If something required is missing from the source, name the gap instead of filling it in.');
+  }
+  return out.join('\n\n');
+}
+
+function composeChatGPT(p) {
+  var b = blocks(p), out = [];
+  if (b.role) out.push('# Role\n' + b.role);
+  if (b.context) out.push('# Context\n' + b.context);
+  if (b.steps.length) out.push('# Task\n' + b.steps.map(function (s, i) { return (i + 1) + '. ' + s; }).join('\n'));
+  if (b.output) out.push('# Output format\n' + b.output);
+  if (b.constraints.length) out.push('# Rules\n' + b.constraints.map(function (c) { return '- ' + c; }).join('\n'));
+  if (b.data) {
+    out.push('# Source material\n' + b.data + '\n\n[Paste the material here, or upload the file.]');
+    out.push('If the source is a spreadsheet or CSV, upload the file and use the data analysis tool rather than reading it by eye: load it, report the row and column counts, show the code you ran, and state any rows you dropped.');
+  }
+  if (p.complexity === 'high') {
+    out.push('Before you start, ask me up to three clarifying questions if anything material is missing. Otherwise begin.');
+  }
+  return out.join('\n\n');
+}
+
+function composeGemini(p) {
+  var b = blocks(p), out = [], head = [];
+  if (b.data) {
+    out.push('SOURCE MATERIAL\n<<<\n' + b.data + '\n\n[Paste the full text here, or attach the files. Long documents are fine — do not summarize before pasting.]\n>>>');
+  }
+  head.push('TASK BRIEF');
+  if (b.role) head.push('Role: ' + b.role);
+  if (b.context) head.push('Context: ' + b.context);
+  if (b.steps.length) head.push('Do this, in order:\n' + b.steps.map(function (s, i) { return (i + 1) + '. ' + s; }).join('\n'));
+  if (b.output) head.push('Output format: ' + b.output);
+  if (b.constraints.length) head.push('Rules:\n' + b.constraints.map(function (c) { return '- ' + c; }).join('\n'));
+  out.push(head.join('\n\n'));
+  if (b.data) {
+    out.push('For every factual statement, cite where in the source material it came from (section heading, page, or line). If the source does not support a statement, leave it out and list it under "Not found in source".');
+    out.push('REMINDER: ' + (b.steps[0] || b.role || 'Follow the task brief above.') + ' Follow the output format exactly.');
+  }
+  return out.join('\n\n');
+}
+
+function compose(p, model) {
+  if (model === 'chatgpt') return composeChatGPT(p);
+  if (model === 'gemini') return composeGemini(p);
+  return composeClaude(p);
+}
+
+/* ------------------------------------------------------------------
+   Search and filtering
+------------------------------------------------------------------ */
+function haystack(p) {
+  if (p._hay) return p._hay;
+  var parts = [p.title, p.summary, (p.tags || []).join(' '), catLabel(p.category), p.complexity];
+  (p.functions || []).forEach(function (f) { parts.push(fnMeta(f).label); });
+  var b = p.blocks || {};
+  parts.push(b.role, b.context, b.output, (b.steps || []).join(' '), (b.constraints || []).join(' '));
+  var h = parts.join(' ').toLowerCase();
+  try { Object.defineProperty(p, '_hay', { value: h, enumerable: false }); } catch (e) { p._hay = h; }
+  return h;
+}
+
+function visible() {
+  var terms = S.q.toLowerCase().split(/\s+/).filter(Boolean);
+  return prompts().filter(function (p) {
+    if (S.view === 'favorites' && S.favorites.indexOf(p.id) === -1) return false;
+    if (S.view === 'mine' && p.source !== 'user' && !p.edited) return false;
+    if (S.view === 'recent' && S.recents.indexOf(p.id) === -1) return false;
+    if (S.fn.length && !(p.functions || []).some(function (f) { return S.fn.indexOf(f) !== -1; })) return false;
+    if (S.cat.length && S.cat.indexOf(p.category) === -1) return false;
+    if (S.cx.length && S.cx.indexOf(p.complexity) === -1) return false;
+    if (terms.length) {
+      var h = haystack(p);
+      for (var i = 0; i < terms.length; i++) if (h.indexOf(terms[i]) === -1) return false;
+    }
+    return true;
+  }).sort(function (a, b) {
+    if (S.view === 'recent') return S.recents.indexOf(a.id) - S.recents.indexOf(b.id);
+    return a.title.localeCompare(b.title);
+  });
+}
+
+/* ------------------------------------------------------------------
+   Drawer
+------------------------------------------------------------------ */
+function countBy(pred) { return prompts().filter(pred).length; }
+
+function renderDrawer() {
+  var all = prompts();
+  var h = [];
+
+  h.push('<h2>Library views</h2>');
+  var views = [
+    ['all', 'All prompts', all.length],
+    ['favorites', 'Favorites', S.favorites.length],
+    ['mine', 'Created & edited', all.filter(function (p) { return p.source === 'user' || p.edited; }).length],
+    ['recent', 'Recently used', S.recents.length]
+  ];
+  views.forEach(function (v) {
+    h.push('<button class="filt" type="button" data-view="' + v[0] + '" aria-pressed="' + (S.view === v[0]) + '">' +
+      '<span>' + esc(v[1]) + '</span><span class="count">' + v[2] + '</span></button>');
+  });
+
+  h.push('<h2>Domains &amp; functions</h2>');
+  S.taxonomy.functions.forEach(function (f) {
+    var n = countBy(function (p) { return (p.functions || []).indexOf(f.id) !== -1; });
+    h.push('<button class="filt" type="button" data-fn="' + f.id + '" aria-pressed="' + (S.fn.indexOf(f.id) !== -1) + '">' +
+      '<span class="tab" style="background:' + f.tab + '"></span><span>' + esc(f.label) + '</span>' +
+      '<span class="count">' + n + '</span></button>');
+  });
+
+  h.push('<h2>Task type</h2>');
+  S.taxonomy.categories.forEach(function (c) {
+    var n = countBy(function (p) { return p.category === c.id; });
+    h.push('<button class="filt" type="button" data-cat="' + c.id + '" aria-pressed="' + (S.cat.indexOf(c.id) !== -1) + '">' +
+      '<span>' + esc(c.label) + '</span><span class="count">' + n + '</span></button>');
+  });
+
+  h.push('<h2>Prompt complexity</h2>');
+  ['low', 'medium', 'high'].forEach(function (cx) {
+    var n = countBy(function (p) { return p.complexity === cx; });
+    h.push('<button class="filt" type="button" data-cx="' + cx + '" aria-pressed="' + (S.cx.indexOf(cx) !== -1) + '">' +
+      '<span>' + cx.charAt(0).toUpperCase() + cx.slice(1) + '</span><span class="count">' + n + '</span></button>');
+  });
+
+  h.push('<div class="tools">');
+  h.push('<button class="linkish" type="button" data-act="new">' + icon('plus', 14) + 'Write a new prompt</button>');
+  h.push('<button class="linkish" type="button" data-act="guide">' + icon('guide', 14) + 'Model tuning guide</button>');
+  h.push('<button class="linkish" type="button" data-act="about">' + icon('info', 14) + 'About this cookbook</button>');
+  h.push('<button class="linkish" type="button" data-act="export-mine">' + icon('down', 14) + 'Back up my prompts</button>');
+  h.push('<button class="linkish" type="button" data-act="export-all">' + icon('down', 14) + 'Export full prompts.json</button>');
+  h.push('<button class="linkish" type="button" data-act="import">' + icon('up', 14) + 'Restore from a backup</button>');
+  if (S.hidden.length) h.push('<button class="linkish" type="button" data-act="unhide">Restore ' + S.hidden.length + ' archived</button>');
+  h.push('</div>');
+
+  el('drawer').innerHTML = h.join('');
+}
+
+/* ------------------------------------------------------------------
+   Index list
+------------------------------------------------------------------ */
+function notches(cx) {
+  var n = cx === 'high' ? 3 : cx === 'medium' ? 2 : 1;
+  var s = '<span class="notches" title="' + cx + ' effort" aria-label="' + cx + ' effort">';
+  for (var i = 1; i <= 3; i++) s += '<i class="' + (i <= n ? '' : 'off') + '"></i>';
+  return s + '</span>';
+}
+
+function renderIndex() {
+  var list = visible();
+  var h = [];
+  var filtered = S.q || S.fn.length || S.cat.length || S.cx.length || S.view !== 'all';
+
+  h.push('<div class="index-head"><span>' + list.length + (list.length === 1 ? ' prompt available' : ' prompts available') + '</span>' +
+    (filtered ? '<button class="chip" type="button" data-act="clear">Reset filters</button>' : '') + '</div>');
+
+  if (!list.length) {
+    h.push('<div class="empty"><strong>Nothing matches yet.</strong>' +
+      (S.view === 'favorites'
+        ? 'Star a prompt from the index and it lands here for next time.'
+        : 'Try a shorter search, or clear the filters in the left rail. You can also write a new prompt for this task and keep it in your own library.') +
+      '</div>');
+  }
+
+  list.forEach(function (p) {
+    var f = fnMeta((p.functions || [])[0]);
+    var isFav = S.favorites.indexOf(p.id) !== -1;
+    h.push(
+      '<div class="row" role="button" tabindex="0" data-id="' + esc(p.id) + '" aria-current="' + (S.selected === p.id) + '">' +
+      '<span class="rowtab" style="background:' + f.tab + '"></span>' +
+      '<span class="rowbody">' +
+      '<h3>' + esc(p.title) + '</h3>' +
+      '<p>' + esc(p.summary || '') + '</p>' +
+      '<span class="rowmeta">' + notches(p.complexity) +
+      '<span class="pill-tag">' + esc(f.label) + '</span>' +
+      '<span class="pill-tag">' + esc(catLabel(p.category)) + '</span>' +
+      (p.source === 'user' ? '<span class="pill-tag state">Custom</span>'
+        : (p.edited ? '<span class="pill-tag state">Modified</span>' : '')) +
+      '</span></span>' +
+      '<span class="rowside"><span class="star" role="button" tabindex="0" data-fav="' + esc(p.id) + '" aria-pressed="' + isFav + '" title="Favorite" aria-label="Favorite">' +
+      (isFav ? '\u2605' : '\u2606') + '</span></span>' +
+      '</div>'
+    );
+  });
+  el('index').innerHTML = h.join('');
+}
+
+/* ------------------------------------------------------------------
+   Reader
+------------------------------------------------------------------ */
+function markPlaceholders(text) {
+  return esc(text).replace(/\{\{([A-Z0-9_]+)\}\}/g, function (w, k) {
+    return '<mark>{{' + esc(k) + '}}</mark>';
+  });
+}
+
+function renderReader() {
+  var r = el('reader');
+  if (S.mode === 'guide') { renderGuide(); return; }
+  if (S.mode === 'about') { renderAbout(); return; }
+  if (S.mode === 'edit') { renderEditor(); return; }
+
+  var p = S.selected ? byId(S.selected) : null;
+  if (!p) {
+    r.innerHTML = '<div class="reader-inner"><div class="empty"><strong>Pick a prompt.</strong>' +
+      'Choose one from the index and it opens here, already shaped for ' + MODELS[S.settings.model].label +
+      '. Fill in the fields, copy, paste.</div></div>';
+    return;
+  }
+
+  var model = MODELS[S.settings.model];
+  var keys = collectKeys(p);
+  var text = compose(p, S.settings.model);
+  var sens = S.taxonomy.sensitivity[p.sensitivity || 'none'];
+  var isFav = S.favorites.indexOf(p.id) !== -1;
+  var h = [];
+
+  h.push('<div class="reader-inner">');
+
+  /* --- header block: title, lede, badges, actions --- */
+  h.push('<div class="reader-header">');
+  h.push('<button class="chip backlink" type="button" data-act="back">Back to prompt list</button>');
+  h.push('<h1>' + esc(p.title) + '</h1>');
+  h.push('<p class="lede">' + esc(p.summary || '') + '</p>');
+
+  h.push('<div class="badges">');
+  (p.functions || []).forEach(function (f) {
+    var fm = fnMeta(f);
+    h.push('<span class="badge"><b style="background:' + fm.tab + '"></b>' + esc(fm.label) + '</span>');
+  });
+  h.push('<span class="badge">' + esc(catLabel(p.category)) + '</span>');
+  h.push('<span class="badge">' + esc(p.complexity) + ' complexity</span>');
+  (p.tags || []).forEach(function (t) { h.push('<span class="badge">#' + esc(t) + '</span>'); });
+  h.push('</div>');
+
+  if ((p.sensitivity || 'none') !== 'none') {
+    h.push('<div class="sens">' + icon('shield', 15) + '<span>' + esc(sens) + '</span></div>');
+  }
+
+  h.push('<div class="toolbar">');
+  h.push('<button class="btn" type="button" data-act="copy">' + icon('copy', 14) + 'Copy for ' + model.label + '</button>');
+  h.push('<button class="btn ghost" type="button" data-act="fav">' + (isFav ? '\u2605 Saved to favorites' : '\u2606 Add to favorites') + '</button>');
+  h.push('<button class="btn ghost" type="button" data-act="edit">' + icon('edit') + 'Customize</button>');
+  h.push('<button class="btn ghost" type="button" data-act="duplicate">' + icon('dup') + 'Duplicate</button>');
+  if (p.edited) h.push('<button class="btn ghost" type="button" data-act="revert">Restore published version</button>');
+  if (p.source === 'user') h.push('<button class="btn ghost danger" type="button" data-act="delete">Delete</button>');
+  h.push('</div>');
+  h.push('</div>');
+
+  /* --- fill-in fields --- */
+  if (keys.length) {
+    h.push('<div class="panel"><div class="panel-head">' + icon('vars', 14) +
+      '<span class="micro">Template variables</span></div><div class="panel-body">');
+    keys.forEach(function (k) {
+      var meta = phMeta(p, k);
+      h.push('<div class="field"><label for="f-' + esc(k) + '">' + esc(meta.label) + '</label>' +
+        '<input id="f-' + esc(k) + '" type="text" data-key="' + esc(k) + '" value="' + esc(valueFor(p, k)) +
+        '" placeholder="' + esc(meta.default || ('Enter ' + meta.label)) + '"></div>');
+    });
+    h.push('<p class="hint">Saved in this browser and applied to every prompt that uses the same variable.</p>');
+    h.push('</div></div>');
+  }
+
+  /* --- composed prompt --- */
+  h.push('<div class="panel"><div class="panel-head">' + icon('code', 14) +
+    '<span class="micro">Composed prompt</span>' +
+    '<span class="micro right">' + esc(model.arch) + '</span></div>');
+  h.push('<pre class="compose" id="composed">' + markPlaceholders(text) + '</pre>');
+  h.push('<p class="placeholder-note">' + icon('info') + esc(model.note) + '</p>');
+  h.push('</div>');
+
+  if (p.notes) h.push('<footer><strong>Staff note.</strong> ' + esc(p.notes) + '</footer>');
+  h.push('</div>');
+  r.innerHTML = h.join('');
+  r.scrollTop = 0;
+}
+
+/* ------------------------------------------------------------------
+   Editor
+------------------------------------------------------------------ */
+function blankPrompt() {
+  return {
+    id: 'user-' + Date.now().toString(36),
+    title: '', summary: '', functions: [S.taxonomy.functions[0].id],
+    category: S.taxonomy.categories[0].id, complexity: 'medium',
+    sensitivity: 'none', source: 'user', tags: [],
+    blocks: { role: '', context: '', steps: [], output: '', constraints: [], data: '' },
+    placeholders: [], notes: ''
+  };
+}
+
+function renderEditor() {
+  var p = S.draft;
+  var h = ['<div class="editor">'];
+  h.push('<h1>' + (p.source === 'user' && !byId(p.id) ? 'New prompt' : 'Edit prompt') + '</h1>');
+  h.push('<p class="lede">Edits live in this browser only. Back them up or export a full prompts.json to share them with the team.</p>');
+
+  h.push('<label for="e-title">Title</label><input id="e-title" type="text" value="' + esc(p.title) + '">');
+  h.push('<label for="e-summary">One-line summary</label><input id="e-summary" type="text" value="' + esc(p.summary) + '">');
+
+  h.push('<div class="two"><div><label for="e-fn">Job function</label><select id="e-fn">');
+  S.taxonomy.functions.forEach(function (f) {
+    h.push('<option value="' + f.id + '"' + ((p.functions || [])[0] === f.id ? ' selected' : '') + '>' + esc(f.label) + '</option>');
+  });
+  h.push('</select></div><div><label for="e-cat">Task category</label><select id="e-cat">');
+  S.taxonomy.categories.forEach(function (c) {
+    h.push('<option value="' + c.id + '"' + (p.category === c.id ? ' selected' : '') + '>' + esc(c.label) + '</option>');
+  });
+  h.push('</select></div></div>');
+
+  h.push('<div class="two"><div><label for="e-cx">Effort</label><select id="e-cx">');
+  ['low', 'medium', 'high'].forEach(function (c) {
+    h.push('<option value="' + c + '"' + (p.complexity === c ? ' selected' : '') + '>' + c + '</option>');
+  });
+  h.push('</select></div><div><label for="e-sens">Participant data</label><select id="e-sens">');
+  Object.keys(S.taxonomy.sensitivity).forEach(function (k) {
+    h.push('<option value="' + k + '"' + ((p.sensitivity || 'none') === k ? ' selected' : '') + '>' + esc(S.taxonomy.sensitivity[k]) + '</option>');
+  });
+  h.push('</select></div></div>');
+
+  h.push('<label for="e-tags">Tags, comma separated</label><input id="e-tags" type="text" value="' + esc((p.tags || []).join(', ')) + '">');
+  h.push('<label for="e-role">Role — who the model is acting as</label><textarea id="e-role" rows="3">' + esc(p.blocks.role) + '</textarea>');
+  h.push('<label for="e-context">Context — what it needs to know about our setting</label><textarea id="e-context" rows="3">' + esc(p.blocks.context) + '</textarea>');
+  h.push('<label for="e-steps">Steps — one per line</label><textarea id="e-steps" rows="7">' + esc((p.blocks.steps || []).join('\n')) + '</textarea>');
+  h.push('<label for="e-output">Output format</label><textarea id="e-output" rows="4">' + esc(p.blocks.output) + '</textarea>');
+  h.push('<label for="e-constraints">Rules — one per line</label><textarea id="e-constraints" rows="5">' + esc((p.blocks.constraints || []).join('\n')) + '</textarea>');
+  h.push('<label for="e-data">Source material line — what the user pastes or attaches</label><textarea id="e-data" rows="2">' + esc(p.blocks.data) + '</textarea>');
+  h.push('<label for="e-notes">Staff notes</label><textarea id="e-notes" rows="2">' + esc(p.notes || '') + '</textarea>');
+  h.push('<p class="placeholder-note">Write reusable fields as {{LIKE_THIS}} anywhere above. They become fill-in boxes for everyone.</p>');
+
+  h.push('<div class="toolbar" style="margin-top:20px">');
+  h.push('<button class="btn" type="button" data-act="save">Save prompt</button>');
+  h.push('<button class="btn ghost" type="button" data-act="cancel">Cancel</button>');
+  h.push('</div></div>');
+  el('reader').innerHTML = h.join('');
+  document.body.classList.add('reading');
+}
+
+function readEditor() {
+  var p = S.draft;
+  p.title = el('e-title').value.trim();
+  p.summary = el('e-summary').value.trim();
+  p.functions = [el('e-fn').value];
+  p.category = el('e-cat').value;
+  p.complexity = el('e-cx').value;
+  p.sensitivity = el('e-sens').value;
+  p.tags = el('e-tags').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+  p.blocks = {
+    role: el('e-role').value.trim(),
+    context: el('e-context').value.trim(),
+    steps: el('e-steps').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean),
+    output: el('e-output').value.trim(),
+    constraints: el('e-constraints').value.split('\n').map(function (s) { return s.trim(); }).filter(Boolean),
+    data: el('e-data').value.trim()
+  };
+  p.notes = el('e-notes').value.trim();
+  return p;
+}
+
+function saveDraft() {
+  var p = readEditor();
+  if (!p.title) { toast('Give the prompt a title before saving.', true); return; }
+  var isBase = S.base.some(function (b) { return b.id === p.id; });
+  if (isBase) {
+    S.overrides[p.id] = p;
+    save(LS.over, S.overrides);
+  } else {
+    var i = -1;
+    S.custom.forEach(function (c, idx) { if (c.id === p.id) i = idx; });
+    if (i === -1) S.custom.push(p); else S.custom[i] = p;
+    save(LS.custom, S.custom);
+  }
+  S.mode = 'read'; S.selected = p.id;
+  renderAll();
+  toast('Saved to this browser.');
+}
+
+/* ------------------------------------------------------------------
+   Guide
+------------------------------------------------------------------ */
+function renderGuide() {
+  var h = [];
+  h.push('<div class="guide">');
+  h.push('<button class="chip backlink" type="button" data-act="back">Back to prompt list</button>');
+  h.push('<h1>Tuning a prompt for each model</h1>');
+  h.push('<p>Every prompt in this cookbook is stored as parts: a role, the context, the steps, the output format, the rules, and a slot for source material. The Claude, ChatGPT, and Gemini buttons do not rewrite the prompt — they lay the same parts out the way each model handles best. What follows is what those buttons are doing, so you can do it by hand in a chat window when you need to.</p>');
+
+  h.push('<div class="card stale"><h3>Check the model names before you rely on them</h3>' +
+    '<p>Model lineups turn over every few months. As of September 2026, Anthropic is shipping Claude Opus 5 and Sonnet 5; OpenAI is on GPT-6 Astra with the GPT-5.6 family beneath it, and GPT-4o was retired in February 2026; Google has Gemini 3.1 Pro alongside the faster 3.8 Flash. The habits below outlive the version numbers, which is why they are written as habits.</p></div>');
+
+  h.push('<h2>Claude — say what the parts are</h2>');
+  h.push('<p>Claude follows structure that is explicitly marked. Wrapping each part of a prompt in a tag makes it much harder for the model to blur your source document into your instructions, which is the usual failure on a long policy review or a grant evaluation. Tag names are yours to choose; they just have to be consistent.</p>');
+  h.push('<pre>&lt;role&gt;You are a compliance analyst for a local workforce board.&lt;/role&gt;\n\n&lt;source_material&gt;\n[paste the directive or the subrecipient policy here]\n&lt;/source_material&gt;\n\n&lt;instructions&gt;\n1. List every requirement the policy places on the subrecipient.\n2. Mark each one met, partly met, or not addressed.\n&lt;/instructions&gt;\n\n&lt;output_format&gt;A table, then a short list of open questions.&lt;/output_format&gt;</pre>');
+  h.push('<ul>' +
+    '<li>Put long documents <em>before</em> the instructions. Accuracy on long inputs improves when the question comes after the material.</li>' +
+    '<li>For anything scored or evaluative, ask for reasoning in a <code>&lt;scratchpad&gt;</code> and the deliverable in <code>&lt;answer&gt;</code>, then read the scratchpad to check the logic before you trust the answer.</li>' +
+    '<li>Keep recurring context — the board name, the funding streams, the local policies — in a Project so you are not re-pasting it every session.</li>' +
+    '</ul>');
+
+  h.push('<h2>ChatGPT — set the standing context, then hand it the file</h2>');
+  h.push('<p>ChatGPT reads markdown headings cleanly, so numbered steps under <code>#&nbsp;Task</code> are enough structure for most work. The larger win is the two features around the chat box.</p>');
+  h.push('<ul>' +
+    '<li><strong>Custom instructions</strong> hold the things you would otherwise type every time: that you work for a local workforce development board, that outputs are read by auditors and board members, that you want plain language and no invented figures. Set it once in settings and every chat starts there.</li>' +
+    '<li><strong>The data analysis tool</strong> should do any work involving a spreadsheet. Upload the CSV rather than pasting rows, and ask it to report row and column counts, show the code it ran, and list anything it dropped. A model reading numbers by eye will produce a plausible total that is wrong; a model running code on the file will produce one you can check.</li>' +
+    '<li>For a task you repeat monthly, put the prompt and the reference files in a Project so the context comes back with it.</li>' +
+    '</ul>');
+  h.push('<pre># Role\nYou are an ETPL coordinator reviewing provider performance.\n\n# Task\n1. Load the attached CSV and report row and column counts.\n2. Reconcile completions against enrollments by provider.\n3. Flag any provider whose figures do not reconcile.\n\n# Rules\n- Show the code you ran.\n- Do not compute a rate that is not supported by the columns present.</pre>');
+
+  h.push('<h2>Gemini — feed it everything, then repeat yourself</h2>');
+  h.push('<p>Gemini\u2019s strength here is volume: a full Workforce Services Directive with its attachments, a stack of monitoring reports, a year of board minutes. Paste or attach the whole thing rather than summarizing first, since summarizing is what you are asking it to do.</p>');
+  h.push('<ul>' +
+    '<li>Put the source material first, the instruction second, and restate the instruction in one line at the very end. With a long input the closing line is what the model is holding when it starts writing.</li>' +
+    '<li>Ask for a location citation on every claim — section heading, page, or line. Then spot-check three of them. This is the fastest way to catch a summary that drifted.</li>' +
+    '<li>Ask it to list what it could not find in the source under a separate heading, so absence shows up as a heading instead of a quiet omission.</li>' +
+    '<li>When the draft is right, export it into Docs or Sheets from Workspace rather than copying through the clipboard, which is where formatting and tables get mangled.</li>' +
+    '</ul>');
+
+  h.push('<h2>What none of the three will do for you</h2>');
+  h.push('<ul>' +
+    '<li>Verify a citation. If a model gives you a CFR section, a WSD number, or a directive date, open it. Confident citation formatting is not evidence.</li>' +
+    '<li>Know our local policy. If it is not in the prompt, in a Project, or attached, the model is guessing at it.</li>' +
+    '<li>Carry accountability. Staff sign the case note, the memo, and the CAP response. The draft is a draft.</li>' +
+    '</ul>');
+  h.push('</div>');
+  el('reader').innerHTML = h.join('');
+  el('reader').scrollTop = 0;
+  document.body.classList.add('reading');
+}
+
+
+/* ------------------------------------------------------------------
+   About
+------------------------------------------------------------------ */
+function renderAbout() {
+  var all = prompts();
+  var mine = all.filter(function (p) { return p.source === 'frwdb'; }).length;
+  var inherited = all.filter(function (p) { return p.source === 'cookbook'; }).length;
+  var h = [];
+
+  h.push('<div class="guide">');
+  h.push('<button class="chip backlink" type="button" data-act="back">Back to prompt list</button>');
+  h.push('<h1>About this cookbook</h1>');
+  h.push('<p>A prompt library for staff at WIOA-funded local workforce development boards. ' +
+    'It holds ' + all.length + ' prompts for the work that actually fills the week: case notes and service ' +
+    'strategies, employer outreach, cost allocation and monitoring responses, funding announcements, ' +
+    'state directives, and labor market briefs. Everything runs in the browser. There is no account, ' +
+    'no server, and nothing you type here leaves your machine.</p>');
+
+  h.push('<h2>Who built it</h2>');
+  h.push('<p>Kyle Hamilton, Research Analyst and ETPL Coordinator at the ' +
+    '<a href="https://workforce-connection.com" target="_blank" rel="noopener">Fresno Regional Workforce ' +
+    'Development Board</a>, built this for FRWDB staff. It is shared in the hope that other local boards ' +
+    'find it useful; the prompts assume WIOA Title I practice and California reporting, so expect to ' +
+    'adjust the specifics for your own area.</p>');
+
+  h.push('<h2>Where it came from</h2>');
+  h.push('<p>The structure and a large share of the templates come from the ' +
+    '<a href="https://github.com/jakeporway/prompt-cookbook" target="_blank" rel="noopener">Prompt Cookbook</a> ' +
+    'by Jake Porway, built for the OpenAI and Decoded Futures Nonprofit Jam. That project worked out the ' +
+    'hard part: that a prompt worth reusing has a role, a set of steps, a stated output format, and rules ' +
+    'about what not to do, and that the same task is worth writing at three levels of effort. ' +
+    'This cookbook is that idea carried into workforce development.</p>');
+  h.push('<p>What changed in the move:</p>');
+  h.push('<ul>' +
+    '<li>Templates were re-tagged from nonprofit roles to workforce functions — case management, business services, fiscal and contracts, grants, research and policy.</li>' +
+    '<li>Each prompt is stored as separate parts rather than one block of text, so the same prompt can render three ways for three models.</li>' +
+    '<li>Prompts that touch participant records carry a de-identification banner.</li>' +
+    '<li>' + mine + ' prompts are new, written for WIOA-specific tasks with no analog in the original: ISS goals, corrective action plans, ETPL provider review, WARN response, demand occupation briefs.</li>' +
+    (inherited ? '<li>' + inherited + ' prompts are adapted from the original cookbook.</li>' : '') +
+    '</ul>');
+
+  h.push('<h2>How it works</h2>');
+  h.push('<ul>' +
+    '<li>Pick a prompt, fill in the variables, choose your model, copy. Variables are saved in your browser and reused across every prompt that asks for the same thing.</li>' +
+    '<li>Favorites, edits, and prompts you write yourself live in this browser only. Clearing site data clears them, so use <strong>Back up my prompts</strong> if they matter.</li>' +
+    '<li>The three model buttons do not change what the prompt asks for. They change how it is laid out — XML tags for Claude, markdown sections for ChatGPT, source-first for Gemini. The model tuning guide explains why.</li>' +
+    '</ul>');
+
+  h.push('<h2>Contributing a prompt</h2>');
+  h.push('<p>Write it in the app, then use <strong>Export full prompts.json</strong> and send the file, or open ' +
+    'a pull request against the repository. A prompt is worth adding when it survives contact with a real ' +
+    'task twice — not when it reads well.</p>');
+
+  h.push('<div class="card"><h3>The output is a draft</h3>' +
+    '<p>Every model here will produce a confident citation to a regulation that does not say what it claims, ' +
+    'and a total that does not add up. Staff sign the case note, the memo, and the monitoring response. ' +
+    'Check the numbers and open the citations.</p></div>');
+  h.push('</div>');
+
+  el('reader').innerHTML = h.join('');
+  el('reader').scrollTop = 0;
+  document.body.classList.add('reading');
+}
+
+/* ------------------------------------------------------------------
+   Copy
+------------------------------------------------------------------ */
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return legacyCopy(text); });
+  }
+  return Promise.resolve(legacyCopy(text));
+}
+function legacyCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.top = '-2000px';
+  document.body.appendChild(ta);
+  ta.select();
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+function doCopy(btn) {
+  var p = byId(S.selected);
+  if (!p) return;
+  var text = compose(p, S.settings.model);
+  copyText(text).then(function (ok) {
+    if (ok) {
+      S.recents = uniq([p.id].concat(S.recents)).slice(0, 12);
+      save(LS.recents, S.recents);
+      if (btn) {
+        btn.classList.add('copied');
+        btn.innerHTML = icon('copy', 14) + 'Copied';
+        setTimeout(function () {
+          btn.classList.remove('copied');
+          btn.innerHTML = icon('copy', 14) + 'Copy for ' + MODELS[S.settings.model].label;
+        }, 1400);
+      }
+      toast('Copied. Paste it into ' + MODELS[S.settings.model].label + '.');
+      renderDrawer();
+    } else {
+      toast('The browser blocked the copy. Select the prompt text and copy it manually.', true);
+    }
+  });
+}
+
+/* ------------------------------------------------------------------
+   Import / export
+------------------------------------------------------------------ */
+function download(name, obj) {
+  var blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+function exportMine() {
+  download('my-prompt-vault.json', {
+    kind: 'wpv-user-backup', exported: new Date().toISOString(),
+    favorites: S.favorites, custom: S.custom, overrides: S.overrides,
+    hidden: S.hidden, values: S.values
+  });
+  toast('Backup downloaded.');
+}
+function exportAll() {
+  var merged = prompts().map(function (p) {
+    var c = Object.assign({}, p); delete c.edited; return c;
+  });
+  download('prompts.json', {
+    schema_version: '1.0', generated: new Date().toISOString().slice(0, 10),
+    collection: S.collection, taxonomy: S.taxonomy, prompts: merged
+  });
+  toast('prompts.json downloaded. Hand it to the vault maintainer to publish.');
+}
+function importBackup(file) {
+  var reader = new FileReader();
+  reader.onload = function () {
+    try {
+      var d = JSON.parse(reader.result);
+      if (d.kind === 'wpv-user-backup') {
+        S.favorites = uniq(S.favorites.concat(d.favorites || []));
+        S.values = Object.assign({}, d.values || {}, S.values);
+        S.overrides = Object.assign({}, S.overrides, d.overrides || {});
+        (d.custom || []).forEach(function (c) {
+          if (!S.custom.some(function (x) { return x.id === c.id; })) S.custom.push(c);
+        });
+        save(LS.fav, S.favorites); save(LS.values, S.values);
+        save(LS.over, S.overrides); save(LS.custom, S.custom);
+        renderAll();
+        toast('Backup restored.');
+      } else if (d.prompts) {
+        S.base = d.prompts; S.taxonomy = d.taxonomy || S.taxonomy;
+        renderAll();
+        toast('Loaded ' + d.prompts.length + ' prompts from that file, for this session.');
+      } else {
+        toast('That file is not a vault backup.', true);
+      }
+    } catch (e) { toast('That file could not be read as JSON.', true); }
+  };
+  reader.readAsText(file);
+}
+
+/* ------------------------------------------------------------------
+   Events
+------------------------------------------------------------------ */
+function renderAll() {
+  document.body.classList.toggle('guide-mode', S.mode === 'guide' || S.mode === 'about');
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.setAttribute('aria-pressed', String(b.dataset.model === S.settings.model));
+  });
+  renderDrawer();
+  renderIndex();
+  renderReader();
+}
+
+function clearFilters() {
+  S.q = ''; el('q').value = '';
+  S.fn = []; S.cat = []; S.cx = []; S.view = 'all';
+  renderAll();
+}
+
+function wire() {
+  el('q').addEventListener('input', function () { S.q = this.value; renderIndex(); });
+
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      S.settings.model = b.dataset.model;
+      save(LS.settings, S.settings);
+      renderAll();
+    });
+  });
+
+  // Optional chrome: the shell can drop these without taking the app down.
+  var toggle = el('drawerToggle');
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      document.body.classList.toggle('drawer-open');
+    });
+  }
+
+  el('drawer').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.view) { S.view = b.dataset.view; S.mode = 'read'; }
+    else if (b.dataset.fn) { toggleIn(S.fn, b.dataset.fn); S.mode = 'read'; }
+    else if (b.dataset.cat) { toggleIn(S.cat, b.dataset.cat); S.mode = 'read'; }
+    else if (b.dataset.cx) { toggleIn(S.cx, b.dataset.cx); S.mode = 'read'; }
+    else if (b.dataset.act === 'new') { S.draft = blankPrompt(); S.mode = 'edit'; S.selected = null; }
+    else if (b.dataset.act === 'guide') { S.mode = 'guide'; }
+    else if (b.dataset.act === 'about') { S.mode = 'about'; }
+    else if (b.dataset.act === 'export-mine') { exportMine(); return; }
+    else if (b.dataset.act === 'export-all') { exportAll(); return; }
+    else if (b.dataset.act === 'import') { el('importer').click(); return; }
+    else if (b.dataset.act === 'unhide') { S.hidden = []; save(LS.hidden, S.hidden); }
+    renderAll();
+  });
+
+  el('index').addEventListener('click', function (e) {
+    var star = e.target.closest('[data-fav]');
+    if (star) {
+      e.stopPropagation();
+      toggleIn(S.favorites, star.dataset.fav);
+      save(LS.fav, S.favorites);
+      renderDrawer(); renderIndex();
+      if (S.selected === star.dataset.fav) renderReader();
+      return;
+    }
+    var clear = e.target.closest('[data-act="clear"]');
+    if (clear) { clearFilters(); return; }
+    var row = e.target.closest('.row');
+    if (row) {
+      S.selected = row.dataset.id;
+      S.mode = 'read';
+      document.body.classList.add('reading');
+      renderIndex(); renderReader();
+    }
+  });
+
+  el('index').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var target = e.target.closest('[data-fav]') || e.target.closest('.row');
+    if (!target) return;
+    e.preventDefault();
+    target.click();
+  });
+
+  el('reader').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var act = b.dataset.act;
+    var p = byId(S.selected);
+    if (act === 'copy') doCopy(b);
+    else if (act === 'back') { document.body.classList.remove('reading'); S.mode = 'read'; renderAll(); }
+    else if (act === 'fav' && p) {
+      toggleIn(S.favorites, p.id); save(LS.fav, S.favorites); renderAll();
+    }
+    else if (act === 'edit' && p) {
+      S.draft = JSON.parse(JSON.stringify(p)); delete S.draft.edited;
+      S.mode = 'edit'; renderReader();
+    }
+    else if (act === 'duplicate' && p) {
+      var copy = JSON.parse(JSON.stringify(p));
+      copy.id = 'user-' + Date.now().toString(36);
+      copy.title = p.title + ' (copy)';
+      copy.source = 'user'; delete copy.edited;
+      S.draft = copy; S.mode = 'edit'; renderReader();
+    }
+    else if (act === 'revert' && p) {
+      delete S.overrides[p.id]; save(LS.over, S.overrides); renderAll();
+      toast('Restored the published version.');
+    }
+    else if (act === 'delete' && p) {
+      S.custom = S.custom.filter(function (c) { return c.id !== p.id; });
+      save(LS.custom, S.custom);
+      S.selected = null; renderAll();
+      toast('Deleted.');
+    }
+    else if (act === 'save') saveDraft();
+    else if (act === 'cancel') { S.mode = 'read'; S.draft = null; renderReader(); }
+  });
+
+  el('reader').addEventListener('input', function (e) {
+    var f = e.target.closest('[data-key]');
+    if (!f) return;
+    S.values[f.dataset.key] = f.value;
+    save(LS.values, S.values);
+    var p = byId(S.selected);
+    if (p && el('composed')) el('composed').innerHTML = markPlaceholders(compose(p, S.settings.model));
+  });
+
+  el('importer').addEventListener('change', function () {
+    if (this.files && this.files[0]) importBackup(this.files[0]);
+    this.value = '';
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
+    if (e.key === '/' && !typing) { e.preventDefault(); el('q').focus(); el('q').select(); }
+    else if (e.key === 'Escape') {
+      if (typing && e.target.id === 'q') { S.q = ''; e.target.value = ''; renderIndex(); }
+      else if (document.body.classList.contains('reading')) {
+        document.body.classList.remove('reading');
+      }
+    }
+    else if (e.key === 'c' && !typing && S.selected && S.mode === 'read') {
+      doCopy(document.querySelector('[data-act="copy"]'));
+    }
+    else if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !typing) {
+      var list = visible();
+      if (!list.length) return;
+      e.preventDefault();
+      var i = list.map(function (p) { return p.id; }).indexOf(S.selected);
+      i = e.key === 'ArrowDown' ? Math.min(list.length - 1, i + 1) : Math.max(0, i - 1);
+      S.selected = list[i].id; S.mode = 'read';
+      renderIndex(); renderReader();
+      var row = document.querySelector('.row[aria-current="true"]');
+      if (row) row.scrollIntoView({ block: 'nearest' });
+    }
+  });
+}
+
+/* ------------------------------------------------------------------
+   Boot
+------------------------------------------------------------------ */
+function adopt(data) {
+  S.base = data.prompts || [];
+  S.taxonomy = data.taxonomy;
+  S.collection = data.collection || S.collection;
+}
+
+function boot() {
+  var seed = JSON.parse(el('seed').textContent);
+  adopt(seed);
+
+  var importer = document.createElement('input');
+  importer.type = 'file'; importer.accept = 'application/json';
+  importer.id = 'importer'; importer.style.display = 'none';
+  document.body.appendChild(importer);
+
+  wire();
+  renderAll();
+
+  // A served copy of prompts.json wins over the embedded seed, so the
+  // collection can be updated without redeploying index.html. Opening the
+  // file straight off a network share skips this and uses the seed.
+  fetch('prompts.json', { cache: 'no-cache' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || !d.prompts) return;
+      if (d.generated && seed.generated && d.generated === seed.generated &&
+          d.prompts.length === seed.prompts.length) return;
+      adopt(d);
+      renderAll();
+      toast('Loaded the published collection: ' + d.prompts.length + ' prompts.');
+    })
+    .catch(function () { /* file:// or offline — the seed already rendered */ });
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+})();
+
+</script>
+</body>
+</html>
