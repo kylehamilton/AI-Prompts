@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0",
-  "generated": "2026-09-11",
+  "generated": "2026-09-15",
   "collection": "Prompt Cookbook",
   "defaults": {
     "author": {
       "name": "Kyle Hamilton"
     },
     "license": {
-        "id": "CC-BY-SA-4.0",
-        "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+      "id": "CC-BY-SA-4.0",
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/"
     }
   },
   "taxonomy": {
@@ -276,6 +276,58 @@
       "notes": ""
     },
     {
+      "id": "mock-interview-questions",
+      "title": "Build a mock interview and a way to score it",
+      "summary": "Generates competency-based questions with follow-up probes and a simple rubric the coach can score in real time.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "tags": [
+        "mock interview",
+        "interview prep",
+        "job search"
+      ],
+      "blocks": {
+        "role": "You are running a mock interview with a participant applying for {{POSITION}} at {{COMPANY}}. You are building the question set and the scoring guide the coach will use.",
+        "context": "A mock interview is only useful if the feedback is specific. That means deciding in advance what a strong answer contains, rather than reacting to how confident the participant sounded.",
+        "steps": [
+          "Pull the competencies out of the job description and rank them by how much the role depends on each.",
+          "Write eight questions mapped to those competencies, mixing behavioral, situational, and role-specific technical questions.",
+          "For each question, give two or three follow-up probes for the case where the answer is thin, vague, or hypothetical.",
+          "Build a three-level rubric \u2014 strong, adequate, needs work \u2014 with observable indicators for each competency, written so two different coaches would score the same answer the same way.",
+          "Name the two questions this participant is most likely to find hard, and describe what a good answer does rather than what it says.",
+          "Give the feedback structure for the debrief: what to name first, the single change that would most improve the next answer, and what to practice before the real interview."
+        ],
+        "output": "A question set, each with Competency and Probes; a rubric table of Competency, Strong, Adequate, Needs work; Likely hard questions; Debrief structure.",
+        "constraints": [
+          "Do not write questions an employer should not ask \u2014 age, family or childcare, health or disability, religion, national origin, or arrest history. If the job description implies one, flag it instead of including it.",
+          "Score the answer, not the person. The rubric measures evidence and structure, not personality or confidence.",
+          "Do not script answers for the participant. The words have to be theirs or they will not survive a follow-up question."
+        ],
+        "data": "Paste or attach the job description."
+      },
+      "placeholders": [
+        {
+          "key": "POSITION",
+          "label": "Position",
+          "default": ""
+        },
+        {
+          "key": "COMPANY",
+          "label": "Employer",
+          "default": ""
+        }
+      ],
+      "notes": "Suggested by Ryan McAlister.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
       "id": "layoff-aversion-brief",
       "title": "Build a rapid response brief from a WARN notice",
       "summary": "Turns a layoff notice into a situation brief with affected occupations, transferable skill targets, and a response sequence.",
@@ -425,6 +477,60 @@
       "notes": ""
     },
     {
+      "id": "resume-reentry-bullets",
+      "title": "Build resume bullets for someone re-entering the workforce",
+      "summary": "Finds the skills in a participant's past and unpaid work, supplies action verbs that fit, and handles the time away without apologizing for it.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "tags": [
+        "resume",
+        "reentry",
+        "transferable skills",
+        "action verbs"
+      ],
+      "blocks": {
+        "role": "You are helping a participant who is re-entering the workforce after {{PAST_EXPERIENCE}} and is now aiming for {{TARGET_ROLE}}.",
+        "context": "People coming back after time away undersell themselves, describe real work in passive language, and then apologize for the gap in the one document that should be making their case.",
+        "steps": [
+          "List the concrete tasks the participant actually performed, including unpaid work \u2014 caregiving, volunteering, informal or family business work \u2014 where the participant counts it as experience.",
+          "Translate those tasks into the skill language that postings for {{TARGET_ROLE}} actually use.",
+          "Give twelve action verbs that fit this work, and list the weak openers to avoid: assisted with, helped, responsible for, duties included.",
+          "Draft eight resume bullets. Each leads with a verb, names the scope, and ends with a result. Put a bracketed prompt anywhere only the participant can supply the number.",
+          "Recommend how to present the time away \u2014 a brief summary line, a skills-forward layout, or nothing at all \u2014 and say why that choice fits this case.",
+          "Name what an interviewer will ask about the gap and what an honest, unapologetic answer sounds like."
+        ],
+        "output": "Sections: Tasks performed; Skills in target-role language; Action verbs and what to avoid; Eight draft bullets; Presenting the time away; The gap question.",
+        "constraints": [
+          "Never invent an employer, a date, a credential, or a number.",
+          "Do not pad with skills the participant could not demonstrate if asked.",
+          "The time away is not a deficiency and the resume should not argue about it.",
+          "Keep it to one page unless the participant has more than ten years of relevant history."
+        ],
+        "data": "Paste what is known about the participant's work history, with names and employers generalized."
+      },
+      "notes": "Suggested by Ryan McAlister.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "placeholders": [
+        {
+          "key": "PAST_EXPERIENCE",
+          "label": "Time away or past experience",
+          "default": "time out of the workforce"
+        },
+        {
+          "key": "TARGET_ROLE",
+          "label": "Target role",
+          "default": ""
+        }
+      ],
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
       "id": "resume-screening-check",
       "title": "Check a resume against automated screening",
       "summary": "Finds the formatting and keyword problems that keep a resume from being read by a person at all.",
@@ -505,6 +611,60 @@
       "source": "frwdb",
       "sensitivity": "none",
       "notes": ""
+    },
+    {
+      "id": "job-retention-first-90-days",
+      "title": "Coach a participant through the first 90 days of a new job",
+      "summary": "Practical workplace success tips, a way to read an unfamiliar culture, and check-in points before a placement quietly falls apart.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "tags": [
+        "job retention",
+        "placement",
+        "follow-up",
+        "workplace culture"
+      ],
+      "blocks": {
+        "role": "You are supporting a participant who just started as {{JOB_TITLE}} and is anxious about {{CONCERN}}.",
+        "context": "Most placements that fail do not fail on the work. They fail on the things nobody explains: how questions get asked, when it is acceptable to leave, who to go to when something goes wrong, and how to get through the first month before the first full paycheck.",
+        "steps": [
+          "Give practical things to do in the first two weeks: what to observe, what to write down, who to ask what, and how to ask for clarification without looking lost.",
+          "Explain how to read a workplace culture through observable things \u2014 how people take breaks, how questions get raised, how direct feedback is, what people wear, when the room goes quiet \u2014 rather than through how welcome they feel.",
+          "Address the specific concern directly, with two or three things the participant can actually do this week.",
+          "Build a check-in schedule at 30, 60, and 90 days, with three questions for each that surface a problem before it becomes a resignation.",
+          "List the early warning signs that a placement is at risk \u2014 hours changing, being left out of the schedule, a first write-up, transportation breaking down \u2014 and what staff should do at each.",
+          "Name the supportive services most often needed in the first month, including transportation, uniforms or tools, and the gap before the first paycheck."
+        ],
+        "output": "Sections: First two weeks; Reading the culture; The specific concern; 30/60/90 check-ins with questions; Warning signs and staff response; Likely supportive service needs.",
+        "constraints": [
+          "Practical and specific. No pep talk, no affirmations.",
+          "Do not advise on wage disputes, discrimination, or discipline. Those go to the appropriate authority, and staff should say so plainly.",
+          "Do not promise how the employer will behave.",
+          "Do not contact the employer, or suggest contacting them, without the participant agreeing to it first."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "JOB_TITLE",
+          "label": "New job title",
+          "default": ""
+        },
+        {
+          "key": "CONCERN",
+          "label": "What the participant is worried about",
+          "default": "fitting in with the workplace culture"
+        }
+      ],
+      "notes": "Suggested by Ryan McAlister.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "author": {
+        "name": "Ryan McAlister"
+      }
     },
     {
       "id": "lmi-series-selection",
@@ -639,6 +799,109 @@
       "notes": ""
     },
     {
+      "id": "barrier-support-strategies",
+      "title": "General strategies for supporting a participant facing barriers",
+      "summary": "Practical engagement strategies for barriers like housing instability, missed appointments, or low motivation, with the line to a licensed professional drawn clearly.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "tags": [
+        "barriers",
+        "engagement",
+        "supportive services",
+        "retention"
+      ],
+      "blocks": {
+        "role": "You are a workforce professional supporting a participant facing {{BARRIERS}}. You are looking for general strategies that work inside the scope of workforce services.",
+        "context": "A missed appointment is information, not a verdict on the participant. The useful question is what made showing up hard and what the program can change about its own side of the interaction.",
+        "steps": [
+          "For each barrier, describe what it usually looks like from the staff side \u2014 the pattern in the caseload that signals it \u2014 and the practical things that tend to help.",
+          "Separate what the board can act on directly, including scheduling flexibility, reminders, supportive services, and warm handoffs, from what needs a referral to a partner agency.",
+          "Give engagement strategies that hold up when the participant does not have reliable phone service, transportation, or a stable address.",
+          "Describe how to structure the next contact so that showing up is easy to say yes to: when, where, how long, and what they get out of it.",
+          "Draw the boundary plainly: what is outside the scope of workforce services, what signs mean it is time to hand off to a licensed professional, and how to make that handoff without it feeling like being dropped.",
+          "Note what to document, keeping it to observed facts and services offered."
+        ],
+        "output": "Sections: Barrier by barrier \u2014 what it looks like and what helps; What we can change versus what needs a referral; Engagement without reliable phone, transport, or address; Structuring the next contact; Scope and handoff; Documentation.",
+        "constraints": [
+          "General strategies only. This is not clinical guidance, and nothing here diagnoses a participant or treats a condition.",
+          "Do not frame missed appointments or low engagement as a character problem or a motivation deficit.",
+          "Do not suggest pressure, ultimatums, or consequence framing as engagement tactics.",
+          "When the situation involves safety, health, or crisis, the answer is a warm handoff to a licensed professional or the appropriate partner, not a workforce strategy.",
+          "Do not name specific agencies; the board maintains its own referral list."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "BARRIERS",
+          "label": "Barriers",
+          "default": "housing instability, missed appointments, or low motivation"
+        }
+      ],
+      "notes": "Suggested by Ryan McAlister. For matching barriers to referral types and sequencing them against training, use the barrier triage prompt instead.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
+      "id": "career-pathway-plan",
+      "title": "Map a career pathway with short-term goals and action items",
+      "summary": "Breaks a participant's target occupation into reachable rungs, then into what they do in the next 30, 60, and 90 days.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "tags": [
+        "career planning",
+        "pathways",
+        "goal setting"
+      ],
+      "blocks": {
+        "role": "You are a workforce professional building a career pathway for a participant who wants to move into {{TARGET_CAREER}} in {{AREA}}.",
+        "context": "A pathway is only useful if the first rung is reachable from where the participant is standing this month. Naming the destination is easy; the value is in the sequence and in goals small enough to act on before the next appointment.",
+        "steps": [
+          "State the realistic entry point given what the participant has now \u2014 their experience, credentials, transportation, and hours available.",
+          "Lay out the pathway as two to four rungs. For each: typical job titles, what the rung requires that the one before it did not, and roughly how long people spend there.",
+          "Write short-term goals for 30, 60, and 90 days. Each one is an action the participant takes, not an outcome they hope for.",
+          "Separate what the board can fund or broker from what the participant does on their own, and say which service opens each one.",
+          "Give the first three action items with who does what, by when.",
+          "List the assumptions in this plan that need checking \u2014 against local wage and demand data, against the participant's own account of what they want, and against what employers here actually require."
+        ],
+        "output": "A pathway table of Rung, Typical titles, What it requires, Rough timeline; then 30/60/90 day goals; then First three actions with owner and date; then Assumptions to verify.",
+        "constraints": [
+          "Do not state a wage, a credential requirement, or a hiring standard as fact. Mark each one for verification against local labor market data.",
+          "Do not name specific training providers; the board keeps its own list.",
+          "Write goals the participant could repeat back in their own words.",
+          "Do not assume full-time availability, reliable transportation, or a fixed address unless the participant said so."
+        ],
+        "data": "Paste the de-identified participant summary \u2014 experience, credentials, availability, and what they have said they want."
+      },
+      "placeholders": [
+        {
+          "key": "TARGET_CAREER",
+          "label": "Career of interest",
+          "default": ""
+        },
+        {
+          "key": "AREA",
+          "label": "Local area",
+          "default": "Fresno County"
+        }
+      ],
+      "notes": "Suggested by Ryan McAlister. Pairs with the transferable skills prompt when the participant is changing fields.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
       "id": "outreach-email-sequence",
       "title": "Plan an outreach email sequence",
       "summary": "Builds a four-touch email sequence with subjects, timing, and rules for when to stop.",
@@ -687,6 +950,55 @@
       "source": "frwdb",
       "sensitivity": "none",
       "notes": ""
+    },
+    {
+      "id": "session-prep-discussion-guide",
+      "title": "Prepare discussion points for a participant session",
+      "summary": "Turns a topic into an ordered set of discussion points, open questions, and a plan for what the participant leaves with.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "tags": [
+        "case management",
+        "session prep",
+        "case notes"
+      ],
+      "blocks": {
+        "role": "You are a workforce professional preparing for a one-on-one session with a participant about {{TOPIC}}.",
+        "context": "Thirty minutes goes fast. Going in with an order of operations means the hard part gets air time instead of arriving at minute twenty-eight.",
+        "steps": [
+          "State the purpose of this session in one sentence: what has to be true when the participant walks out.",
+          "List five to seven discussion points in the order you would raise them, easiest to hardest, so the session builds before it asks anything difficult.",
+          "Write the open-ended questions to ask for each point. Questions that invite a real answer, not questions that suggest one.",
+          "List what to have ready before the session: documents, referrals, forms, figures.",
+          "Name three responses that would change the direction of the session, and what you would do with each.",
+          "Draft the close: what the participant leaves with, what staff commits to, and the date of the next contact.",
+          "Note what should be documented afterward and what belongs in the service strategy rather than the note."
+        ],
+        "output": "Sections: Purpose; Discussion points in order with questions; Have ready; If they say\u2026; Closing and next steps; What to document.",
+        "constraints": [
+          "Open-ended, non-leading questions only.",
+          "Do not write a script. These are prompts for a conversation the participant is half of.",
+          "Stay inside the scope of workforce services. Do not probe areas that belong to a licensed professional.",
+          "Keep the whole session plannable in thirty minutes."
+        ],
+        "data": ""
+      },
+      "notes": "Suggested by Ryan McAlister.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "placeholders": [
+        {
+          "key": "TOPIC",
+          "label": "Session topic",
+          "default": ""
+        }
+      ],
+      "author": {
+        "name": "Ryan McAlister"
+      }
     },
     {
       "id": "email-rewrite-for-reply",
