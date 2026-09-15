@@ -17,9 +17,55 @@
         "id": "case-management",
         "label": "Case Management",
         "tab": "#2F6E4E"
+      },
+      {
+        "id": "business-services",
+        "label": "Business Services",
+        "tab": "#8A5A2B"
+      },
+      {
+        "id": "fiscal",
+        "label": "Fiscal & Contracts",
+        "tab": "#35577D"
+      },
+      {
+        "id": "grants",
+        "label": "Grants & Program",
+        "tab": "#6B3F72"
+      },
+      {
+        "id": "research",
+        "label": "Research & Policy",
+        "tab": "#1F6F72"
+      },
+      {
+        "id": "admin",
+        "label": "Administration",
+        "tab": "#5B5F66"
+      },
+      {
+        "id": "communications",
+        "label": "Communications & Outreach",
+        "tab": "#7A2E46"
       }
     ],
     "categories": [
+      {
+        "id": "draft",
+        "label": "Draft"
+      },
+      {
+        "id": "review",
+        "label": "Review & QA"
+      },
+      {
+        "id": "analyze",
+        "label": "Analyze"
+      },
+      {
+        "id": "summarize",
+        "label": "Summarize"
+      },
       {
         "id": "plan",
         "label": "Plan & Automate"
@@ -32,137 +78,235 @@
     },
     "licenses": [
       {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      {
         "id": "CC-BY-SA-4.0",
         "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+      },
+      {
+        "id": "CC-BY-NC-4.0",
+        "url": "https://creativecommons.org/licenses/by-nc/4.0/"
+      },
+      {
+        "id": "CC-BY-NC-SA-4.0",
+        "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+      },
+      {
+        "id": "CC-BY-ND-4.0",
+        "url": "https://creativecommons.org/licenses/by-nd/4.0/"
+      },
+      {
+        "id": "CC0-1.0",
+        "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      {
+        "id": "MIT",
+        "url": "https://opensource.org/license/mit"
+      },
+      {
+        "id": "Apache-2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0"
+      },
+      {
+        "id": "Public domain",
+        "url": ""
+      },
+      {
+        "id": "All rights reserved",
+        "url": ""
       }
     ]
   },
   "prompts": [
     {
-      "id": "career-planning",
-      "title": "Career Planning",
-      "summary": "Outlines career pathway steps, short-term goals, and realistic action items for a participant.",
+      "id": "flyer-poster-concepts",
+      "title": "Brainstorm poster and flyer concepts for a program",
+      "summary": "Generates six recruitment concepts with headline, visual direction, and call to action, plus the compliance elements every piece needs.",
       "functions": [
-        "case-management"
+        "communications"
       ],
-      "category": "plan",
-      "complexity": "low",
+      "category": "draft",
+      "complexity": "medium",
       "tags": [
-        "career planning",
-        "career pathways",
-        "goals"
+        "outreach",
+        "flyers",
+        "recruitment",
+        "marketing"
       ],
       "blocks": {
-        "role": "I am a Workforce professional. Help me outline possible career pathway steps, short-term goals, and realistic action items for a Participant interested in moving into {{CAREER_OF_CHOICE}}.",
-        "context": "",
-        "steps": [],
-        "output": "",
-        "constraints": [],
+        "role": "You are an outreach specialist at {{BOARD_NAME}} developing recruitment material for {{PROGRAM}}, aimed at {{AUDIENCE}}.",
+        "context": "These pieces compete with everything else on a community board or a bus shelter. The reader gives the piece about two seconds, and the only success is that they take the next step.",
+        "steps": [
+          "State what the audience has to believe in order to act, and what they probably believe now instead.",
+          "Give six distinct concepts. For each: a headline under eight words, the visual direction in one sentence, and a single call to action.",
+          "Say which format each concept suits \u2014 a bus shelter poster read at distance, a handout someone folds into a pocket, or a digital graphic.",
+          "Flag any program jargon that will not survive contact with the audience and give the plain-language replacement.",
+          "Translate the three strongest headlines into Spanish, keeping the meaning rather than the words.",
+          "List the elements the finished piece must carry: the equal opportunity statement, the accessibility and language assistance line, funding attribution, and how to reach a real person."
+        ],
+        "output": "A table of Concept, Headline, Visual, Call to action, Best format. Then Plain-language swaps, Spanish headlines, and a Required elements checklist.",
+        "constraints": [
+          "Never promise an outcome the program cannot guarantee, including a job, a wage, or a hiring decision.",
+          "Describe the visual direction; do not attempt to design the piece.",
+          "Keep the call to action to one action. A flyer with three asks gets none of them."
+        ],
         "data": ""
       },
       "placeholders": [
         {
-          "key": "CAREER_OF_CHOICE",
-          "label": "Career of choice",
-          "default": ""
-        }
-      ],
-      "source": "frwdb",
-      "sensitivity": "none",
-      "notes": ""
-    },
-    {
-      "id": "case-note-prep",
-      "title": "Case Note Prep",
-      "summary": "Organizes discussion points and questions for a participant session.",
-      "functions": [
-        "case-management"
-      ],
-      "category": "plan",
-      "complexity": "low",
-      "tags": [
-        "case notes",
-        "session preparation",
-        "next steps"
-      ],
-      "blocks": {
-        "role": "Help me organize key discussion points and questions to prepare for a Participant session about {{TOPIC}} and next steps.",
-        "context": "",
-        "steps": [],
-        "output": "",
-        "constraints": [],
-        "data": ""
-      },
-      "placeholders": [
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        },
         {
-          "key": "TOPIC",
-          "label": "Topic",
-          "default": ""
-        }
-      ],
-      "source": "frwdb",
-      "sensitivity": "none",
-      "notes": ""
-    },
-    {
-      "id": "resume-development",
-      "title": "Resume Development",
-      "summary": "Suggests transferable skills, action verbs, and resume bullet ideas for a participant re-entering the workforce.",
-      "functions": [
-        "case-management"
-      ],
-      "category": "plan",
-      "complexity": "low",
-      "tags": [
-        "resume",
-        "transferable skills",
-        "workforce re-entry"
-      ],
-      "blocks": {
-        "role": "Suggest transferable skills, strong action verbs, and resume bullet ideas for a Participant re-entering the workforce after {{PAST_JOB_INFO}} and now wants to be a {{NEW_TARGET}}.",
-        "context": "",
-        "steps": [],
-        "output": "",
-        "constraints": [],
-        "data": ""
-      },
-      "placeholders": [
-        {
-          "key": "PAST_JOB_INFO",
-          "label": "Past job info",
+          "key": "PROGRAM",
+          "label": "Program",
           "default": ""
         },
         {
-          "key": "NEW_TARGET",
-          "label": "New target",
+          "key": "AUDIENCE",
+          "label": "Audience",
           "default": ""
         }
       ],
       "source": "frwdb",
-      "sensitivity": "deidentify",
+      "sensitivity": "none",
       "notes": ""
     },
     {
-      "id": "mock-interview",
-      "title": "Mock Interview",
-      "summary": "Generates follow-up interview questions and simple evaluation criteria for a participant.",
+      "id": "hard-to-reach-brainstorm",
+      "title": "Brainstorm ways to reach people who are not showing up",
+      "summary": "Generates outreach angles built around where an audience already is and who they already trust.",
+      "functions": [
+        "communications"
+      ],
+      "category": "plan",
+      "complexity": "high",
+      "tags": [
+        "outreach",
+        "engagement",
+        "partners"
+      ],
+      "blocks": {
+        "role": "You are planning outreach for {{BOARD_NAME}} to {{AUDIENCE}} in {{AREA}}, who are eligible for services and are not enrolling.",
+        "context": "Low turnout is usually a distribution problem or a trust problem, not a messaging problem. More flyers in the same places produces the same result.",
+        "steps": [
+          "List where this audience already is on an ordinary week: physical places, digital spaces, and the organizations they already trust.",
+          "Name the plausible reasons they are not coming, separating practical barriers from reasons to doubt it is worth it.",
+          "Give eight outreach ideas ranked by effort. For each: the partner or venue, the specific ask you would make of them, and what it costs us.",
+          "For the three strongest, describe what the first conversation with that partner sounds like.",
+          "Design a two-week pilot for one idea, including what you would do differently based on the result.",
+          "Say how you would know it worked, using something the board already counts."
+        ],
+        "output": "Sections: Where they already are; Why they are not coming; Ideas ranked by effort as a table; First conversations; Two-week pilot; How we would know.",
+        "constraints": [
+          "Do not lead with paid advertising.",
+          "No idea that depends on data the board does not collect or is not permitted to collect.",
+          "Name a type of partner concretely rather than saying \"community organizations\".",
+          "Do not speculate about individuals' circumstances or status; describe barriers in terms the board can act on."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        },
+        {
+          "key": "AREA",
+          "label": "Local area",
+          "default": "Fresno County"
+        },
+        {
+          "key": "AUDIENCE",
+          "label": "Audience",
+          "default": ""
+        }
+      ],
+      "source": "frwdb",
+      "sensitivity": "none",
+      "notes": ""
+    },
+    {
+      "id": "acs-community-profile",
+      "title": "Build a community profile from ACS data",
+      "summary": "Assembles a population and workforce profile that reports margins of error and refuses false precision.",
+      "functions": [
+        "research"
+      ],
+      "category": "analyze",
+      "complexity": "medium",
+      "tags": [
+        "LMI",
+        "Census",
+        "ACS",
+        "equity"
+      ],
+      "blocks": {
+        "role": "You are building a community profile of {{AREA}} from American Community Survey estimates, to inform where services are placed and how they are delivered.",
+        "context": "ACS figures are survey estimates with margins of error. One-year estimates cover larger areas and are more current; five-year estimates reach smaller geographies at the cost of currency, and overlapping five-year periods cannot be compared to each other.",
+        "steps": [
+          "State which ACS product and period each figure comes from before reporting it.",
+          "Report population, labor force participation, unemployment, educational attainment, median household income, means of transportation to work, language spoken at home, and disability status, each with its margin of error.",
+          "Flag every comparison where the margins of error overlap, and say plainly that the difference cannot be called a difference.",
+          "Identify what the profile implies for service design \u2014 hours, locations, language capacity, transportation assumptions.",
+          "List the questions this profile raises that ACS cannot answer, and which source would."
+        ],
+        "output": "A source and vintage header, a figures table with an MOE column, an Overlapping estimates note, a What this means for service delivery section, and Open questions.",
+        "constraints": [
+          "Never report an ACS estimate without its margin of error.",
+          "Do not compare overlapping five-year periods, and do not present a five-year estimate as current-year.",
+          "Do not rank areas or groups on estimates whose margins of error overlap.",
+          "Report the categories as the survey defines them; do not collapse or rename them."
+        ],
+        "data": "Paste the ACS table rows, including the margin of error columns."
+      },
+      "placeholders": [
+        {
+          "key": "AREA",
+          "label": "Local area",
+          "default": "Fresno County"
+        }
+      ],
+      "source": "frwdb",
+      "sensitivity": "none",
+      "notes": ""
+    },
+    {
+      "id": "mock-interview-questions",
+      "title": "Build a mock interview and a way to score it",
+      "summary": "Generates competency-based questions with follow-up probes and a simple rubric the coach can score in real time.",
       "functions": [
         "case-management"
       ],
       "category": "plan",
-      "complexity": "low",
+      "complexity": "medium",
       "tags": [
         "mock interview",
-        "interview questions",
-        "evaluation"
+        "interview prep",
+        "job search"
       ],
       "blocks": {
-        "role": "I’m conducting a Mock Interview with a Participant. Generate follow-up interview questions and simple evaluation criteria for a Participant applying for a {{POSITION}} at {{COMPANY_X}}. Attached is the job description.",
-        "context": "",
-        "steps": [],
-        "output": "",
-        "constraints": [],
-        "data": ""
+        "role": "You are running a mock interview with a participant applying for {{POSITION}} at {{COMPANY}}. You are building the question set and the scoring guide the coach will use.",
+        "context": "A mock interview is only useful if the feedback is specific. That means deciding in advance what a strong answer contains, rather than reacting to how confident the participant sounded.",
+        "steps": [
+          "Pull the competencies out of the job description and rank them by how much the role depends on each.",
+          "Write eight questions mapped to those competencies, mixing behavioral, situational, and role-specific technical questions.",
+          "For each question, give two or three follow-up probes for the case where the answer is thin, vague, or hypothetical.",
+          "Build a three-level rubric \u2014 strong, adequate, needs work \u2014 with observable indicators for each competency, written so two different coaches would score the same answer the same way.",
+          "Name the two questions this participant is most likely to find hard, and describe what a good answer does rather than what it says.",
+          "Give the feedback structure for the debrief: what to name first, the single change that would most improve the next answer, and what to practice before the real interview."
+        ],
+        "output": "A question set, each with Competency and Probes; a rubric table of Competency, Strong, Adequate, Needs work; Likely hard questions; Debrief structure.",
+        "constraints": [
+          "Do not write questions an employer should not ask \u2014 age, family or childcare, health or disability, religion, national origin, or arrest history. If the job description implies one, flag it instead of including it.",
+          "Score the answer, not the person. The rubric measures evidence and structure, not personality or confidence.",
+          "Do not script answers for the participant. The words have to be theirs or they will not survive a follow-up question."
+        ],
+        "data": "Paste or attach the job description."
       },
       "placeholders": [
         {
@@ -171,35 +315,523 @@
           "default": ""
         },
         {
-          "key": "COMPANY_X",
-          "label": "Company X",
+          "key": "COMPANY",
+          "label": "Employer",
+          "default": ""
+        }
+      ],
+      "notes": "Suggested by Ryan McAlister.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
+      "id": "layoff-aversion-brief",
+      "title": "Build a rapid response brief from a WARN notice",
+      "summary": "Turns a layoff notice into a situation brief with affected occupations, transferable skill targets, and a response sequence.",
+      "functions": [
+        "business-services",
+        "research"
+      ],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "Rapid Response",
+        "WARN",
+        "layoff aversion",
+        "dislocated worker"
+      ],
+      "blocks": {
+        "role": "You are a rapid response coordinator preparing an internal brief for {{BOARD_NAME}} leadership within 48 hours of a layoff notice.",
+        "context": "The brief drives three decisions: who we contact first, what services we stage, and whether a dislocated worker grant application is worth pursuing. Leadership reads one page and asks for the rest only if the first page earns it.",
+        "steps": [
+          "Summarize the notice: employer, location, effective dates, affected headcount, and whether the separation is permanent, temporary, or a closure.",
+          "Infer the likely occupational mix from the job titles listed, mapping each to an O*NET-SOC code, and state where you are uncertain.",
+          "For the three largest occupation groups, identify target occupations in the regional labor market that share skill profiles and would not require long-term training.",
+          "Assess layoff aversion potential: note any signal in the notice that suggests the separation is avoidable or partial.",
+          "Lay out a response sequence with owners and timing, from employer contact through worker orientation.",
+          "State what data the board must pull next and from which system to confirm the assumptions in this brief."
+        ],
+        "output": "Page one: a 150-word situation summary, a table of affected occupations with counts and SOC codes, and a five-line recommended sequence. Page two: transferable skill targets, layoff aversion assessment, data to confirm, and an explicit list of assumptions.",
+        "constraints": [
+          "Label every inferred figure as an estimate and never present it as reported.",
+          "Do not recommend a specific training provider or a specific grant award amount.",
+          "If the notice does not name job titles, say so and limit the occupational analysis accordingly."
+        ],
+        "data": "Paste the WARN notice text and any employer correspondence below."
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        }
+      ],
+      "notes": "Use with a model that has a large context window when the notice comes with attachments."
+    },
+    {
+      "id": "employer-ojt-pitch",
+      "title": "Build an OJT pitch for a specific employer",
+      "summary": "Turns basic employer facts into a one-page on-the-job training pitch with objection handling.",
+      "functions": [
+        "business-services"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "OJT",
+        "employer engagement",
+        "business services"
+      ],
+      "blocks": {
+        "role": "You are a business services representative at {{BOARD_NAME}} pitching on-the-job training to a hiring manager who has never worked with a workforce board.",
+        "context": "The employer is {{EMPLOYER}}, hiring for {{OCCUPATION}}. OJT reimburses a negotiated share of wages during a training period in exchange for the employer hiring the participant first and training to a documented skill plan.",
+        "steps": [
+          "Open with the employer's hiring problem as they would describe it, not as the board describes it.",
+          "Explain OJT in three sentences with no acronyms and no statute citations.",
+          "Lay out what the employer does, in order, with the time each step takes.",
+          "Answer the four objections this employer is most likely to raise, including paperwork burden and what happens if the hire does not work out.",
+          "Close with a single next step that takes the employer less than ten minutes."
+        ],
+        "output": "One page: a headline, three short paragraphs, a numbered employer checklist, an objections table with columns Concern and Response, and a closing line with the next step.",
+        "constraints": [
+          "Do not state a reimbursement percentage or dollar figure; negotiation is per agreement.",
+          "Do not promise a candidate pipeline volume the board has not verified.",
+          "Keep it to language a hiring manager would read on a phone."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        },
+        {
+          "key": "EMPLOYER",
+          "label": "Employer",
+          "default": ""
+        },
+        {
+          "key": "OCCUPATION",
+          "label": "Occupation",
+          "default": ""
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "oews-wage-profile",
+      "title": "Build an occupation wage profile from OEWS data",
+      "summary": "Turns wage and employment estimates into a profile with the reference period and suppression handled properly.",
+      "functions": [
+        "research"
+      ],
+      "category": "analyze",
+      "complexity": "medium",
+      "tags": [
+        "LMI",
+        "BLS",
+        "OEWS",
+        "wages"
+      ],
+      "blocks": {
+        "role": "You are building the wage profile for {{OCCUPATION}} in {{AREA}} that will sit behind a training investment or a demand occupation determination.",
+        "context": "OEWS estimates are a point-in-time survey by area and occupation. They do not carry the same meaning as an employer's posted wage, and some cells are suppressed or not published at smaller geographies.",
+        "steps": [
+          "Report the occupation, SOC code, area, and the reference period of the estimates, before any figures.",
+          "Give employment level, mean wage, and the 10th, 25th, median, 75th, and 90th percentile wages, keeping hourly and annual consistent and stating which is which.",
+          "Compare the local estimates against the statewide figures for the same occupation and period.",
+          "Compare the entry-level range against the self-sufficiency benchmark the board uses, naming the benchmark and its source.",
+          "Note any suppressed, missing, or flagged cell and what its absence does to the picture.",
+          "State what these figures do not capture: benefits, hours, seasonality, part-time work, and the difference between a survey estimate and what an employer will offer next month."
+        ],
+        "output": "A header line with occupation, SOC, area, and period; a wage table; a Comparison section; a Self-sufficiency section; and a Limitations section.",
+        "constraints": [
+          "Use only the figures supplied. Do not fill a suppressed cell by interpolation or by substituting a statewide number without labeling it.",
+          "Attach the reference period to every figure that gets quoted.",
+          "Do not convert between hourly and annual without stating the hours assumption you used."
+        ],
+        "data": "Paste the OEWS rows for this occupation and area, including the statewide row."
+      },
+      "placeholders": [
+        {
+          "key": "AREA",
+          "label": "Local area",
+          "default": "Fresno County"
+        },
+        {
+          "key": "OCCUPATION",
+          "label": "Occupation",
           "default": ""
         }
       ],
       "source": "frwdb",
       "sensitivity": "none",
-      "notes": "Attach the job description when using this prompt."
+      "notes": ""
     },
     {
-      "id": "counseling-barriers",
-      "title": "Counseling/Barriers",
-      "summary": "Provides general strategies for supporting a participant facing barriers.",
+      "id": "resume-reentry-bullets",
+      "title": "Build resume bullets for someone re-entering the workforce",
+      "summary": "Finds the skills in a participant's past and unpaid work, supplies action verbs that fit, and handles the time away without apologizing for it.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "tags": [
+        "resume",
+        "reentry",
+        "transferable skills",
+        "action verbs"
+      ],
+      "blocks": {
+        "role": "You are helping a participant who is re-entering the workforce after {{PAST_EXPERIENCE}} and is now aiming for {{TARGET_ROLE}}.",
+        "context": "People coming back after time away undersell themselves, describe real work in passive language, and then apologize for the gap in the one document that should be making their case.",
+        "steps": [
+          "List the concrete tasks the participant actually performed, including unpaid work \u2014 caregiving, volunteering, informal or family business work \u2014 where the participant counts it as experience.",
+          "Translate those tasks into the skill language that postings for {{TARGET_ROLE}} actually use.",
+          "Give twelve action verbs that fit this work, and list the weak openers to avoid: assisted with, helped, responsible for, duties included.",
+          "Draft eight resume bullets. Each leads with a verb, names the scope, and ends with a result. Put a bracketed prompt anywhere only the participant can supply the number.",
+          "Recommend how to present the time away \u2014 a brief summary line, a skills-forward layout, or nothing at all \u2014 and say why that choice fits this case.",
+          "Name what an interviewer will ask about the gap and what an honest, unapologetic answer sounds like."
+        ],
+        "output": "Sections: Tasks performed; Skills in target-role language; Action verbs and what to avoid; Eight draft bullets; Presenting the time away; The gap question.",
+        "constraints": [
+          "Never invent an employer, a date, a credential, or a number.",
+          "Do not pad with skills the participant could not demonstrate if asked.",
+          "The time away is not a deficiency and the resume should not argue about it.",
+          "Keep it to one page unless the participant has more than ten years of relevant history."
+        ],
+        "data": "Paste what is known about the participant's work history, with names and employers generalized."
+      },
+      "notes": "Suggested by Ryan McAlister.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "placeholders": [
+        {
+          "key": "PAST_EXPERIENCE",
+          "label": "Time away or past experience",
+          "default": "time out of the workforce"
+        },
+        {
+          "key": "TARGET_ROLE",
+          "label": "Target role",
+          "default": ""
+        }
+      ],
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
+      "id": "resume-screening-check",
+      "title": "Check a resume against automated screening",
+      "summary": "Finds the formatting and keyword problems that keep a resume from being read by a person at all.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "review",
+      "complexity": "low",
+      "sensitivity": "deidentify",
+      "tags": [
+        "resume",
+        "ATS",
+        "job search"
+      ],
+      "blocks": {
+        "role": "You check whether a resume will survive the software an employer uses to parse applications before a human sees it.",
+        "context": "Parsers vary and none of them publish their rules. The reliable advice is about structure that is hard to misread, not about tricks.",
+        "steps": [
+          "Flag formatting that parses badly: text in tables, multiple columns, text boxes, graphics, icons, and anything in a header or footer.",
+          "Check that the target job title appears in the resume in a form a search would match.",
+          "Compare the resume against the posting for terms that are true of the participant and missing from the document.",
+          "Check consistency in date formats, job title placement, and section headings, and confirm the contact block sits in the body rather than the header.",
+          "Check the file name and the file format against whatever the posting actually asks for.",
+          "Give the fix list ordered by how much each one matters."
+        ],
+        "output": "Sections: Parsing risks; Title and terms; Consistency; File; Fix list in priority order.",
+        "constraints": [
+          "No keyword stuffing, white text, or any other trick. It gets caught and it ends the application.",
+          "Do not claim to know a specific employer's system or its rules.",
+          "Follow the posting's stated file format instructions over any general advice."
+        ],
+        "data": "Paste the posting and the resume, with contact details removed."
+      },
+      "source": "frwdb",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "word-document-cleanup",
+      "title": "Clean up a messy Word document",
+      "summary": "Fixes inconsistent formatting, fake headings, and accessibility problems in a document someone else built.",
+      "functions": [
+        "admin"
+      ],
+      "category": "review",
+      "complexity": "low",
+      "tags": [
+        "Word",
+        "formatting",
+        "accessibility"
+      ],
+      "blocks": {
+        "role": "You are an administrative specialist who formats documents for {{BOARD_NAME}} so they print cleanly, survive being emailed around, and pass an accessibility check.",
+        "context": "Documents arrive with mixed fonts, blank paragraphs standing in for spacing, and headings that are just bold text. That breaks the navigation pane, the table of contents, and screen readers.",
+        "steps": [
+          "List every formatting problem you can see, worst first.",
+          "For each one, give the fix as a click path in Word (ribbon tab, group, command) rather than a description of the result.",
+          "Identify which bold or large text should become real Heading 1, 2, and 3 styles, and say why that matters beyond appearance.",
+          "Give the Find and Replace patterns that clear doubled spaces, manual line breaks, and empty paragraphs, including the special codes to type in the box.",
+          "Run an accessibility pass: alt text on images, a header row marked on every table, meaningful link text, and a document title in file properties.",
+          "Finish with a short pre-send checklist someone can run in two minutes."
+        ],
+        "output": "A numbered fix list with the click path for each, then a section titled Accessibility, then a Before you send checklist.",
+        "constraints": [
+          "Change formatting only. Do not rewrite the author's wording.",
+          "No macros or VBA unless the user asks for them.",
+          "Where a fix needs a judgment call, say so and ask rather than guessing."
+        ],
+        "data": "Paste the document text, or describe what the file looks like."
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        }
+      ],
+      "source": "frwdb",
+      "sensitivity": "none",
+      "notes": ""
+    },
+    {
+      "id": "job-retention-first-90-days",
+      "title": "Coach a participant through the first 90 days of a new job",
+      "summary": "Practical workplace success tips, a way to read an unfamiliar culture, and check-in points before a placement quietly falls apart.",
       "functions": [
         "case-management"
       ],
       "category": "plan",
       "complexity": "low",
       "tags": [
-        "counseling",
-        "barriers",
-        "participant support"
+        "job retention",
+        "placement",
+        "follow-up",
+        "workplace culture"
       ],
       "blocks": {
-        "role": "I am a Workforce professional. Provide general strategies for supporting a Participant facing barriers such as {{BARRIERS}}.",
-        "context": "",
-        "steps": [],
-        "output": "",
-        "constraints": [],
+        "role": "You are supporting a participant who just started as {{JOB_TITLE}} and is anxious about {{CONCERN}}.",
+        "context": "Most placements that fail do not fail on the work. They fail on the things nobody explains: how questions get asked, when it is acceptable to leave, who to go to when something goes wrong, and how to get through the first month before the first full paycheck.",
+        "steps": [
+          "Give practical things to do in the first two weeks: what to observe, what to write down, who to ask what, and how to ask for clarification without looking lost.",
+          "Explain how to read a workplace culture through observable things \u2014 how people take breaks, how questions get raised, how direct feedback is, what people wear, when the room goes quiet \u2014 rather than through how welcome they feel.",
+          "Address the specific concern directly, with two or three things the participant can actually do this week.",
+          "Build a check-in schedule at 30, 60, and 90 days, with three questions for each that surface a problem before it becomes a resignation.",
+          "List the early warning signs that a placement is at risk \u2014 hours changing, being left out of the schedule, a first write-up, transportation breaking down \u2014 and what staff should do at each.",
+          "Name the supportive services most often needed in the first month, including transportation, uniforms or tools, and the gap before the first paycheck."
+        ],
+        "output": "Sections: First two weeks; Reading the culture; The specific concern; 30/60/90 check-ins with questions; Warning signs and staff response; Likely supportive service needs.",
+        "constraints": [
+          "Practical and specific. No pep talk, no affirmations.",
+          "Do not advise on wage disputes, discrimination, or discipline. Those go to the appropriate authority, and staff should say so plainly.",
+          "Do not promise how the employer will behave.",
+          "Do not contact the employer, or suggest contacting them, without the participant agreeing to it first."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "JOB_TITLE",
+          "label": "New job title",
+          "default": ""
+        },
+        {
+          "key": "CONCERN",
+          "label": "What the participant is worried about",
+          "default": "fitting in with the workplace culture"
+        }
+      ],
+      "notes": "Suggested by Ryan McAlister.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
+      "id": "lmi-series-selection",
+      "title": "Decide which BLS or Census series answers a question",
+      "summary": "Picks the right federal source, geography, and vintage before anyone pulls a number.",
+      "functions": [
+        "research"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "tags": [
+        "LMI",
+        "BLS",
+        "Census",
+        "methodology"
+      ],
+      "blocks": {
+        "role": "You are a research analyst at {{BOARD_NAME}} deciding which federal data source can actually answer a question about {{AREA}} before any data gets pulled.",
+        "context": "Most bad labor market briefs come from asking a source a question it cannot answer: using national projections as a local forecast, or reading a county estimate out of a survey that does not support county detail.",
+        "steps": [
+          "Restate the question in measurable terms: what is being counted, for whom, over what geography and period.",
+          "List the candidate sources and what each can and cannot support here \u2014 OEWS for occupational wages and employment levels, CES for industry employment over time, LAUS for local unemployment, QCEW for covered employment and establishment counts, the Employment Projections program for growth, ACS for population and workforce characteristics, PUMS for custom cross-tabs, County Business Patterns for establishment size, and LEHD or OnTheMap for commuting and worker flows.",
+          "Pick the primary source and state the geography level and the most recent vintage that supports it.",
+          "State where the data will be suppressed, unreliable, or unavailable at that geography, and what that does to the answer.",
+          "Name the specific table, series, or extract to pull, and where it comes from.",
+          "Write the caveat sentence that has to travel with the figure wherever it gets quoted."
+        ],
+        "output": "Sections: The question, restated; Candidate sources as a table of Source, Answers, Does not answer; Recommendation with geography and vintage; Limitations; What to pull; Required caveat.",
+        "constraints": [
+          "Do not report a number. This produces the plan, not the answer.",
+          "If no public source supports the question at this geography, say so and name the closest proxy along with what it costs in accuracy.",
+          "Where a survey estimate carries a margin of error large enough to make a comparison meaningless, say that before anyone builds a chart on it."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        },
+        {
+          "key": "AREA",
+          "label": "Local area",
+          "default": "Fresno County"
+        }
+      ],
+      "source": "frwdb",
+      "sensitivity": "none",
+      "notes": ""
+    },
+    {
+      "id": "cover-letter-draft",
+      "title": "Draft a cover letter that is not the resume in paragraphs",
+      "summary": "Writes a short letter built on why this job, one piece of proof, and one honest concern addressed.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "deidentify",
+      "tags": [
+        "cover letter",
+        "job search"
+      ],
+      "blocks": {
+        "role": "You draft cover letters that a hiring manager will read to the end, which means under 300 words and no restatement of the resume.",
+        "context": "A cover letter earns its place by answering why this job and this employer, and by handling the one thing on the resume that would otherwise raise an eyebrow.",
+        "steps": [
+          "Identify from the posting what problem the employer is trying to solve with this hire.",
+          "Open with why this job and this employer specifically, using something concrete from the posting rather than flattery.",
+          "Write one paragraph of proof: a single example from the participant's experience, with what they did and what came of it.",
+          "Address one likely concern \u2014 an employment gap, a career change, a missing credential \u2014 plainly and without apology, in two sentences.",
+          "Close with a specific next step and a clean sign-off.",
+          "Give a shorter variant for an online form with a character limit."
+        ],
+        "output": "The letter in full, then the short variant, then a note listing anything the participant needs to supply.",
+        "constraints": [
+          "No invented achievements, dates, or numbers. Use bracketed prompts where a fact is missing.",
+          "Plain language at about an eighth-grade reading level.",
+          "Do not open with \"I am writing to apply for\" or close with \"Thank you for your time and consideration\".",
+          "Do not apologize for a gap or a career change."
+        ],
+        "data": "Paste the posting and the relevant experience, with identifying details removed."
+      },
+      "source": "frwdb",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "performance-narrative",
+      "title": "Draft a program year performance narrative",
+      "summary": "Builds a narrative around performance results that explains variance honestly and ties it to actions already underway.",
+      "functions": [
+        "grants",
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "performance",
+        "reporting",
+        "program year"
+      ],
+      "blocks": {
+        "role": "You are writing the performance narrative section of {{BOARD_NAME}}'s program year report for a reader at the state who compares it against the data before reading a word of it.",
+        "context": "The reader already has the numbers. The narrative earns credit by explaining variance with evidence and naming what changed in response, not by restating the table in prose.",
+        "steps": [
+          "For each indicator, state the result against the negotiated level in one clause, then spend the rest of the paragraph on why.",
+          "Distinguish variance caused by cohort composition, by labor market conditions, and by service delivery.",
+          "For each indicator below the negotiated level, name the action already underway and when it started.",
+          "Identify the one indicator most at risk next year and say what the board is doing about it now.",
+          "Keep each indicator to under 150 words."
+        ],
+        "output": "One section per indicator with a bolded indicator name, followed by a short closing paragraph titled Outlook.",
+        "constraints": [
+          "Use only the figures provided. Do not compute rates that were not supplied.",
+          "Do not attribute shortfalls to participants.",
+          "Avoid language that promises improvement without naming a mechanism."
+        ],
+        "data": "Performance table and any context notes: paste below."
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "barrier-support-strategies",
+      "title": "General strategies for supporting a participant facing barriers",
+      "summary": "Practical engagement strategies for barriers like housing instability, missed appointments, or low motivation, with the line to a licensed professional drawn clearly.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "tags": [
+        "barriers",
+        "engagement",
+        "supportive services",
+        "retention"
+      ],
+      "blocks": {
+        "role": "You are a workforce professional supporting a participant facing {{BARRIERS}}. You are looking for general strategies that work inside the scope of workforce services.",
+        "context": "A missed appointment is information, not a verdict on the participant. The useful question is what made showing up hard and what the program can change about its own side of the interaction.",
+        "steps": [
+          "For each barrier, describe what it usually looks like from the staff side \u2014 the pattern in the caseload that signals it \u2014 and the practical things that tend to help.",
+          "Separate what the board can act on directly, including scheduling flexibility, reminders, supportive services, and warm handoffs, from what needs a referral to a partner agency.",
+          "Give engagement strategies that hold up when the participant does not have reliable phone service, transportation, or a stable address.",
+          "Describe how to structure the next contact so that showing up is easy to say yes to: when, where, how long, and what they get out of it.",
+          "Draw the boundary plainly: what is outside the scope of workforce services, what signs mean it is time to hand off to a licensed professional, and how to make that handoff without it feeling like being dropped.",
+          "Note what to document, keeping it to observed facts and services offered."
+        ],
+        "output": "Sections: Barrier by barrier \u2014 what it looks like and what helps; What we can change versus what needs a referral; Engagement without reliable phone, transport, or address; Structuring the next contact; Scope and handoff; Documentation.",
+        "constraints": [
+          "General strategies only. This is not clinical guidance, and nothing here diagnoses a participant or treats a condition.",
+          "Do not frame missed appointments or low engagement as a character problem or a motivation deficit.",
+          "Do not suggest pressure, ultimatums, or consequence framing as engagement tactics.",
+          "When the situation involves safety, health, or crisis, the answer is a warm handoff to a licensed professional or the appropriate partner, not a workforce strategy.",
+          "Do not name specific agencies; the board maintains its own referral list."
+        ],
         "data": ""
       },
       "placeholders": [
@@ -209,35 +841,939 @@
           "default": "housing instability, missed appointments, or low motivation"
         }
       ],
+      "notes": "Suggested by Ryan McAlister. For matching barriers to referral types and sequencing them against training, use the barrier triage prompt instead.",
       "source": "frwdb",
       "sensitivity": "deidentify",
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
+      "id": "career-pathway-plan",
+      "title": "Map a career pathway with short-term goals and action items",
+      "summary": "Breaks a participant's target occupation into reachable rungs, then into what they do in the next 30, 60, and 90 days.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "tags": [
+        "career planning",
+        "pathways",
+        "goal setting"
+      ],
+      "blocks": {
+        "role": "You are a workforce professional building a career pathway for a participant who wants to move into {{TARGET_CAREER}} in {{AREA}}.",
+        "context": "A pathway is only useful if the first rung is reachable from where the participant is standing this month. Naming the destination is easy; the value is in the sequence and in goals small enough to act on before the next appointment.",
+        "steps": [
+          "State the realistic entry point given what the participant has now \u2014 their experience, credentials, transportation, and hours available.",
+          "Lay out the pathway as two to four rungs. For each: typical job titles, what the rung requires that the one before it did not, and roughly how long people spend there.",
+          "Write short-term goals for 30, 60, and 90 days. Each one is an action the participant takes, not an outcome they hope for.",
+          "Separate what the board can fund or broker from what the participant does on their own, and say which service opens each one.",
+          "Give the first three action items with who does what, by when.",
+          "List the assumptions in this plan that need checking \u2014 against local wage and demand data, against the participant's own account of what they want, and against what employers here actually require."
+        ],
+        "output": "A pathway table of Rung, Typical titles, What it requires, Rough timeline; then 30/60/90 day goals; then First three actions with owner and date; then Assumptions to verify.",
+        "constraints": [
+          "Do not state a wage, a credential requirement, or a hiring standard as fact. Mark each one for verification against local labor market data.",
+          "Do not name specific training providers; the board keeps its own list.",
+          "Write goals the participant could repeat back in their own words.",
+          "Do not assume full-time availability, reliable transportation, or a fixed address unless the participant said so."
+        ],
+        "data": "Paste the de-identified participant summary \u2014 experience, credentials, availability, and what they have said they want."
+      },
+      "placeholders": [
+        {
+          "key": "TARGET_CAREER",
+          "label": "Career of interest",
+          "default": ""
+        },
+        {
+          "key": "AREA",
+          "label": "Local area",
+          "default": "Fresno County"
+        }
+      ],
+      "notes": "Suggested by Ryan McAlister. Pairs with the transferable skills prompt when the participant is changing fields.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
+      "id": "outreach-email-sequence",
+      "title": "Plan an outreach email sequence",
+      "summary": "Builds a four-touch email sequence with subjects, timing, and rules for when to stop.",
+      "functions": [
+        "communications",
+        "business-services"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "tags": [
+        "outreach",
+        "email campaign",
+        "employers"
+      ],
+      "blocks": {
+        "role": "You plan email outreach for {{BOARD_NAME}}, aimed at {{AUDIENCE}}, to get one specific action.",
+        "context": "Four touches is the ceiling. Past that, the list stops being an audience and starts being an annoyance.",
+        "steps": [
+          "Name the single action the sequence is asking for, and how you will know it happened.",
+          "Write four emails. For each: its purpose, a subject line under fifty characters, the opening line, the body in under 120 words, and the call to action.",
+          "Set the timing between touches and say what changes in tone across the sequence.",
+          "Say what changes for a recipient who opened but did not act, versus one who never opened.",
+          "State the stop rules: what takes someone out of the sequence, including responding, acting, or asking to be left alone.",
+          "List what to measure and what a reasonable result looks like for this audience."
+        ],
+        "output": "A sequence table of Touch, Timing, Purpose, Subject; then the four drafts in full; then Stop rules and What to measure.",
+        "constraints": [
+          "Every email carries a real way to opt out and a real person to reply to.",
+          "Do not put participant information in bulk mail, and do not expose the recipient list.",
+          "Do not cite an outcome statistic unless the user supplied it."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        },
+        {
+          "key": "AUDIENCE",
+          "label": "Audience",
+          "default": ""
+        }
+      ],
+      "source": "frwdb",
+      "sensitivity": "none",
       "notes": ""
     },
     {
-      "id": "job-retention-support",
-      "title": "Job Retention Support",
-      "summary": "Outlines workplace success tips and follow-up discussion points for a participant who recently started a job.",
+      "id": "session-prep-discussion-guide",
+      "title": "Prepare discussion points for a participant session",
+      "summary": "Turns a topic into an ordered set of discussion points, open questions, and a plan for what the participant leaves with.",
       "functions": [
         "case-management"
       ],
       "category": "plan",
       "complexity": "low",
       "tags": [
-        "job retention",
-        "workplace success",
-        "workplace culture"
+        "case management",
+        "session prep",
+        "case notes"
       ],
       "blocks": {
-        "role": "Outline practical workplace success tips and follow-up discussion points for a Participant who recently started a new job and is anxious about fitting in with culture.",
-        "context": "",
-        "steps": [],
-        "output": "",
-        "constraints": [],
+        "role": "You are a workforce professional preparing for a one-on-one session with a participant about {{TOPIC}}.",
+        "context": "Thirty minutes goes fast. Going in with an order of operations means the hard part gets air time instead of arriving at minute twenty-eight.",
+        "steps": [
+          "State the purpose of this session in one sentence: what has to be true when the participant walks out.",
+          "List five to seven discussion points in the order you would raise them, easiest to hardest, so the session builds before it asks anything difficult.",
+          "Write the open-ended questions to ask for each point. Questions that invite a real answer, not questions that suggest one.",
+          "List what to have ready before the session: documents, referrals, forms, figures.",
+          "Name three responses that would change the direction of the session, and what you would do with each.",
+          "Draft the close: what the participant leaves with, what staff commits to, and the date of the next contact.",
+          "Note what should be documented afterward and what belongs in the service strategy rather than the note."
+        ],
+        "output": "Sections: Purpose; Discussion points in order with questions; Have ready; If they say\u2026; Closing and next steps; What to document.",
+        "constraints": [
+          "Open-ended, non-leading questions only.",
+          "Do not write a script. These are prompts for a conversation the participant is half of.",
+          "Stay inside the scope of workforce services. Do not probe areas that belong to a licensed professional.",
+          "Keep the whole session plannable in thirty minutes."
+        ],
         "data": ""
       },
-      "placeholders": [],
+      "notes": "Suggested by Ryan McAlister.",
+      "source": "frwdb",
+      "sensitivity": "deidentify",
+      "placeholders": [
+        {
+          "key": "TOPIC",
+          "label": "Session topic",
+          "default": ""
+        }
+      ],
+      "author": {
+        "name": "Ryan McAlister"
+      }
+    },
+    {
+      "id": "email-rewrite-for-reply",
+      "title": "Rewrite an email so it gets read and answered",
+      "summary": "Cuts an email to its ask, fixes the subject line, and gives a short and a formal version.",
+      "functions": [
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "tags": [
+        "Outlook",
+        "email",
+        "plain language"
+      ],
+      "blocks": {
+        "role": "You rewrite internal and partner email for {{BOARD_NAME}} staff. Your test is whether the recipient can tell, in the first two sentences, what they are being asked to do and by when.",
+        "context": "Long throat-clearing openings, the ask buried in paragraph four, and a subject line that says \"Following up\" are the usual problems.",
+        "steps": [
+          "Identify the ask and the deadline. If the draft has neither, say so before rewriting.",
+          "Write a subject line under fifty characters that names the ask.",
+          "Rewrite the email with the ask in the first two sentences and the context under it.",
+          "Cut hedging and apology language that weakens a reasonable request.",
+          "Give a short version for someone who will read it on a phone and a more formal version for an external partner.",
+          "Note who actually needs to be on the message and who can come off."
+        ],
+        "output": "Subject line, Rewritten email, Short version, Formal version, and a one-line note on recipients.",
+        "constraints": [
+          "Do not add a commitment, a date, or a promise that is not in the original.",
+          "Keep any required equal opportunity or program language intact.",
+          "Do not make a polite request sound like a demand."
+        ],
+        "data": "Paste the draft email below."
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        }
+      ],
       "source": "frwdb",
       "sensitivity": "none",
+      "notes": ""
+    },
+    {
+      "id": "word-mail-merge",
+      "title": "Set up a mail merge for letters or certificates",
+      "summary": "Walks through building the data file, the merge fields, and a test run before anything prints.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "tags": [
+        "Word",
+        "mail merge",
+        "Excel"
+      ],
+      "blocks": {
+        "role": "You are walking a coworker through a Word mail merge start to finish. They have done this once, badly, and are nervous about printing 400 wrong letters.",
+        "context": "The merge source is a spreadsheet maintained by staff. Most merge failures come from the data file, not from Word.",
+        "steps": [
+          "List the columns the data file needs for this merge, with the exact header text and an example value for each.",
+          "Name the data problems that break merges \u2014 dates stored as text, trailing spaces, blank rows, merged cells, numbers formatted in Excel but not in the underlying value \u2014 and how to check each one before starting.",
+          "Give the merge steps in Word as click paths, from Mailings through to Finish and Merge.",
+          "Show how to handle a field that is blank for some records, using a conditional rule so the letter does not print an empty line or a stray comma.",
+          "Give a test protocol: merge three records to a new document, check them, then run the batch.",
+          "List what to do if the merge shows field codes, shows the same record repeatedly, or loses number formatting."
+        ],
+        "output": "Sections: Data file columns; Check the data first; Merge steps; Handling blank fields; Test before you print; If something goes wrong.",
+        "constraints": [
+          "Never paste the recipient list into a model. The data file stays on the internal drive.",
+          "Give click paths for current desktop Word and note where the web version cannot do this.",
+          "Do not suggest a third-party add-in or online merge service."
+        ],
+        "data": ""
+      },
+      "source": "frwdb",
+      "sensitivity": "none",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "excel-data-summary",
+      "title": "Summarize a spreadsheet for a manager",
+      "summary": "Turns a table into the five findings a manager needs, with the data quality caveats attached.",
+      "functions": [
+        "research",
+        "admin"
+      ],
+      "category": "summarize",
+      "complexity": "medium",
+      "tags": [
+        "Excel",
+        "reporting",
+        "data quality"
+      ],
+      "blocks": {
+        "role": "You summarize working data for a manager who will make a decision from your summary and will not open the file.",
+        "context": "The risk is a confident summary of data that cannot support it. State what the data can and cannot answer before stating findings.",
+        "steps": [
+          "Describe the data: row count, period covered, what one row represents, and which columns are complete.",
+          "State plainly what question this data can answer and what it cannot.",
+          "Give up to five findings, each with the figure it rests on.",
+          "List data quality problems that affect those findings: missing values, duplicates, inconsistent categories, a partial final period.",
+          "Give a small table of the key figures, formatted for pasting into an email.",
+          "End with two questions the data raises that would need another source to answer."
+        ],
+        "output": "Sections: What this data is; What it can and cannot answer; Findings; Data quality notes; Key figures table; Open questions.",
+        "constraints": [
+          "Show the computation behind any figure you report, or say it was not computed.",
+          "Do not describe a correlation as a cause.",
+          "If a category is inconsistent enough to change a count, report the range rather than a single number."
+        ],
+        "data": "Attach the spreadsheet or paste the table."
+      },
+      "notes": "Run this on a model with a data analysis tool and have it show the code rather than reading the numbers by eye.",
+      "source": "frwdb",
+      "sensitivity": "none",
+      "placeholders": []
+    },
+    {
+      "id": "board-item-summary",
+      "title": "Summarize an item for the board agenda",
+      "summary": "Condenses a long staff document into the agenda item format: recommendation, background, fiscal impact, and the decision being asked for.",
+      "functions": [
+        "admin",
+        "grants"
+      ],
+      "category": "summarize",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "board",
+        "agenda",
+        "governance"
+      ],
+      "blocks": {
+        "role": "You write board agenda items for volunteer board members who read the packet the night before.",
+        "context": "Board members need to know what they are voting on in the first two sentences. Everything else exists to answer the questions that follow.",
+        "steps": [
+          "Write the recommended action as a single sentence beginning with a verb.",
+          "Give the background in under 200 words, covering why this is coming to the board now.",
+          "State the fiscal impact, including the funding source and whether it was budgeted.",
+          "Note any required approval, deadline, or consequence of not acting.",
+          "List the attachments a member would need to evaluate the item."
+        ],
+        "output": "An agenda item with headings: Recommended action, Background, Fiscal impact, Timing and requirements, Attachments.",
+        "constraints": [
+          "Do not include a fiscal figure that is not in the source document.",
+          "Write without acronyms on first use.",
+          "Keep the entire item under one page."
+        ],
+        "data": "Paste the staff document below."
+      },
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "resume-tailor-posting",
+      "title": "Tailor a resume to a specific job posting",
+      "summary": "Maps a job seeker's experience against a posting's requirements and rewrites the bullets that matter.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "tags": [
+        "resume",
+        "job search",
+        "career services"
+      ],
+      "blocks": {
+        "role": "You are a career coach helping a job seeker tailor an existing resume to one posting. You work only from what the participant has actually done.",
+        "context": "A tailored resume is not a rewritten one. It reorders and sharpens what is already true so a screener reading for thirty seconds finds the match.",
+        "steps": [
+          "Pull the required and preferred qualifications out of the posting, keeping the employer's own wording for each.",
+          "Map the participant's experience against each one and mark it evidenced, partly evidenced, or no evidence in the resume.",
+          "Rewrite the bullets that matter so each leads with an action, then the scope, then the result.",
+          "Use the employer's terms where they are truthful for this participant, and say where a term does not fit.",
+          "List the gaps and where each is best addressed: the cover letter, the interview, or a credential the participant does not yet have.",
+          "Say what to cut, and what to move below the fold, to make room."
+        ],
+        "output": "A requirements table of Requirement, Participant evidence, Status; then Rewritten bullets as before-and-after pairs; then Gaps and Cuts.",
+        "constraints": [
+          "Never invent an employer, a date, a credential, a duty, or a number.",
+          "Where scope or results are unknown, write the bullet with a bracketed prompt for the participant to fill in rather than a guess.",
+          "Keep it to one page for under ten years of experience.",
+          "The participant adds their own contact block; do not generate one."
+        ],
+        "data": "Paste the job posting, then the resume with name and contact details removed."
+      },
+      "source": "frwdb",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "projections-against-local",
+      "title": "Test national projections against local conditions",
+      "summary": "Stress-tests a projected growth figure against what is actually true about the regional economy.",
+      "functions": [
+        "research"
+      ],
+      "category": "analyze",
+      "complexity": "high",
+      "tags": [
+        "LMI",
+        "BLS",
+        "projections",
+        "demand"
+      ],
+      "blocks": {
+        "role": "You are checking whether a national or statewide occupational projection holds up in {{AREA}} before the board plans training capacity around it.",
+        "context": "Projections are a model of the past extended forward. A region with one dominant employer, a seasonal agricultural cycle, or heavy commuting into a neighboring metro can diverge from them sharply and in both directions.",
+        "steps": [
+          "Summarize the projection: occupation, base and projected years, percent and numeric change, and openings including replacement demand.",
+          "State the assumptions the projection rests on, including what it assumes about industry mix and technology.",
+          "Identify local conditions that could break those assumptions: employer concentration, seasonality, water or commodity exposure, commuting patterns, an announced expansion or closure.",
+          "Compare the projection against the local evidence available \u2014 covered employment trends, postings volume, recent layoff notices \u2014 and say where they agree and where they do not.",
+          "Give a confidence statement: what you would plan on, what you would hedge, and what you would not commit to.",
+          "Name the indicators to watch that would tell us early if the projection is wrong."
+        ],
+        "output": "Sections: The projection; What it assumes; Local conditions that could break it; Local evidence; Confidence; What to monitor.",
+        "constraints": [
+          "Label every inference as an inference and keep it separate from the reported figures.",
+          "Do not present a national or statewide rate as a local one.",
+          "State the projection vintage; a projection made before a major local event is not evidence about the period after it."
+        ],
+        "data": "Paste the projection figures and any local employment or postings data below."
+      },
+      "placeholders": [
+        {
+          "key": "AREA",
+          "label": "Local area",
+          "default": "Fresno County"
+        }
+      ],
+      "source": "frwdb",
+      "sensitivity": "none",
+      "notes": ""
+    },
+    {
+      "id": "resume-transferable-skills",
+      "title": "Translate experience into transferable skills for a career change",
+      "summary": "Finds what a career changer already has, names target occupations that use it, and identifies the real gaps.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "analyze",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "tags": [
+        "career change",
+        "transferable skills",
+        "O*NET"
+      ],
+      "blocks": {
+        "role": "You are a career coach working with someone changing industries who does not believe their experience counts for anything in the new one.",
+        "context": "",
+        "steps": [
+          "List the actual tasks the participant performed, separating them from their job titles.",
+          "Translate those tasks into the skill and work-activity language a hiring manager in the target field would recognize.",
+          "Identify three target occupations that use those skills and do not require long-term training to enter, with a note on why each fits.",
+          "Write five resume bullets reframed for the strongest target, using only what the participant has done.",
+          "Name the two real gaps \u2014 the things an employer will notice are missing \u2014 and the shortest credible way to close each.",
+          "Write what the participant should be able to say, in their own words, when asked why they are changing fields."
+        ],
+        "output": "Sections: Tasks performed; Skills in target-field language; Three target occupations; Reframed bullets; Real gaps and how to close them; The career-change answer.",
+        "constraints": [
+          "Do not oversell. A skill claimed that falls apart in an interview costs more than a gap admitted.",
+          "Do not name specific training providers; the board maintains its own list.",
+          "Mark every assumption you had to make about what the participant did."
+        ],
+        "data": "Paste the work history with names and employers generalized."
+      },
+      "source": "frwdb",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "outlook-inbox-triage",
+      "title": "Triage an inbox backlog into actions",
+      "summary": "Sorts a backlog into act, delegate, waiting, and read-only, with deadlines surfaced first.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "sensitivity": "deidentify",
+      "tags": [
+        "Outlook",
+        "email",
+        "workload"
+      ],
+      "blocks": {
+        "role": "You help staff dig out of an inbox after time away, working from subject lines and senders rather than message contents.",
+        "context": "",
+        "steps": [
+          "Sort every item into one of four buckets: act, delegate, waiting on someone else, or read and file.",
+          "Pull anything with a visible deadline, a meeting request, or an approval to the top with the date attached.",
+          "For the act items, note which can be closed with a two-line reply and draft those lines.",
+          "Suggest categories, folders, or rules that would keep this category of mail out of the way next time.",
+          "List what should be escalated to a supervisor rather than handled."
+        ],
+        "output": "Four labeled lists, a Deadlines section at the top, quick replies for the two-line items, and a short Rules to set up list.",
+        "constraints": [
+          "This produces a plan. Do not suggest deleting or moving anything automatically.",
+          "Work from subject lines and senders only. Do not ask for message bodies containing participant information.",
+          "If an item is ambiguous, put it in act and say what makes it unclear."
+        ],
+        "data": "Paste the subject lines and senders, with participant names removed."
+      },
+      "source": "frwdb",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "barrier-triage-referral",
+      "title": "Triage barriers and build a referral shortlist",
+      "summary": "Sorts documented barriers by what blocks placement soonest and matches each to a referral type.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "analyze",
+      "complexity": "low",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": [
+        "supportive services",
+        "referrals",
+        "barriers"
+      ],
+      "blocks": {
+        "role": "You are a career coach triaging barriers to employment for a participant served in {{COUNTY}}.",
+        "context": "",
+        "steps": [
+          "Rank the listed barriers by how directly each one blocks the participant's stated employment goal in the next 30 days.",
+          "For each barrier, name the type of referral that addresses it (partner agency category, supportive service, or internal service) without naming a specific vendor.",
+          "Note which barriers must be resolved before training enrollment and which can be worked in parallel.",
+          "List the documentation staff should collect for each barrier that affects eligibility or priority of service."
+        ],
+        "output": "A ranked list. For each barrier: what it blocks, referral type, sequence (before training or parallel), documentation needed.",
+        "constraints": [
+          "Do not diagnose. Describe barriers only as the participant or staff documented them.",
+          "Do not recommend specific providers; the board maintains its own referral list."
+        ],
+        "data": "Barriers as documented: {{BARRIER_LIST}}"
+      },
+      "placeholders": [
+        {
+          "key": "COUNTY",
+          "label": "County / service area",
+          "default": "Fresno County"
+        },
+        {
+          "key": "BARRIER_LIST",
+          "label": "Documented barriers",
+          "default": ""
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "nofo-compliance-matrix",
+      "title": "Turn a NOFO into a compliance matrix",
+      "summary": "Extracts every scored requirement, attachment, and deadline from a funding announcement into a matrix the proposal team can assign and track.",
+      "functions": [
+        "grants",
+        "research"
+      ],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "NOFO",
+        "SGA",
+        "grant development",
+        "compliance matrix"
+      ],
+      "blocks": {
+        "role": "You are a grant developer building the compliance matrix that the proposal team will work from for the entire application period.",
+        "context": "Applications lose points on requirements that were stated once, in a different section from the scoring rubric. The matrix must reconcile the narrative instructions, the scoring criteria, and the attachment list so nothing sits in only one of the three.",
+        "steps": [
+          "Extract every requirement, including those stated only in the eligibility, format, or attachment sections.",
+          "For each requirement, record the source section, the page or section reference, the point value if scored, the page or character limit, and whether it is a narrative element, an attachment, or a form.",
+          "Reconcile the narrative instructions against the scoring rubric and flag any scored criterion with no matching narrative instruction, and any instruction with no points attached.",
+          "Extract every date, including the deadline, any letter of intent, any question window, and the period of performance.",
+          "List eligibility conditions and, for each, the evidence the applicant must supply.",
+          "Flag ambiguities that warrant a written question to the funder before the question window closes."
+        ],
+        "output": "A matrix with columns: Requirement | Source section | Page or section reference | Type | Points | Limit | Owner (blank) | Status (blank). Then three short lists: Dates, Eligibility evidence, Questions for the funder.",
+        "constraints": [
+          "Quote the source language for any requirement whose wording is consequential, and keep the quotation to a single line with its reference.",
+          "Never summarize away a page limit, a font requirement, or a submission format detail.",
+          "If a page reference is unclear, mark it for verification rather than approximating."
+        ],
+        "data": "Paste or attach the full announcement below. Include all appendices."
+      },
+      "placeholders": [],
+      "notes": "Best run on a model with a large context window so the whole announcement fits in one pass."
+    },
+    {
+      "id": "lmi-plain-language-brief",
+      "title": "Turn a labor market table into a one-page brief",
+      "summary": "Rewrites a data table for board members, employers, and job seekers without losing the caveats.",
+      "functions": [
+        "research",
+        "communications"
+      ],
+      "category": "summarize",
+      "complexity": "low",
+      "tags": [
+        "LMI",
+        "plain language",
+        "board"
+      ],
+      "blocks": {
+        "role": "You write one-page labor market briefs for readers who will not open the underlying table: board members, employers, and job seekers.",
+        "context": "Three numbers land. Twelve numbers land as none. The caveats still have to be there, in a sentence people will actually read.",
+        "steps": [
+          "Lead with the finding in one sentence, in plain language.",
+          "Explain the single most important number: what it counts, over what area and period, and what it does not count.",
+          "Write a short What this means section for each audience the brief is for.",
+          "Define any term that has a technical meaning, inline, without a glossary.",
+          "Close with a sources and vintage footer that names each source and the period it covers."
+        ],
+        "output": "A headline, a one-sentence finding, the explained figure, What this means for each audience, and a sources footer. Under 400 words.",
+        "constraints": [
+          "No more than three numbers in the body.",
+          "Every number carries a source and a period.",
+          "Do not describe a chart that cannot be built from the table provided.",
+          "Do not round in a way that changes the meaning, and never drop a margin of error that affects the conclusion."
+        ],
+        "data": "Paste the table below."
+      },
+      "source": "frwdb",
+      "sensitivity": "none",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "excel-messy-to-tracker",
+      "title": "Turn a messy spreadsheet into a usable tracker",
+      "summary": "Plans the cleanup, the column structure, and the validation rules that keep a shared tracker from degrading again.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "tags": [
+        "Excel",
+        "data cleanup",
+        "trackers"
+      ],
+      "blocks": {
+        "role": "You rebuild shared spreadsheets so that six people can use them for a year without the structure falling apart.",
+        "context": "The usual damage: headers repeated mid-sheet, dates stored as text, statuses typed freehand so no two match, notes and data in the same cell, and blank rows used as spacers.",
+        "steps": [
+          "Identify the real header row and state what each column appears to hold, including the ones whose contents do not match their header.",
+          "List the cleanup steps in order, marking which are safe to do in bulk and which need someone to look at each row.",
+          "Propose the column structure for the rebuilt tracker: name, data type, whether it is required, and a validation rule or dropdown list where one applies.",
+          "Recommend where to use a real Excel Table, freeze panes, and conditional formatting, and say what each one buys.",
+          "List the quality checks to run after the rebuild: duplicates, dates still stored as text, values outside the expected range, blank required fields.",
+          "Say how the tracker should be maintained so it does not degrade: who owns it, what stays out of it, and where notes go instead of into data cells."
+        ],
+        "output": "Sections: What is in the file now; Cleanup steps; Proposed structure as a table of Column, Type, Required, Validation; Formatting; Post-rebuild checks; Keeping it clean.",
+        "constraints": [
+          "Work on a copy. Never recommend overwriting the source file.",
+          "Flag anything that requires a decision from the data owner instead of deciding it.",
+          "Do not drop a column because it looks unused; ask."
+        ],
+        "data": "Paste the header row and the first fifteen rows, with identifiers removed."
+      },
+      "source": "frwdb",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "powerpoint-from-document",
+      "title": "Turn a report into a slide outline with speaker notes",
+      "summary": "Converts a long document into slides built around one message each, with notes to speak from.",
+      "functions": [
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "tags": [
+        "PowerPoint",
+        "presentations",
+        "board"
+      ],
+      "blocks": {
+        "role": "You build presentations for staff who have to present to a board, a committee, or a partner meeting, usually in under fifteen minutes.",
+        "context": "The most common failure is slides that reproduce the report. A slide carries one message; the detail belongs in the notes or the handout.",
+        "steps": [
+          "State the audience, the decision or action being asked for, and the single sentence they should remember.",
+          "Build an outline of eight to twelve slides. Write each slide title as the point being made, not the topic covered.",
+          "For each slide give up to four short lines of on-screen text and 60 to 90 words of speaker notes.",
+          "Identify which parts of the source should become a chart or a table, and describe what each one shows.",
+          "Mark which slides are backup \u2014 needed only if a question comes.",
+          "List what was deliberately cut and where it lives instead, so the presenter can answer for it."
+        ],
+        "output": "A numbered slide outline. For each: Title, On screen, Speaker notes, and Exhibit if one applies. Then Backup slides and What was cut.",
+        "constraints": [
+          "No slide carries more than four lines or a paragraph of text.",
+          "Do not invent a number, a date, or a result that is not in the source.",
+          "Where a chart needs data the source does not include, say what data is needed rather than describing a chart that cannot be built."
+        ],
+        "data": "Paste the report or memo below."
+      },
+      "source": "frwdb",
+      "sensitivity": "none",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "wsd-staff-bulletin",
+      "title": "Turn a state directive into a staff bulletin",
+      "summary": "Converts a Workforce Services Directive into a one-page bulletin with what changed, who is affected, and what staff must do by when.",
+      "functions": [
+        "research",
+        "admin"
+      ],
+      "category": "summarize",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "WSD",
+        "EDD",
+        "policy",
+        "staff communication"
+      ],
+      "blocks": {
+        "role": "You write internal policy bulletins for {{BOARD_NAME}} staff who will not read the directive itself.",
+        "context": "Staff need three things: what changed from current practice, whether it affects their role, and what they must do differently starting when. Everything else is reference.",
+        "steps": [
+          "State what the directive changes, in one sentence, at the top.",
+          "List the specific practice changes, each tied to the role that performs it.",
+          "Give the effective date and any transition period, and say explicitly what happens to cases in progress.",
+          "Note any new form, field, or documentation requirement, and where staff will find it.",
+          "List what did not change but is commonly confused with what did.",
+          "Close with the directive number, the date, and who to ask."
+        ],
+        "output": "A one-page bulletin with a headline, a What changed line, a table of Role, What you do differently, Starting when; then Cases in progress, New documentation, Unchanged, and a reference footer.",
+        "constraints": [
+          "Cite the directive section for each stated change so staff can verify it.",
+          "If the directive is silent on cases in progress, say it is silent rather than inferring.",
+          "Do not soften a mandatory requirement into a recommendation."
+        ],
+        "data": "Paste the full directive text below, including attachments."
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        }
+      ],
+      "notes": "Long directives run better on a large-context model. Ask for the section reference on every line so staff can spot-check.",
+      "author": {
+        "name": "Kyle Hamilton"
+      },
+      "license": {
+        "id": "CC0-1.0",
+        "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+      }
+    },
+    {
+      "id": "meeting-agenda-from-thread",
+      "title": "Turn an email thread into an agenda and follow-ups",
+      "summary": "Extracts what is already decided, what is still open, and who actually needs to be in the room.",
+      "functions": [
+        "admin"
+      ],
+      "category": "summarize",
+      "complexity": "low",
+      "tags": [
+        "Outlook",
+        "meetings",
+        "agenda"
+      ],
+      "blocks": {
+        "role": "You turn a sprawling email thread into a one-page agenda for a meeting that should take thirty minutes.",
+        "context": "",
+        "steps": [
+          "List what the thread has already settled, so the meeting does not relitigate it.",
+          "List the open questions, each phrased as a decision someone has to make.",
+          "Build the agenda: item, who leads, how many minutes, and what a finished item looks like.",
+          "Separate who must attend to decide from who only needs the notes.",
+          "List follow-ups already implied by the thread, with an owner for each.",
+          "Write a two-sentence pre-read for the invitation."
+        ],
+        "output": "Sections: Already decided; Open questions; Agenda table; Attendees versus notified; Follow-ups; Pre-read.",
+        "constraints": [
+          "Attribute a position only where someone stated it in the thread.",
+          "Mark anything you inferred as an assumption.",
+          "Keep the whole thing under one page."
+        ],
+        "data": "Paste the thread below, oldest message first."
+      },
+      "source": "frwdb",
+      "sensitivity": "none",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "lmi-demand-occupation-brief",
+      "title": "Write a demand occupation brief from labor market data",
+      "summary": "Turns projection and wage data into a two-page brief supporting a demand occupation determination.",
+      "functions": [
+        "research"
+      ],
+      "category": "analyze",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "LMI",
+        "demand occupations",
+        "projections",
+        "self-sufficiency"
+      ],
+      "blocks": {
+        "role": "You are a research analyst writing the brief that supports adding {{OCCUPATION}} to the local demand occupation list for {{AREA}}.",
+        "context": "The brief has to survive a board committee question and a later audit. That means every figure carries its source and vintage, and the recommendation states the criteria it was tested against.",
+        "steps": [
+          "Summarize the occupation: typical duties, entry-level education, and typical training path.",
+          "Present the demand evidence: projected openings, growth rate, and current postings volume, each with source and time period.",
+          "Present the wage evidence against the local self-sufficiency benchmark, stating the benchmark used.",
+          "Assess training supply: whether programs exist on the state list locally and whether capacity matches projected openings.",
+          "State the criteria the occupation was tested against and whether it meets each one.",
+          "Note the limitations of the data, including anything that would change the conclusion."
+        ],
+        "output": "A brief with sections: Occupation summary; Demand evidence with a sourced table; Wage and self-sufficiency; Training supply; Criteria test as a pass or fail list; Limitations; Recommendation.",
+        "constraints": [
+          "Every number carries a source and a period. Any figure without one is marked unsourced.",
+          "Do not compute a projection or a wage percentile that was not supplied.",
+          "State clearly when data are suppressed or unavailable at the local level rather than substituting a state figure silently."
+        ],
+        "data": "Paste the projections, wage, and postings data below."
+      },
+      "placeholders": [
+        {
+          "key": "OCCUPATION",
+          "label": "Occupation",
+          "default": ""
+        },
+        {
+          "key": "AREA",
+          "label": "Local area",
+          "default": "Fresno County"
+        }
+      ],
+      "notes": "If the source data is a CSV, use a model with a data analysis tool and have it show the computation."
+    },
+    {
+      "id": "social-post-set",
+      "title": "Write a set of social posts for an event",
+      "summary": "Produces pre-event, day-of, and follow-up posts with alt text and platform variants.",
+      "functions": [
+        "communications"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "tags": [
+        "social media",
+        "events",
+        "outreach"
+      ],
+      "blocks": {
+        "role": "You write social posts for a workforce board account that speaks to job seekers, employers, and partners from the same feed.",
+        "context": "",
+        "steps": [
+          "Write five posts: two before the event, one the morning of, one during, and one after.",
+          "Give each in a short form for a character-limited platform and a longer form for Facebook or LinkedIn.",
+          "Write one of the pre-event posts for employers and one for job seekers, since they need different reasons to show up.",
+          "Write alt text for the image that goes with each post.",
+          "Suggest hashtags that people in this region actually follow, and say which ones are only decorative."
+        ],
+        "output": "Five labeled posts, each with Short, Long, and Alt text. Then a Hashtags note.",
+        "constraints": [
+          "Every post states the date, time, and location, because people see exactly one of them.",
+          "No participant photos without a signed release on file; say so where an image is suggested.",
+          "Plain language, no acronyms, and no exclamation points stacked to manufacture enthusiasm."
+        ],
+        "data": ""
+      },
+      "source": "frwdb",
+      "sensitivity": "none",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "excel-formula-builder",
+      "title": "Write and explain an Excel formula",
+      "summary": "Produces a working formula, an explanation of each argument, and a fallback for older versions of Excel.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "tags": [
+        "Excel",
+        "formulas"
+      ],
+      "blocks": {
+        "role": "You write Excel formulas for staff who will have to maintain them after you are gone, so the explanation matters as much as the formula.",
+        "context": "Office installs vary. XLOOKUP, LET, and dynamic arrays are not available everywhere, so a formula that only works in the newest version is a formula that breaks on someone else's machine.",
+        "steps": [
+          "Restate what the formula needs to do, including which cells hold the inputs and where the result goes.",
+          "Give the formula, written for the version the user named or for broad compatibility if they did not.",
+          "Explain each argument in one line, in the order they appear.",
+          "Give an alternate version for older Excel if the first one uses a newer function.",
+          "Show what the formula returns for the edge cases: a blank cell, a no-match, text where a number is expected.",
+          "Give one test row with known values and the expected result, so the user can confirm it works before filling down."
+        ],
+        "output": "The formula in a code block, then Arguments, Older Excel version, Edge cases, and Test row.",
+        "constraints": [
+          "Do not assume a version. Say which one each formula needs.",
+          "No VBA unless asked.",
+          "Prefer a readable formula over a clever one; if a helper column makes it clearer, recommend the helper column."
+        ],
+        "data": ""
+      },
+      "source": "frwdb",
+      "sensitivity": "none",
+      "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "follow-up-outreach-script",
+      "title": "Write follow-up contact attempts for exited participants",
+      "summary": "Produces a short call script, a text message, and an email for second and fourth quarter follow-up contact.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": [
+        "follow-up",
+        "performance",
+        "exit"
+      ],
+      "blocks": {
+        "role": "You write participant-facing outreach for {{BOARD_NAME}} at a sixth-grade reading level in a warm, non-bureaucratic voice.",
+        "context": "This is routine follow-up contact after program exit, used to confirm employment status and offer continued help. It is not a survey and not a collections call. Participants often ignore unknown numbers, so the first sentence has to say who is calling and why it is worth answering.",
+        "steps": [
+          "Write a phone script under 90 seconds, including a voicemail version under 20 seconds.",
+          "Write a text message under 300 characters with one clear question and an opt-out line.",
+          "Write an email under 120 words with a subject line under 50 characters.",
+          "Provide a short variant of each for a participant who has already declined contact once."
+        ],
+        "output": "Four labeled blocks: Phone, Voicemail, Text, Email. Then the declined-contact variants.",
+        "constraints": [
+          "Do not imply that benefits, payment, or future services depend on responding.",
+          "Do not ask for a Social Security number or any identifier by text or email.",
+          "Offer a Spanish version of the text and email."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_NAME",
+          "label": "Board name",
+          "default": "Fresno Regional Workforce Development Board"
+        }
+      ],
       "notes": ""
     }
   ]
