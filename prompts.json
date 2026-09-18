@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated": "2026-09-15",
+  "generated": "2026-09-18",
   "collection": "Prompt Cookbook",
   "defaults": {
     "author": {
@@ -121,6 +121,205 @@
   },
   "prompts": [
     {
+      "id": "announce-a-change-to-all-staff",
+      "title": "Announce a change to all staff",
+      "summary": "Announcing a policy, staffing, or process change to the whole team.",
+      "functions": [
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "announcement",
+        "change management"
+      ],
+      "blocks": {
+        "role": "Act as an internal communications specialist who writes change announcements for organizations of 20 to 200 staff.",
+        "context": "Write an all-staff announcement about this change:\n- What is changing: {{WHAT_IS_CHANGING}}\n- Why it is changing: {{WHY_IT_IS_CHANGING}}\n- Effective date: {{EFFECTIVE_DATE}}\n- Who is affected and how: {{WHO_IS_AFFECTED_AND_HOW}}\n- What staff must do differently: {{WHAT_STAFF_MUST_DO_DIFFERENTLY}}\n- Who answers questions: {{WHO_ANSWERS_QUESTIONS}}",
+        "steps": [
+          "Anticipate the three concerns staff will privately have about this and address them directly in the body rather than burying them.",
+          "Write for someone skimming on a phone."
+        ],
+        "output": "Output format:\n- Subject line\n- Body of 250 words maximum using bolded mini-headings\n- A \"Questions we expect\" section with 3 question-and-answer pairs, each answer under 40 words",
+        "constraints": [
+          "Avoid corporate filler such as \"exciting opportunity,\" \"synergy,\" or \"we are thrilled.\""
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_IS_CHANGING",
+          "label": "What is changing",
+          "default": ""
+        },
+        {
+          "key": "WHY_IT_IS_CHANGING",
+          "label": "Why it is changing",
+          "default": ""
+        },
+        {
+          "key": "EFFECTIVE_DATE",
+          "label": "Effective date",
+          "default": ""
+        },
+        {
+          "key": "WHO_IS_AFFECTED_AND_HOW",
+          "label": "Who is affected and how",
+          "default": ""
+        },
+        {
+          "key": "WHAT_STAFF_MUST_DO_DIFFERENTLY",
+          "label": "What staff must do differently",
+          "default": ""
+        },
+        {
+          "key": "WHO_ANSWERS_QUESTIONS",
+          "label": "Who answers questions",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "apologize-for-an-error-your-team-made",
+      "title": "Apologize for an error your team made",
+      "summary": "Apologizing for an error your team made, in writing, without creating liability.",
+      "functions": [
+        "communications",
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "apology",
+        "service recovery"
+      ],
+      "blocks": {
+        "role": "Act as a communications director handling service recovery for a public-facing organization.",
+        "context": "Draft an apology message about this error:\n- What went wrong: {{WHAT_WENT_WRONG}}\n- Who was affected and how many: {{WHO_WAS_AFFECTED_AND_HOW_MANY}}\n- What the consequence was for them: {{WHAT_THE_CONSEQUENCE_WAS_FOR_THEM}}\n- What we have already done about it: {{WHAT_WE_HAVE_ALREADY_DONE_ABOUT_IT}}\n- What we will do to prevent it: {{WHAT_WE_WILL_DO_TO_PREVENT_IT}}\n- Who this message goes to: {{INDIVIDUAL_AFFECTED_GROUP_ALL_STAFF_PUBLIC}}",
+        "steps": [
+          "Name the error plainly in the first sentence.",
+          "Take responsibility for the organization without assigning blame to a named individual and without speculating about cause."
+        ],
+        "output": "Output format:\n- Subject line\n- Message body, 180 words maximum\n- A separate list of any sentence a legal or compliance reviewer should look at before this goes out",
+        "constraints": [
+          "Do not use \"mistakes were made,\" \"we regret any inconvenience,\" or any construction that hides who did what."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_WENT_WRONG",
+          "label": "What went wrong",
+          "default": ""
+        },
+        {
+          "key": "WHO_WAS_AFFECTED_AND_HOW_MANY",
+          "label": "Who was affected and how many",
+          "default": ""
+        },
+        {
+          "key": "WHAT_THE_CONSEQUENCE_WAS_FOR_THEM",
+          "label": "What the consequence was for them",
+          "default": ""
+        },
+        {
+          "key": "WHAT_WE_HAVE_ALREADY_DONE_ABOUT_IT",
+          "label": "What we have already done about it",
+          "default": ""
+        },
+        {
+          "key": "WHAT_WE_WILL_DO_TO_PREVENT_IT",
+          "label": "What we will do to prevent it",
+          "default": ""
+        },
+        {
+          "key": "INDIVIDUAL_AFFECTED_GROUP_ALL_STAFF_PUBLIC",
+          "label": "Who this message goes to",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "audit-whether-a-recurring-meeting-earns-its-time",
+      "title": "Audit whether a recurring meeting earns its time",
+      "summary": "Deciding whether a recurring meeting still deserves to exist.",
+      "functions": [
+        "admin"
+      ],
+      "category": "analyze",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "meeting audit",
+        "operations"
+      ],
+      "blocks": {
+        "role": "Act as an operations consultant who audits how organizations spend meeting time.",
+        "context": "Evaluate this recurring meeting:\n- Name and purpose as originally intended: {{NAME_AND_PURPOSE_AS_ORIGINALLY_INTENDED}}\n- Frequency and length: {{FREQUENCY_AND_LENGTH}}\n- Number of attendees and their roles: {{NUMBER_OF_ATTENDEES_AND_THEIR_ROLES}}\n- What typically happens in it now: {{WHAT_TYPICALLY_HAPPENS_IN_IT_NOW}}\n- What decisions actually get made in it: {{WHAT_DECISIONS_ACTUALLY_GET_MADE_IN_IT}}\n- Average hourly cost of attendee time, if known: {{AVERAGE_HOURLY_COST_OF_ATTENDEE_TIME_IF_KNOWN}}",
+        "steps": [
+          "Calculate the annual hours this meeting consumes across all attendees.",
+          "Then assess whether the meeting is earning them."
+        ],
+        "output": "Output format:\n1. A one-line verdict: Keep as is, Shorten, Reduce frequency, Change attendees, or Replace with a written update\n2. The annual hour cost, shown with your arithmetic\n3. A table of each recurring agenda item: Item | Does it need everyone live? | Better format\n4. A proposed replacement structure if you recommended a change\n5. A short script I can use to propose the change to the group without implying anyone has been wasting time",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "NAME_AND_PURPOSE_AS_ORIGINALLY_INTENDED",
+          "label": "Name and purpose as originally intended",
+          "default": ""
+        },
+        {
+          "key": "FREQUENCY_AND_LENGTH",
+          "label": "Frequency and length",
+          "default": ""
+        },
+        {
+          "key": "NUMBER_OF_ATTENDEES_AND_THEIR_ROLES",
+          "label": "Number of attendees and their roles",
+          "default": ""
+        },
+        {
+          "key": "WHAT_TYPICALLY_HAPPENS_IN_IT_NOW",
+          "label": "What typically happens in it now",
+          "default": ""
+        },
+        {
+          "key": "WHAT_DECISIONS_ACTUALLY_GET_MADE_IN_IT",
+          "label": "What decisions actually get made in it",
+          "default": ""
+        },
+        {
+          "key": "AVERAGE_HOURLY_COST_OF_ATTENDEE_TIME_IF_KNOWN",
+          "label": "Average hourly cost of attendee time, if known",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
       "id": "flyer-poster-concepts",
       "title": "Brainstorm poster and flyer concepts for a program",
       "summary": "Generates six recruitment concepts with headline, visual direction, and call to action, plus the compliance elements every piece needs.",
@@ -229,6 +428,126 @@
       "source": "frwdb",
       "sensitivity": "none",
       "notes": ""
+    },
+    {
+      "id": "build-a-90-day-onboarding-plan",
+      "title": "Build a 90-day onboarding plan",
+      "summary": "Building an onboarding checklist for a new hire's first 90 days.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "onboarding",
+        "HR",
+        "checklist"
+      ],
+      "blocks": {
+        "role": "Act as an HR and operations coordinator who designs onboarding that gets new staff productive without overwhelming them.",
+        "context": "Build an onboarding plan.\n- Role and title: {{ROLE_AND_TITLE}}\n- Department and who they report to: {{DEPARTMENT_AND_WHO_THEY_REPORT_TO}}\n- Start date: {{START_DATE}}\n- Core responsibilities: {{CORE_RESPONSIBILITIES}}\n- Systems and access they need: {{SYSTEMS_AND_ACCESS_THEY_NEED}}\n- Required training or certifications: {{REQUIRED_TRAINING_OR_CERTIFICATIONS}}\n- Key people they must meet and why: {{KEY_PEOPLE_THEY_MUST_MEET_AND_WHY}}\n- What \"doing the job well\" looks like at 90 days: {{WHAT_DOING_THE_JOB_WELL_LOOKS_LIKE_AT_90_DAYS}}",
+        "steps": [
+          "Sequence it so nothing is introduced before the access or context it depends on."
+        ],
+        "output": "Output format, four tables \u2014 Before day one, Week one, Days 8 to 30, and Days 31 to 90 \u2014 each with columns Task | Owner | Why it matters | Complete by.\n\nThen add:\n- A first-week schedule, day by day, that leaves unstructured time for reading and absorbing\n- Three check-in conversations with the date for each and the questions the manager should ask\n- The five things most likely to slip through: access requests, payroll setup, and anything else with a lead time\n- A short list of what a new person will be too polite to ask about in week one",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "ROLE_AND_TITLE",
+          "label": "Role and title",
+          "default": ""
+        },
+        {
+          "key": "DEPARTMENT_AND_WHO_THEY_REPORT_TO",
+          "label": "Department and who they report to",
+          "default": ""
+        },
+        {
+          "key": "START_DATE",
+          "label": "Start date",
+          "default": ""
+        },
+        {
+          "key": "CORE_RESPONSIBILITIES",
+          "label": "Core responsibilities",
+          "default": ""
+        },
+        {
+          "key": "SYSTEMS_AND_ACCESS_THEY_NEED",
+          "label": "Systems and access they need",
+          "default": ""
+        },
+        {
+          "key": "REQUIRED_TRAINING_OR_CERTIFICATIONS",
+          "label": "Required training or certifications",
+          "default": ""
+        },
+        {
+          "key": "KEY_PEOPLE_THEY_MUST_MEET_AND_WHY",
+          "label": "Key people they must meet and why",
+          "default": ""
+        },
+        {
+          "key": "WHAT_DOING_THE_JOB_WELL_LOOKS_LIKE_AT_90_DAYS",
+          "label": "What \"doing the job well\" looks like at 90 days",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "prompt-engineering-coach",
+      "title": "Build a better prompt with a prompt engineering coach",
+      "summary": "Turns the model into a coach that interviews you, drafts a prompt, and refines it with you until it is right.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "external",
+      "tags": [
+        "prompt engineering",
+        "meta",
+        "training"
+      ],
+      "blocks": {
+        "role": "I want you to become my prompt engineering master creator and help me create the best possible prompt.",
+        "context": "This is a conversation, not a single request. You are building a prompt with me, not answering the prompt we are building.",
+        "steps": [
+          "Ask me what the prompt is about. Ask nothing else yet, and wait for my answer.",
+          "Based on my answer, generate an improved prompt that is concise.",
+          "Along with it, ask the relevant questions you have that would improve the quality of the prompt.",
+          "We repeat this: I give you more information, you update the prompt, until I say we are done.",
+          "When I say we are done, give me the final prompt on its own, with nothing else around it."
+        ],
+        "output": "Each round: the improved prompt first, set apart so I can copy it, then your questions as a numbered list.",
+        "constraints": [
+          "Start by asking. Do not produce a prompt before I have told you what it is about.",
+          "Do not answer the prompt you are building or run the task it describes.",
+          "Keep the improved prompt concise. If it is getting longer each round, say so.",
+          "Keep going until I say we are done, even if the prompt looks finished to you."
+        ],
+        "data": ""
+      },
+      "placeholders": [],
+      "author": {
+        "name": "Mindi Bailey, Julie Boganwright, Cesar Lopez-Maldonado, Russel Smith, and Mindy Tomlin",
+        "url": "https://nmu.libguides.com/c.php?g=1474877&p=10982142"
+      },
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Adapted into this cookbook's block format from \u201cA Guide to Prompt Engineering: Harnessing the Power of Generative AI for Productivity\u201d by Mindi Bailey, Julie Boganwright, Cesar Lopez-Maldonado, Russel Smith, and Mindy Tomlin (Collin College), licensed under CC BY 4.0. Good one to run before writing a prompt you intend to contribute here."
     },
     {
       "id": "acs-community-profile",
@@ -374,6 +693,80 @@
       "notes": "Use with a model that has a large context window when the notice comes with attachments."
     },
     {
+      "id": "build-a-work-back-schedule-from-a-deadline",
+      "title": "Build a work-back schedule from a deadline",
+      "summary": "Working backward from a hard deadline to build a realistic schedule.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "project management",
+        "scheduling"
+      ],
+      "blocks": {
+        "role": "Act as a project manager who builds work-back schedules for small teams with no dedicated project staff.",
+        "context": "Build a work-back plan.\n- What must be delivered: {{WHAT_MUST_BE_DELIVERED}}\n- Hard deadline: {{HARD_DEADLINE}}\n- Today's date: {{TODAY_S_DATE}}\n- Everything that has to happen to get there: {{EVERYTHING_THAT_HAS_TO_HAPPEN_TO_GET_THERE}}\n- Who is available and roughly how much time each has: {{WHO_IS_AVAILABLE_AND_ROUGHLY_HOW_MUCH_TIME_EAC}}\n- Approvals or reviews required and typical turnaround: {{APPROVALS_OR_REVIEWS_REQUIRED_AND_TYPICAL_TURN}}\n- Known blackout dates \u2014 holidays, closures, competing deadlines: {{KNOWN_BLACKOUT_DATES_HOLIDAYS_CLOSURES_COMPETI}}\n- What has gone wrong on similar projects before: {{WHAT_HAS_GONE_WRONG_ON_SIMILAR_PROJECTS_BEFORE}}",
+        "steps": [
+          "Schedule backward from the deadline.",
+          "Treat review and approval time as real duration, not a formality."
+        ],
+        "output": "Output format:\n1. A schedule table: Task | Owner | Duration | Start | Finish | Depends on\n2. The critical path listed explicitly \u2014 the tasks where a one-day slip moves the deadline\n3. Three checkpoint dates with a specific go / no-go question at each\n4. A risk table: Risk | Likelihood | Impact on the date | Mitigation\n5. A plain statement of whether this is achievable in the time available, and if not, what has to give: scope, quality, or the date",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_MUST_BE_DELIVERED",
+          "label": "What must be delivered",
+          "default": ""
+        },
+        {
+          "key": "HARD_DEADLINE",
+          "label": "Hard deadline",
+          "default": ""
+        },
+        {
+          "key": "TODAY_S_DATE",
+          "label": "Today's date",
+          "default": ""
+        },
+        {
+          "key": "EVERYTHING_THAT_HAS_TO_HAPPEN_TO_GET_THERE",
+          "label": "Everything that has to happen to get there",
+          "default": ""
+        },
+        {
+          "key": "WHO_IS_AVAILABLE_AND_ROUGHLY_HOW_MUCH_TIME_EAC",
+          "label": "Who is available and roughly how much time each has",
+          "default": ""
+        },
+        {
+          "key": "APPROVALS_OR_REVIEWS_REQUIRED_AND_TYPICAL_TURN",
+          "label": "Approvals or reviews required and typical turnaround",
+          "default": ""
+        },
+        {
+          "key": "KNOWN_BLACKOUT_DATES_HOLIDAYS_CLOSURES_COMPETI",
+          "label": "Known blackout dates \u2014 holidays, closures, competing deadlines",
+          "default": ""
+        },
+        {
+          "key": "WHAT_HAS_GONE_WRONG_ON_SIMILAR_PROJECTS_BEFORE",
+          "label": "What has gone wrong on similar projects before",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
       "id": "employer-ojt-pitch",
       "title": "Build an OJT pitch for a specific employer",
       "summary": "Turns basic employer facts into a one-page on-the-job training pitch with objection handling.",
@@ -424,6 +817,73 @@
           "default": ""
         }
       ],
+      "notes": ""
+    },
+    {
+      "id": "build-an-agenda-from-a-messy-topic-list",
+      "title": "Build an agenda from a messy topic list",
+      "summary": "Turning a messy list of topics into a timed, purposeful agenda.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "agenda",
+        "meeting prep",
+        "facilitation"
+      ],
+      "blocks": {
+        "role": "Act as an experienced administrative coordinator who designs meeting agendas that finish on time.",
+        "context": "Meeting details:\n- Purpose in one sentence: {{PURPOSE_IN_ONE_SENTENCE}}\n- Length: {{LENGTH}}\n- Attendees and their roles: {{ATTENDEES_AND_THEIR_ROLES}}\n- Decisions that must be made in this meeting: {{DECISIONS_THAT_MUST_BE_MADE_IN_THIS_MEETING}}\n- Topics that are informational only: {{TOPICS_THAT_ARE_INFORMATIONAL_ONLY}}",
+        "steps": [
+          "Build an agenda from this raw list of topics:\n{{BUILD_AN_AGENDA_FROM_THIS_RAW_LIST_OF_TOPICS}}",
+          "For each item, assign a time box, an owner, and a type: Decide, Discuss, or Inform.",
+          "Move anything that is purely informational to a written pre-read section rather than spending meeting time on it.",
+          "If the topics do not fit in the available time, tell me what to cut and why."
+        ],
+        "output": "Output format: a table with columns Time | Topic | Type | Owner | What we need from the group. Add a \"Pre-read\" section below and a \"Parking lot\" heading for items deferred.",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "BUILD_AN_AGENDA_FROM_THIS_RAW_LIST_OF_TOPICS",
+          "label": "Build an agenda from this raw list of topics",
+          "default": ""
+        },
+        {
+          "key": "PURPOSE_IN_ONE_SENTENCE",
+          "label": "Purpose in one sentence",
+          "default": ""
+        },
+        {
+          "key": "LENGTH",
+          "label": "Length",
+          "default": ""
+        },
+        {
+          "key": "ATTENDEES_AND_THEIR_ROLES",
+          "label": "Attendees and their roles",
+          "default": ""
+        },
+        {
+          "key": "DECISIONS_THAT_MUST_BE_MADE_IN_THIS_MEETING",
+          "label": "Decisions that must be made in this meeting",
+          "default": ""
+        },
+        {
+          "key": "TOPICS_THAT_ARE_INFORMATIONAL_ONLY",
+          "label": "Topics that are informational only",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
       "notes": ""
     },
     {
@@ -529,6 +989,132 @@
       "author": {
         "name": "Ryan McAlister"
       }
+    },
+    {
+      "id": "build-talking-points-for-a-presentation",
+      "title": "Build talking points for a presentation",
+      "summary": "Building talking points for a meeting where you have to present or defend something.",
+      "functions": [
+        "admin",
+        "research"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "talking points",
+        "presentation"
+      ],
+      "blocks": {
+        "role": "Act as a communications coach who prepares subject-matter staff to present to skeptical audiences.",
+        "context": "Prepare my talking points.\n- What I am presenting: {{WHAT_I_AM_PRESENTING}}\n- To whom: {{TO_WHOM}}\n- How long I have: {{HOW_LONG_I_HAVE}}\n- What I want them to do or approve: {{WHAT_I_WANT_THEM_TO_DO_OR_APPROVE}}\n- Supporting material or data: {{SUPPORTING_MATERIAL_OR_DATA}}\n- Known objections or opposition: {{KNOWN_OBJECTIONS_OR_OPPOSITION}}",
+        "steps": [
+          "Structure the points so my ask is clear in the first 30 seconds, not at the end.",
+          "Short sentences."
+        ],
+        "output": "Output format:\n1. An opening line I can say verbatim, under 30 words\n2. Three main points, each with: the claim, the single strongest piece of evidence, and the one sentence that connects it to what this audience cares about\n3. A table of likely objections: Objection | My response in under 40 words | Evidence I should have on hand\n4. A closing ask I can say verbatim",
+        "constraints": [
+          "Write it to be spoken aloud, not read."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_I_AM_PRESENTING",
+          "label": "What I am presenting",
+          "default": ""
+        },
+        {
+          "key": "TO_WHOM",
+          "label": "To whom",
+          "default": ""
+        },
+        {
+          "key": "HOW_LONG_I_HAVE",
+          "label": "How long I have",
+          "default": ""
+        },
+        {
+          "key": "WHAT_I_WANT_THEM_TO_DO_OR_APPROVE",
+          "label": "What I want them to do or approve",
+          "default": ""
+        },
+        {
+          "key": "SUPPORTING_MATERIAL_OR_DATA",
+          "label": "Supporting material or data",
+          "default": ""
+        },
+        {
+          "key": "KNOWN_OBJECTIONS_OR_OPPOSITION",
+          "label": "Known objections or opposition",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "build-your-first-pivot-table",
+      "title": "Build your first pivot table",
+      "summary": "Setting up a pivot table when you have never made one.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "Excel",
+        "pivot table",
+        "training"
+      ],
+      "blocks": {
+        "role": "Act as a patient Excel trainer teaching someone who has never built a pivot table.",
+        "context": "Walk me through building one for my data.\n- Program: {{EXCEL_GOOGLE_SHEETS}}\n- My column headers, in order: {{MY_COLUMN_HEADERS_IN_ORDER}}\n- Number of rows: {{NUMBER_OF_ROWS}}\n- The question I want answered: {{THE_QUESTION_I_WANT_ANSWERED}}\n- Where the result needs to go: {{NEW_TAB_EXISTING_REPORT_PASTED_INTO_A_DOCUMENT}}",
+        "steps": [
+          "Assume I do not know terms like \"field,\" \"value,\" or \"source range.\" Define them the first time you use them."
+        ],
+        "output": "Output format:\n1. A prerequisites checklist \u2014 what my data must look like before a pivot table will work at all\n2. Numbered click-by-click steps, naming the exact menu items and buttons\n3. A field placement table: Field name | Where it goes (Rows, Columns, Values, Filters) | Summarize by\n4. What the finished result should look like, described in a sentence so I can tell if I did it right\n5. The three most common beginner mistakes here and how to spot each one",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "EXCEL_GOOGLE_SHEETS",
+          "label": "Program",
+          "default": ""
+        },
+        {
+          "key": "MY_COLUMN_HEADERS_IN_ORDER",
+          "label": "My column headers, in order",
+          "default": ""
+        },
+        {
+          "key": "NUMBER_OF_ROWS",
+          "label": "Number of rows",
+          "default": ""
+        },
+        {
+          "key": "THE_QUESTION_I_WANT_ANSWERED",
+          "label": "The question I want answered \u2014 describe in plain english \u2014 e.g. \"how many participants enrolled in each program each month\"",
+          "default": ""
+        },
+        {
+          "key": "NEW_TAB_EXISTING_REPORT_PASTED_INTO_A_DOCUMENT",
+          "label": "Where the result needs to go",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
     },
     {
       "id": "resume-screening-check",
@@ -667,6 +1253,142 @@
       }
     },
     {
+      "id": "cold-outreach-to-a-partner-organization",
+      "title": "Cold outreach to a partner organization",
+      "summary": "Cold outreach to a partner organization, employer, or potential collaborator.",
+      "functions": [
+        "business-services",
+        "communications"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "outreach",
+        "partnerships"
+      ],
+      "blocks": {
+        "role": "Act as a partnership development lead who books first meetings through cold email.",
+        "context": "Write an outreach email introducing my organization and requesting a 20-minute conversation.\n- My organization and what we do: {{MY_ORGANIZATION_AND_WHAT_WE_DO}}\n- My name and title: {{MY_NAME_AND_TITLE}}\n- Who I am writing to and their role: {{WHO_I_AM_WRITING_TO_AND_THEIR_ROLE}}\n- Why them specifically: {{WHY_THEM_SPECIFICALLY}}\n- What is in it for them: {{WHAT_IS_IN_IT_FOR_THEM}}\n- The ask: {{THE_ASK}}",
+        "steps": [
+          "Close with a single, low-effort ask."
+        ],
+        "output": "Output format: subject line, then the email, then two alternative subject lines. After that, write one sentence naming the weakest part of the pitch.",
+        "constraints": [
+          "The email must be under 120 words, with no attachments referenced and no more than one link.",
+          "Open with the reason I am writing to them specifically, not with my organization's history."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "MY_ORGANIZATION_AND_WHAT_WE_DO",
+          "label": "My organization and what we do",
+          "default": ""
+        },
+        {
+          "key": "MY_NAME_AND_TITLE",
+          "label": "My name and title",
+          "default": ""
+        },
+        {
+          "key": "WHO_I_AM_WRITING_TO_AND_THEIR_ROLE",
+          "label": "Who I am writing to and their role",
+          "default": ""
+        },
+        {
+          "key": "WHY_THEM_SPECIFICALLY",
+          "label": "Why them specifically",
+          "default": ""
+        },
+        {
+          "key": "WHAT_IS_IN_IT_FOR_THEM",
+          "label": "What is in it for them",
+          "default": ""
+        },
+        {
+          "key": "THE_ASK",
+          "label": "The ask",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "debug-a-formula-that-is-returning-an-error",
+      "title": "Debug a formula that is returning an error",
+      "summary": "Fixing a formula that is returning an error or the wrong answer.",
+      "functions": [
+        "admin",
+        "research"
+      ],
+      "category": "review",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "Excel",
+        "formulas",
+        "troubleshooting"
+      ],
+      "blocks": {
+        "role": "Act as a spreadsheet troubleshooter who debugs formulas for non-technical users.",
+        "context": "Details:\n- Program and version: {{EXCEL_GOOGLE_SHEETS_INSERT_VERSION_IF_KNOWN}}\n- What it is supposed to do: {{WHAT_IT_IS_SUPPOSED_TO_DO}}\n- What is actually happening: {{WHAT_IS_ACTUALLY_HAPPENING}}\n- What the referenced cells contain: {{WHAT_THE_REFERENCED_CELLS_CONTAIN}}\n- Whether the file has merged cells, filters, or data from another sheet: {{WHETHER_THE_FILE_HAS_MERGED_CELLS_FILTERS_OR_D}}",
+        "steps": [
+          "Here is my formula:\n{{HERE_IS_MY_FORMULA}}",
+          "If it cannot, say so first and explain why."
+        ],
+        "output": "Output format:\n1. The diagnosis in one sentence\n2. The corrected formula, ready to paste\n3. A before-and-after comparison showing exactly what changed\n4. One sentence on how to recognize this same error next time\n5. A quick test I can run on three rows to confirm the fix worked",
+        "constraints": [
+          "Do not rewrite the whole approach unless my formula cannot be salvaged."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "HERE_IS_MY_FORMULA",
+          "label": "Here is my formula",
+          "default": ""
+        },
+        {
+          "key": "EXCEL_GOOGLE_SHEETS_INSERT_VERSION_IF_KNOWN",
+          "label": "Program and version",
+          "default": ""
+        },
+        {
+          "key": "WHAT_IT_IS_SUPPOSED_TO_DO",
+          "label": "What it is supposed to do",
+          "default": ""
+        },
+        {
+          "key": "WHAT_IS_ACTUALLY_HAPPENING",
+          "label": "What is actually happening",
+          "default": ""
+        },
+        {
+          "key": "WHAT_THE_REFERENCED_CELLS_CONTAIN",
+          "label": "What the referenced cells contain",
+          "default": ""
+        },
+        {
+          "key": "WHETHER_THE_FILE_HAS_MERGED_CELLS_FILTERS_OR_D",
+          "label": "Whether the file has merged cells, filters, or data from another sheet",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
       "id": "lmi-series-selection",
       "title": "Decide which BLS or Census series answers a question",
       "summary": "Picks the right federal source, geography, and vintage before anyone pulls a number.",
@@ -717,6 +1439,345 @@
       "notes": ""
     },
     {
+      "id": "decline-a-request-without-burning-the-bridge",
+      "title": "Decline a request without burning the bridge",
+      "summary": "Saying no to a request without closing the door on the relationship.",
+      "functions": [
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "declining",
+        "boundaries"
+      ],
+      "blocks": {
+        "role": "Act as a senior manager known for declining requests gracefully and keeping the relationship intact.",
+        "context": "Details:\n- Who is asking and our relationship: {{WHO_IS_ASKING_AND_OUR_RELATIONSHIP}}\n- The real reason I am declining: {{THE_REAL_REASON_I_AM_DECLINING}}\n- How much of that reason I am willing to share: {{HOW_MUCH_OF_THAT_REASON_I_AM_WILLING_TO_SHARE}}\n- Anything I can offer instead: {{ANYTHING_I_CAN_OFFER_INSTEAD}}\n- Do I want to leave the door open for the future? {{DO_I_WANT_TO_LEAVE_THE_DOOR_OPEN_FOR_THE_FUTUR}}",
+        "steps": [
+          "Help me decline this request:\n{{HELP_ME_DECLINE_THIS_REQUEST}}",
+          "Decline clearly in the first three sentences."
+        ],
+        "output": "Output format:\n- One warm version and one brief, businesslike version\n- Each under 100 words\n- A one-line note on which version fits which relationship",
+        "constraints": [
+          "Do not use \"unfortunately\" more than once, do not over-apologize, and do not invent a reason I did not give you."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "HELP_ME_DECLINE_THIS_REQUEST",
+          "label": "Help me decline this request",
+          "default": ""
+        },
+        {
+          "key": "WHO_IS_ASKING_AND_OUR_RELATIONSHIP",
+          "label": "Who is asking and our relationship",
+          "default": ""
+        },
+        {
+          "key": "THE_REAL_REASON_I_AM_DECLINING",
+          "label": "The real reason I am declining",
+          "default": ""
+        },
+        {
+          "key": "HOW_MUCH_OF_THAT_REASON_I_AM_WILLING_TO_SHARE",
+          "label": "How much of that reason I am willing to share \u2014 all / some / none \u2014 explain",
+          "default": ""
+        },
+        {
+          "key": "ANYTHING_I_CAN_OFFER_INSTEAD",
+          "label": "Anything I can offer instead",
+          "default": ""
+        },
+        {
+          "key": "DO_I_WANT_TO_LEAVE_THE_DOOR_OPEN_FOR_THE_FUTUR",
+          "label": "Do I want to leave the door open for the future? \u2014 yes / no",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "decode-a-spreadsheet-you-inherited",
+      "title": "Decode a spreadsheet you inherited",
+      "summary": "Understanding a spreadsheet you inherited from someone who left.",
+      "functions": [
+        "research",
+        "admin"
+      ],
+      "category": "review",
+      "complexity": "high",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": [
+        "Excel",
+        "audit",
+        "inherited systems"
+      ],
+      "blocks": {
+        "role": "Act as a spreadsheet auditor who reverse-engineers undocumented workbooks.",
+        "context": "I inherited this spreadsheet and need to understand it before I rely on it.\n- What I was told it does: {{WHAT_I_WAS_TOLD_IT_DOES}}\n- Tab names: {{TAB_NAMES}}\n- Key formulas, pasted from the cells: {{KEY_FORMULAS_PASTED_FROM_THE_CELLS}}\n- Sample rows of data: {{SAMPLE_ROWS_OF_DATA}}\n- Known external links or connections: {{KNOWN_EXTERNAL_LINKS_OR_CONNECTIONS}}",
+        "steps": [],
+        "output": "Output format:\n1. A plain-English explanation of what the workbook actually calculates, formula by formula\n2. A dependency map showing which tabs and cells feed which others, written as an indented list\n3. A risk table: Risk | Where it lives | What breaks if it goes wrong | How urgently to fix\n4. Specific things to check before trusting any number out of this file \u2014 hard-coded values inside formulas, ranges that will not expand, and anything referencing a file path\n5. The three questions I should ask the person who built it, if I can reach them",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_I_WAS_TOLD_IT_DOES",
+          "label": "What I was told it does",
+          "default": ""
+        },
+        {
+          "key": "TAB_NAMES",
+          "label": "Tab names",
+          "default": ""
+        },
+        {
+          "key": "KEY_FORMULAS_PASTED_FROM_THE_CELLS",
+          "label": "Key formulas, pasted from the cells",
+          "default": ""
+        },
+        {
+          "key": "SAMPLE_ROWS_OF_DATA",
+          "label": "Sample rows of data",
+          "default": ""
+        },
+        {
+          "key": "KNOWN_EXTERNAL_LINKS_OR_CONNECTIONS",
+          "label": "Known external links or connections",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "design-a-client-intake-workflow",
+      "title": "Design a client intake workflow",
+      "summary": "Designing a client intake workflow that is quick, humane, and compliant.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "intake",
+        "workflow design"
+      ],
+      "blocks": {
+        "role": "Act as a program operations designer who builds intake processes for social service and workforce programs.",
+        "context": "Design an intake workflow.\n- Program and what it provides: {{PROGRAM_AND_WHAT_IT_PROVIDES}}\n- Who we serve: {{WHO_WE_SERVE}}\n- Eligibility criteria: {{ELIGIBILITY_CRITERIA}}\n- Documentation required and by whom: {{DOCUMENTATION_REQUIRED_AND_BY_WHOM}}\n- Systems we must enter data into: {{SYSTEMS_WE_MUST_ENTER_DATA_INTO}}\n- Staff involved and their roles: {{STAFF_INVOLVED_AND_THEIR_ROLES}}\n- Current pain points: {{CURRENT_PAIN_POINTS}}\n- Target time from first contact to enrollment: {{TARGET_TIME_FROM_FIRST_CONTACT_TO_ENROLLMENT}}",
+        "steps": [
+          "Ask for the hardest-to-obtain documents as late as possible."
+        ],
+        "output": "Output format:\n1. A step-by-step flow: Step | Who does it | What is collected | Where it is recorded | Target time\n2. A document checklist with an alternative accepted document for each, where one exists\n3. The decision points where someone can be found ineligible, and the referral to make at each one\n4. A field-by-field list of what to collect, each marked Required-for-eligibility, Required-for-reporting, or Nice-to-have \u2014 and delete the third category\n5. Three ways this process will feel to someone arriving in crisis, and one change for each",
+        "constraints": [
+          "Collect nothing at intake that is not required for eligibility, service delivery, or a mandated report."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "PROGRAM_AND_WHAT_IT_PROVIDES",
+          "label": "Program and what it provides",
+          "default": ""
+        },
+        {
+          "key": "WHO_WE_SERVE",
+          "label": "Who we serve",
+          "default": ""
+        },
+        {
+          "key": "ELIGIBILITY_CRITERIA",
+          "label": "Eligibility criteria",
+          "default": ""
+        },
+        {
+          "key": "DOCUMENTATION_REQUIRED_AND_BY_WHOM",
+          "label": "Documentation required and by whom",
+          "default": ""
+        },
+        {
+          "key": "SYSTEMS_WE_MUST_ENTER_DATA_INTO",
+          "label": "Systems we must enter data into",
+          "default": ""
+        },
+        {
+          "key": "STAFF_INVOLVED_AND_THEIR_ROLES",
+          "label": "Staff involved and their roles",
+          "default": ""
+        },
+        {
+          "key": "CURRENT_PAIN_POINTS",
+          "label": "Current pain points",
+          "default": ""
+        },
+        {
+          "key": "TARGET_TIME_FROM_FIRST_CONTACT_TO_ENROLLMENT",
+          "label": "Target time from first contact to enrollment",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "design-a-workbook-before-you-build-it",
+      "title": "Design a workbook before you build it",
+      "summary": "Designing the structure of a tracker before you start building it.",
+      "functions": [
+        "research",
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "Excel",
+        "workbook design",
+        "data systems"
+      ],
+      "blocks": {
+        "role": "Act as a data systems designer who builds spreadsheets that survive being used by other people for years.",
+        "context": "Help me structure a workbook before I build it.\n- What I am tracking: {{WHAT_I_AM_TRACKING}}\n- Who will enter data and how technical they are: {{WHO_WILL_ENTER_DATA_AND_HOW_TECHNICAL_THEY_ARE}}\n- Who will read the output and what they need to see: {{WHO_WILL_READ_THE_OUTPUT_AND_WHAT_THEY_NEED_TO}}\n- How often data gets added: {{DAILY_WEEKLY_MONTHLY}}\n- Reports or totals I will need out of it: {{REPORTS_OR_TOTALS_I_WILL_NEED_OUT_OF_IT}}\n- How long this will be in use: {{HOW_LONG_THIS_WILL_BE_IN_USE}}",
+        "steps": [
+          "Design it so raw entry, lookup lists, and reporting live on separate tabs, and so nobody types anything twice."
+        ],
+        "output": "Output format:\n1. A tab-by-tab plan: tab name, purpose, and who touches it\n2. For each data tab, a column specification table: Column | Header text | Data type | Example value | Validation rule | Required?\n3. The formulas or pivot approach that produces each report I listed\n4. Five ways a real user will break this workbook, and the specific protection for each\n5. A short list of what should be a database instead of a spreadsheet, if anything here qualifies",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_I_AM_TRACKING",
+          "label": "What I am tracking",
+          "default": ""
+        },
+        {
+          "key": "WHO_WILL_ENTER_DATA_AND_HOW_TECHNICAL_THEY_ARE",
+          "label": "Who will enter data and how technical they are",
+          "default": ""
+        },
+        {
+          "key": "WHO_WILL_READ_THE_OUTPUT_AND_WHAT_THEY_NEED_TO",
+          "label": "Who will read the output and what they need to see",
+          "default": ""
+        },
+        {
+          "key": "DAILY_WEEKLY_MONTHLY",
+          "label": "How often data gets added",
+          "default": ""
+        },
+        {
+          "key": "REPORTS_OR_TOTALS_I_WILL_NEED_OUT_OF_IT",
+          "label": "Reports or totals I will need out of it",
+          "default": ""
+        },
+        {
+          "key": "HOW_LONG_THIS_WILL_BE_IN_USE",
+          "label": "How long this will be in use",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "document-and-fix-a-broken-workflow",
+      "title": "Document and fix a broken workflow",
+      "summary": "Documenting a workflow that is broken and proposing a fix.",
+      "functions": [
+        "admin"
+      ],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "process improvement",
+        "operations"
+      ],
+      "blocks": {
+        "role": "Act as a process improvement analyst who fixes workflows in small organizations without buying new software.",
+        "context": "Analyze this broken process.\n- Process name and what it is supposed to accomplish: {{PROCESS_NAME_AND_WHAT_IT_IS_SUPPOSED_TO_ACCOMP}}\n- How it currently works, step by step: {{HOW_IT_CURRENTLY_WORKS_STEP_BY_STEP}}\n- Who touches it: {{WHO_TOUCHES_IT}}\n- How long it currently takes: {{HOW_LONG_IT_CURRENTLY_TAKES}}\n- What goes wrong and how often: {{WHAT_GOES_WRONG_AND_HOW_OFTEN}}\n- What it costs us when it fails: {{WHAT_IT_COSTS_US_WHEN_IT_FAILS}}\n- Constraints I cannot change: {{SOFTWARE_POLICY_STAFFING_FUNDER_REQUIREMENTS}}\n- What has already been tried: {{WHAT_HAS_ALREADY_BEEN_TRIED}}",
+        "steps": [
+          "Separate what the process requires from what it has simply always done.",
+          "Work within my stated constraints."
+        ],
+        "output": "Output format:\n1. The current process as a numbered flow, marking each step Value-adding, Necessary-but-not-value-adding, or Waste\n2. A problems table: Problem | Root cause | Frequency | Cost\n3. A proposed process as a numbered flow, with the time saved\n4. A change table: What changes | Who is affected | Effort to implement | Expected benefit\n5. A sequenced implementation plan starting with the change that is cheapest and least disruptive\n6. Who will resist this and the legitimate concern underneath their resistance",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "PROCESS_NAME_AND_WHAT_IT_IS_SUPPOSED_TO_ACCOMP",
+          "label": "Process name and what it is supposed to accomplish",
+          "default": ""
+        },
+        {
+          "key": "HOW_IT_CURRENTLY_WORKS_STEP_BY_STEP",
+          "label": "How it currently works, step by step",
+          "default": ""
+        },
+        {
+          "key": "WHO_TOUCHES_IT",
+          "label": "Who touches it",
+          "default": ""
+        },
+        {
+          "key": "HOW_LONG_IT_CURRENTLY_TAKES",
+          "label": "How long it currently takes",
+          "default": ""
+        },
+        {
+          "key": "WHAT_GOES_WRONG_AND_HOW_OFTEN",
+          "label": "What goes wrong and how often",
+          "default": ""
+        },
+        {
+          "key": "WHAT_IT_COSTS_US_WHEN_IT_FAILS",
+          "label": "What it costs us when it fails",
+          "default": ""
+        },
+        {
+          "key": "SOFTWARE_POLICY_STAFFING_FUNDER_REQUIREMENTS",
+          "label": "Constraints I cannot change",
+          "default": ""
+        },
+        {
+          "key": "WHAT_HAS_ALREADY_BEEN_TRIED",
+          "label": "What has already been tried",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
       "id": "cover-letter-draft",
       "title": "Draft a cover letter that is not the resume in paragraphs",
       "summary": "Writes a short letter built on why this job, one piece of proof, and one honest concern addressed.",
@@ -753,6 +1814,158 @@
       "source": "frwdb",
       "placeholders": [],
       "notes": ""
+    },
+    {
+      "id": "draft-a-funder-progress-report",
+      "title": "Draft a funder progress report",
+      "summary": "Turning raw program data into a funder progress report.",
+      "functions": [
+        "grants",
+        "research"
+      ],
+      "category": "draft",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "reporting",
+        "performance",
+        "compliance"
+      ],
+      "blocks": {
+        "role": "Act as a compliance and reporting manager who prepares performance reports for public funders.",
+        "context": "Draft a progress report.\n- Funder and grant number: {{FUNDER_AND_GRANT_NUMBER}}\n- Reporting period: {{REPORTING_PERIOD}}\n- Contracted targets: {{CONTRACTED_TARGETS}}\n- Actual performance: {{ACTUAL_PERFORMANCE}}\n- Reasons for any variance: {{REASONS_FOR_ANY_VARIANCE}}\n- Corrective actions underway: {{CORRECTIVE_ACTIONS_UNDERWAY}}\n- Narrative questions the funder asks: {{NARRATIVE_QUESTIONS_THE_FUNDER_ASKS}}\n- Word or page limits: {{WORD_OR_PAGE_LIMITS}}",
+        "steps": [
+          "If a required measure is missing from what I provided, list it rather than estimating."
+        ],
+        "output": "Output format:\n1. A performance table: Measure | Target | Actual | Percent of target | Status (On track / At risk / Off track)\n2. A narrative answering each funder question in order, under its own heading\n3. A variance explanation for every measure below 90 percent of target, each with a cause and a corrective action with a date\n4. A \"verify before submission\" checklist of every number in the draft, with where it should be confirmed against the system of record",
+        "constraints": [
+          "Report shortfalls plainly, then explain them.",
+          "Do not bury a missed target in a paragraph of context.",
+          "Use only the numbers I gave you."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "FUNDER_AND_GRANT_NUMBER",
+          "label": "Funder and grant number",
+          "default": ""
+        },
+        {
+          "key": "REPORTING_PERIOD",
+          "label": "Reporting period",
+          "default": ""
+        },
+        {
+          "key": "CONTRACTED_TARGETS",
+          "label": "Contracted targets",
+          "default": ""
+        },
+        {
+          "key": "ACTUAL_PERFORMANCE",
+          "label": "Actual performance",
+          "default": ""
+        },
+        {
+          "key": "REASONS_FOR_ANY_VARIANCE",
+          "label": "Reasons for any variance",
+          "default": ""
+        },
+        {
+          "key": "CORRECTIVE_ACTIONS_UNDERWAY",
+          "label": "Corrective actions underway",
+          "default": ""
+        },
+        {
+          "key": "NARRATIVE_QUESTIONS_THE_FUNDER_ASKS",
+          "label": "Narrative questions the funder asks",
+          "default": ""
+        },
+        {
+          "key": "WORD_OR_PAGE_LIMITS",
+          "label": "Word or page limits",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Uses only the figures you supply and flags missing required measures rather than estimating."
+    },
+    {
+      "id": "draft-a-grant-statement-of-need",
+      "title": "Draft a grant statement of need",
+      "summary": "Drafting the statement of need section of a grant application.",
+      "functions": [
+        "grants"
+      ],
+      "category": "draft",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "grant writing",
+        "statement of need",
+        "NOFO"
+      ],
+      "blocks": {
+        "role": "Act as a grant writer with a strong record on competitive federal, state, and foundation applications.",
+        "context": "Draft a statement of need.\n- Funder and program: {{FUNDER_AND_PROGRAM}}\n- Exact prompt or question from the application: {{EXACT_PROMPT_OR_QUESTION_FROM_THE_APPLICATION}}\n- Word or character limit: {{WORD_OR_CHARACTER_LIMIT}}\n- Community or population served: {{COMMUNITY_OR_POPULATION_SERVED}}\n- Data I have: {{DATA_I_HAVE}}\n- What makes this need urgent now: {{WHAT_MAKES_THIS_NEED_URGENT_NOW}}\n- The funder's stated priorities: {{THE_FUNDER_S_STATED_PRIORITIES}}",
+        "steps": [
+          "If I gave you no data for a claim you think is necessary, put it in the Gaps list instead of writing it."
+        ],
+        "output": "Output format:\n1. The narrative, within the stated limit\n2. A source table: Claim | Data point used | Source and year I gave you\n3. A \"Gaps\" list naming every place the argument would be stronger with data I did not provide, and exactly what to look for\n4. One sentence on how this draft connects to the funder's stated priorities",
+        "constraints": [
+          "Lead with the specific population and place, not with a national statistic.",
+          "Every claim must trace to data I provided.",
+          "Do not invent, estimate, or round statistics."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "FUNDER_AND_PROGRAM",
+          "label": "Funder and program",
+          "default": ""
+        },
+        {
+          "key": "EXACT_PROMPT_OR_QUESTION_FROM_THE_APPLICATION",
+          "label": "Exact prompt or question from the application",
+          "default": ""
+        },
+        {
+          "key": "WORD_OR_CHARACTER_LIMIT",
+          "label": "Word or character limit",
+          "default": ""
+        },
+        {
+          "key": "COMMUNITY_OR_POPULATION_SERVED",
+          "label": "Community or population served",
+          "default": ""
+        },
+        {
+          "key": "DATA_I_HAVE",
+          "label": "Data I have",
+          "default": ""
+        },
+        {
+          "key": "WHAT_MAKES_THIS_NEED_URGENT_NOW",
+          "label": "What makes this need urgent now",
+          "default": ""
+        },
+        {
+          "key": "THE_FUNDER_S_STATED_PRIORITIES",
+          "label": "The funder's stated priorities",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Refuses to invent or estimate statistics; unsupported claims go to a gaps list."
     },
     {
       "id": "performance-narrative",
@@ -796,6 +2009,341 @@
           "default": "Fresno Regional Workforce Development Board"
         }
       ],
+      "notes": ""
+    },
+    {
+      "id": "draft-formal-board-or-committee-minutes",
+      "title": "Draft formal board or committee minutes",
+      "summary": "Producing formal board or committee minutes that meet governance expectations.",
+      "functions": [
+        "admin"
+      ],
+      "category": "summarize",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "minutes",
+        "board",
+        "governance"
+      ],
+      "blocks": {
+        "role": "Act as a corporate secretary experienced in nonprofit and public board governance.",
+        "context": "Draft formal minutes for this meeting.\n- Governing body: {{GOVERNING_BODY}}\n- Date, time, and location: {{DATE_TIME_AND_LOCATION}}\n- Members present, absent, and any who arrived or left mid-meeting: {{MEMBERS_PRESENT_ABSENT_AND_ANY_WHO_ARRIVED_OR}}\n- Staff and guests present: {{STAFF_AND_GUESTS_PRESENT}}\n- Quorum requirement and whether it was met: {{QUORUM_REQUIREMENT_AND_WHETHER_IT_WAS_MET}}\n- Notes or transcript from the meeting: {{NOTES_OR_TRANSCRIPT_FROM_THE_MEETING}}",
+        "steps": [
+          "Formal minutes record actions, not conversation.",
+          "Summarize discussion in a sentence or two; record motions in full.",
+          "Flag anything my notes do not establish \u2014 especially vote counts, exact motion wording, and times \u2014 in a separate list at the end rather than filling it in."
+        ],
+        "output": "Output format:\n- Standard minutes structure: Call to order, Roll call and quorum, Approval of prior minutes, then one numbered section per agenda item, then Adjournment with time\n- Every motion recorded as: motion text, who moved, who seconded, and the vote result including abstentions and recusals\n- Use past tense and third person throughout\n- End with a signature block for the presiding officer and the recording secretary",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "GOVERNING_BODY",
+          "label": "Governing body",
+          "default": ""
+        },
+        {
+          "key": "DATE_TIME_AND_LOCATION",
+          "label": "Date, time, and location",
+          "default": ""
+        },
+        {
+          "key": "MEMBERS_PRESENT_ABSENT_AND_ANY_WHO_ARRIVED_OR",
+          "label": "Members present, absent, and any who arrived or left mid-meeting",
+          "default": ""
+        },
+        {
+          "key": "STAFF_AND_GUESTS_PRESENT",
+          "label": "Staff and guests present",
+          "default": ""
+        },
+        {
+          "key": "QUORUM_REQUIREMENT_AND_WHETHER_IT_WAS_MET",
+          "label": "Quorum requirement and whether it was met",
+          "default": ""
+        },
+        {
+          "key": "NOTES_OR_TRANSCRIPT_FROM_THE_MEETING",
+          "label": "Notes or transcript from the meeting",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "draft-program-design-and-a-logic-model",
+      "title": "Draft program design and a logic model",
+      "summary": "Writing the program design section so the activities connect to the outcomes.",
+      "functions": [
+        "grants"
+      ],
+      "category": "draft",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "grant writing",
+        "program design",
+        "logic model"
+      ],
+      "blocks": {
+        "role": "Act as a program design consultant who writes fundable program narratives and logic models.",
+        "context": "Draft the program design section.\n- Funding opportunity: {{FUNDING_OPPORTUNITY}}\n- Exact application prompt: {{EXACT_APPLICATION_PROMPT}}\n- Word limit: {{WORD_LIMIT}}\n- Who we will serve and how many: {{WHO_WE_WILL_SERVE_AND_HOW_MANY}}\n- What we will actually do: {{WHAT_WE_WILL_ACTUALLY_DO}}\n- Staffing: {{STAFFING}}\n- Partners and their committed roles: {{PARTNERS_AND_THEIR_COMMITTED_ROLES}}\n- Outcomes we are promising: {{OUTCOMES_WE_ARE_PROMISING}}\n- Timeline: {{TIMELINE}}",
+        "steps": [
+          "If an activity leads nowhere, or an outcome has no activity producing it, say so."
+        ],
+        "output": "Output format:\n1. The narrative, within the word limit\n2. A logic model table: Inputs | Activities | Outputs | Short-term outcomes | Long-term outcomes\n3. A gap check listing any outcome not supported by an activity, and any activity not tied to an outcome\n4. A milestone table by quarter: Quarter | Milestone | Responsible position | How we will know it happened\n5. Three questions a skeptical reviewer would ask about feasibility",
+        "constraints": [
+          "Every activity must visibly lead to a stated outcome."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "FUNDING_OPPORTUNITY",
+          "label": "Funding opportunity",
+          "default": ""
+        },
+        {
+          "key": "EXACT_APPLICATION_PROMPT",
+          "label": "Exact application prompt",
+          "default": ""
+        },
+        {
+          "key": "WORD_LIMIT",
+          "label": "Word limit",
+          "default": ""
+        },
+        {
+          "key": "WHO_WE_WILL_SERVE_AND_HOW_MANY",
+          "label": "Who we will serve and how many",
+          "default": ""
+        },
+        {
+          "key": "WHAT_WE_WILL_ACTUALLY_DO",
+          "label": "What we will actually do",
+          "default": ""
+        },
+        {
+          "key": "STAFFING",
+          "label": "Staffing",
+          "default": ""
+        },
+        {
+          "key": "PARTNERS_AND_THEIR_COMMITTED_ROLES",
+          "label": "Partners and their committed roles",
+          "default": ""
+        },
+        {
+          "key": "OUTCOMES_WE_ARE_PROMISING",
+          "label": "Outcomes we are promising",
+          "default": ""
+        },
+        {
+          "key": "TIMELINE",
+          "label": "Timeline",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "error-proof-a-data-entry-template",
+      "title": "Error-proof a data entry template",
+      "summary": "Error-proofing a template before other people start typing into it.",
+      "functions": [
+        "research",
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "Excel",
+        "data validation",
+        "templates"
+      ],
+      "blocks": {
+        "role": "Act as a spreadsheet designer who builds data entry templates for staff with varying skill levels.",
+        "context": "Help me protect this template from entry errors.\n- What the template collects: {{WHAT_THE_TEMPLATE_COLLECTS}}\n- Columns and what each should contain: {{COLUMNS_AND_WHAT_EACH_SHOULD_CONTAIN}}\n- Who fills it in: {{WHO_FILLS_IT_IN}}\n- How the data gets used afterward: {{HOW_THE_DATA_GETS_USED_AFTERWARD}}\n- Program: {{EXCEL_GOOGLE_SHEETS}}",
+        "steps": [
+          "The goal is that a wrong entry becomes impossible or obvious, not that it gets caught later."
+        ],
+        "output": "Output format:\n1. A validation table: Column | Rule | How to set it up (exact menu path) | Error message to display\n2. Which columns need dropdown lists, and where the source list should live\n3. Conditional formatting rules that make problems visible, with the exact condition and the color\n4. Which cells and sheets to lock, and what to leave editable\n5. Three short instructions to put at the top of the sheet for the person entering data, written in their language not mine",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_THE_TEMPLATE_COLLECTS",
+          "label": "What the template collects",
+          "default": ""
+        },
+        {
+          "key": "COLUMNS_AND_WHAT_EACH_SHOULD_CONTAIN",
+          "label": "Columns and what each should contain",
+          "default": ""
+        },
+        {
+          "key": "WHO_FILLS_IT_IN",
+          "label": "Who fills it in",
+          "default": ""
+        },
+        {
+          "key": "HOW_THE_DATA_GETS_USED_AFTERWARD",
+          "label": "How the data gets used afterward",
+          "default": ""
+        },
+        {
+          "key": "EXCEL_GOOGLE_SHEETS",
+          "label": "Program",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "fix-the-tone-of-a-draft-you-wrote",
+      "title": "Fix the tone of a draft you wrote",
+      "summary": "Fixing the tone of something you have already written.",
+      "functions": [
+        "admin"
+      ],
+      "category": "review",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "editing",
+        "tone",
+        "revision"
+      ],
+      "blocks": {
+        "role": "Act as a professional editor who specializes in tone, not grammar.",
+        "context": "Context:\n- Who receives it: {{WHO_RECEIVES_IT}}\n- What I want them to feel: {{CONFIDENT_REASSURED_URGENT_RESPECTED_CHOOSE}}\n- What I want them to do: {{WHAT_I_WANT_THEM_TO_DO}}\n- What I am worried my draft sounds like: {{DEFENSIVE_COLD_TOO_SOFT_RAMBLING}}",
+        "steps": [
+          "Here is a draft I wrote:\n{{HERE_IS_A_DRAFT_I_WROTE}}",
+          "Edit my draft and preserve my voice and my facts.",
+          "If my draft already achieves the goal, say so plainly and change nothing."
+        ],
+        "output": "Output format:\n1. The edited version with your changes in place\n2. A table with columns: Original phrase | Revised phrase | Why it changed\n3. One sentence naming the single riskiest line in my original draft and what it might trigger in the reader",
+        "constraints": [
+          "Do not rewrite it from scratch."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "HERE_IS_A_DRAFT_I_WROTE",
+          "label": "Here is a draft I wrote",
+          "default": ""
+        },
+        {
+          "key": "WHO_RECEIVES_IT",
+          "label": "Who receives it",
+          "default": ""
+        },
+        {
+          "key": "CONFIDENT_REASSURED_URGENT_RESPECTED_CHOOSE",
+          "label": "What I want them to feel",
+          "default": ""
+        },
+        {
+          "key": "WHAT_I_WANT_THEM_TO_DO",
+          "label": "What I want them to do",
+          "default": ""
+        },
+        {
+          "key": "DEFENSIVE_COLD_TOO_SOFT_RAMBLING",
+          "label": "What I am worried my draft sounds like",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "follow-up-on-an-ignored-email",
+      "title": "Follow up on an ignored email",
+      "summary": "Following up on an email that has been ignored, without sounding annoyed.",
+      "functions": [
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "follow-up",
+        "escalation"
+      ],
+      "blocks": {
+        "role": "Act as an executive assistant who is exceptionally good at getting responses from busy people.",
+        "context": "Write a follow-up email chain for a message that has gone unanswered.\n- What I originally asked for: {{WHAT_I_ORIGINALLY_ASKED_FOR}}\n- When I sent it: {{WHEN_I_SENT_IT}}\n- Recipient and their role: {{RECIPIENT_AND_THEIR_ROLE}}\n- Why it matters now: {{WHY_IT_MATTERS_NOW}}\n- My leverage or lack of it: {{MY_LEVERAGE_OR_LACK_OF_IT}}",
+        "steps": [
+          "Give me a three-message escalation, each written to be sent about a week apart:\n1.",
+          "Gentle nudge, under 50 words\n2.",
+          "Firmer with a stated deadline, under 75 words\n3.",
+          "Final message that names the consequence and offers an easy exit, under 75 words",
+          "No guilt-tripping, no \"just circling back,\" no \"per my last email.\""
+        ],
+        "output": "Output as a table with columns: Message, Timing, Subject line, Body.",
+        "constraints": [
+          "Each message must be able to stand alone if the recipient never read the earlier ones."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_I_ORIGINALLY_ASKED_FOR",
+          "label": "What I originally asked for",
+          "default": ""
+        },
+        {
+          "key": "WHEN_I_SENT_IT",
+          "label": "When I sent it",
+          "default": ""
+        },
+        {
+          "key": "RECIPIENT_AND_THEIR_ROLE",
+          "label": "Recipient and their role",
+          "default": ""
+        },
+        {
+          "key": "WHY_IT_MATTERS_NOW",
+          "label": "Why it matters now",
+          "default": ""
+        },
+        {
+          "key": "MY_LEVERAGE_OR_LACK_OF_IT",
+          "label": "My leverage or lack of it",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
       "notes": ""
     },
     {
@@ -902,6 +2450,197 @@
       }
     },
     {
+      "id": "outline-a-community-resource-guide",
+      "title": "Outline a community resource guide",
+      "summary": "Outlining a community resource guide for staff or clients.",
+      "functions": [
+        "case-management"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "resource guide",
+        "referrals"
+      ],
+      "blocks": {
+        "role": "Act as a resource navigator who builds referral directories for case managers and community members.",
+        "context": "Outline a community resource guide.\n- Geographic area: {{GEOGRAPHIC_AREA}}\n- Who will use it: {{STAFF_CLIENTS_BOTH}}\n- Needs it should cover: {{NEEDS_IT_SHOULD_COVER}}\n- Format: {{PRINTED_HANDOUT_INTERNAL_PDF_WEBSITE_PAGE}}\n- Length limit: {{LENGTH_LIMIT}}\n- Languages needed: {{LANGUAGES_NEEDED}}",
+        "steps": [
+          "I will supply the actual organizations and contact details \u2014 do not generate provider names, phone numbers, addresses, or hours, because inaccurate referral information causes real harm."
+        ],
+        "output": "Output format:\n1. A category structure with a plain-language name for each section, ordered by how urgently people usually need them\n2. A standard entry template specifying exactly which fields each listing must carry, including eligibility, cost, walk-in versus appointment, languages, and accessibility\n3. Section introductions of two sentences each, explaining who that section is for\n4. A one-page quick-reference structure for crisis and same-day needs\n5. A maintenance plan: how often to verify each listing, who owns verification, and how a user reports a bad listing",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "GEOGRAPHIC_AREA",
+          "label": "Geographic area",
+          "default": ""
+        },
+        {
+          "key": "STAFF_CLIENTS_BOTH",
+          "label": "Who will use it",
+          "default": ""
+        },
+        {
+          "key": "NEEDS_IT_SHOULD_COVER",
+          "label": "Needs it should cover \u2014 list \u2014 e.g. housing, food, childcare, transportation, legal, behavioral health",
+          "default": ""
+        },
+        {
+          "key": "PRINTED_HANDOUT_INTERNAL_PDF_WEBSITE_PAGE",
+          "label": "Format",
+          "default": ""
+        },
+        {
+          "key": "LENGTH_LIMIT",
+          "label": "Length limit",
+          "default": ""
+        },
+        {
+          "key": "LANGUAGES_NEEDED",
+          "label": "Languages needed",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Will not generate provider names, phone numbers, addresses, or hours. You supply those."
+    },
+    {
+      "id": "plan-a-dashboard-around-real-decisions",
+      "title": "Plan a dashboard around real decisions",
+      "summary": "Planning a dashboard before building it, so it answers real questions.",
+      "functions": [
+        "research"
+      ],
+      "category": "plan",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "dashboard",
+        "metrics",
+        "data visualization"
+      ],
+      "blocks": {
+        "role": "Act as a data visualization designer who builds dashboards for operational managers, not for data specialists.",
+        "context": "Plan a dashboard for me.\n- Who will look at it and how often: {{WHO_WILL_LOOK_AT_IT_AND_HOW_OFTEN}}\n- The decisions they need to make from it: {{THE_DECISIONS_THEY_NEED_TO_MAKE_FROM_IT}}\n- The data I have available, by field: {{THE_DATA_I_HAVE_AVAILABLE_BY_FIELD}}\n- How often the data refreshes: {{HOW_OFTEN_THE_DATA_REFRESHES}}\n- Tool: {{EXCEL_GOOGLE_SHEETS_POWER_BI_TABLEAU_OTHER}}\n- Screen it will be viewed on: {{LAPTOP_PROJECTED_IN_MEETINGS_PHONE}}",
+        "steps": [
+          "Anything that does not change a decision does not go on the dashboard."
+        ],
+        "output": "Output format:\n1. A metrics table: Metric | The decision it drives | Calculation | Source fields | Refresh frequency\n2. A layout description, top to bottom, explaining what goes where and why that order\n3. For each element, the chart type and one sentence on why that type and not another\n4. A \"cut these\" list of metrics I mentioned or would be tempted to add that do not earn their space\n5. The three comparisons that make each number meaningful (versus target, versus last period, versus peer)",
+        "constraints": [
+          "Start from the decisions, not from the data."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHO_WILL_LOOK_AT_IT_AND_HOW_OFTEN",
+          "label": "Who will look at it and how often",
+          "default": ""
+        },
+        {
+          "key": "THE_DECISIONS_THEY_NEED_TO_MAKE_FROM_IT",
+          "label": "The decisions they need to make from it",
+          "default": ""
+        },
+        {
+          "key": "THE_DATA_I_HAVE_AVAILABLE_BY_FIELD",
+          "label": "The data I have available, by field",
+          "default": ""
+        },
+        {
+          "key": "HOW_OFTEN_THE_DATA_REFRESHES",
+          "label": "How often the data refreshes",
+          "default": ""
+        },
+        {
+          "key": "EXCEL_GOOGLE_SHEETS_POWER_BI_TABLEAU_OTHER",
+          "label": "Tool",
+          "default": ""
+        },
+        {
+          "key": "LAPTOP_PROJECTED_IN_MEETINGS_PHONE",
+          "label": "Screen it will be viewed on",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "plan-a-repeatable-data-cleaning-pass",
+      "title": "Plan a repeatable data cleaning pass",
+      "summary": "Writing a cleaning plan for a messy data export before you touch it.",
+      "functions": [
+        "research"
+      ],
+      "category": "plan",
+      "complexity": "high",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": [
+        "data cleaning",
+        "Power Query",
+        "data quality"
+      ],
+      "blocks": {
+        "role": "Act as a data analyst who cleans messy operational exports for a living.",
+        "context": "Context:\n- Where the data came from: {{WHERE_THE_DATA_CAME_FROM}}\n- Total row count: {{TOTAL_ROW_COUNT}}\n- What I need to do with it once it is clean: {{WHAT_I_NEED_TO_DO_WITH_IT_ONCE_IT_IS_CLEAN}}\n- Tool I will clean it in: {{EXCEL_GOOGLE_SHEETS_POWER_QUERY_OTHER}}",
+        "steps": [
+          "Here is a sample of my data:\n{{HERE_IS_A_SAMPLE_OF_MY_DATA}}",
+          "Give me a repeatable procedure I can run on the full file every time it exports."
+        ],
+        "output": "Output format:\n1. A findings table: Issue | Which column | How many rows in my sample | Why it matters downstream\n2. A numbered cleaning sequence, in the order the steps must be performed, each with the exact formula, menu path, or Power Query step\n3. A validation checklist to run after cleaning, with the expected result for each check\n4. A list of decisions only a human can make (which duplicate to keep, how to treat blanks) framed as questions for me to answer",
+        "constraints": [
+          "Do not clean the sample for me."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "HERE_IS_A_SAMPLE_OF_MY_DATA",
+          "label": "Here is a sample of my data",
+          "default": ""
+        },
+        {
+          "key": "WHERE_THE_DATA_CAME_FROM",
+          "label": "Where the data came from",
+          "default": ""
+        },
+        {
+          "key": "TOTAL_ROW_COUNT",
+          "label": "Total row count",
+          "default": ""
+        },
+        {
+          "key": "WHAT_I_NEED_TO_DO_WITH_IT_ONCE_IT_IS_CLEAN",
+          "label": "What I need to do with it once it is clean",
+          "default": ""
+        },
+        {
+          "key": "EXCEL_GOOGLE_SHEETS_POWER_QUERY_OTHER",
+          "label": "Tool I will clean it in",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
       "id": "outreach-email-sequence",
       "title": "Plan an outreach email sequence",
       "summary": "Builds a four-touch email sequence with subjects, timing, and rules for when to stop.",
@@ -949,6 +2688,152 @@
       ],
       "source": "frwdb",
       "sensitivity": "none",
+      "notes": ""
+    },
+    {
+      "id": "plan-event-and-training-logistics",
+      "title": "Plan event and training logistics",
+      "summary": "Planning the logistics for an event, training, or site visit.",
+      "functions": [
+        "admin",
+        "communications"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "events",
+        "logistics",
+        "accessibility"
+      ],
+      "blocks": {
+        "role": "Act as an events and logistics coordinator who runs professional convenings and community events.",
+        "context": "Build a logistics plan.\n- Event type and purpose: {{EVENT_TYPE_AND_PURPOSE}}\n- Date, time, and duration: {{DATE_TIME_AND_DURATION}}\n- Expected attendance: {{EXPECTED_ATTENDANCE}}\n- Venue status: {{SECURED_SEARCHING_INSERT_DETAILS}}\n- Budget: {{BUDGET}}\n- Format: {{IN_PERSON_VIRTUAL_HYBRID}}\n- Accessibility and language needs: {{ACCESSIBILITY_AND_LANGUAGE_NEEDS}}\n- Food, materials, and technology needed: {{FOOD_MATERIALS_AND_TECHNOLOGY_NEEDED}}\n- Who is helping: {{WHO_IS_HELPING}}",
+        "steps": [],
+        "output": "Output format:\n1. A timeline checklist in four blocks \u2014 6 weeks out, 2 weeks out, week of, and day of \u2014 each with columns Task | Owner | Deadline | Notes\n2. A day-of run sheet with times, from setup through teardown, naming who is where\n3. A materials and equipment list with quantities\n4. An accessibility checklist covering physical access, interpretation, captioning, materials in alternate formats, and dietary needs\n5. A contingency section: the five things most likely to go wrong and the response for each, including who has authority to make the call\n6. A single-page contact sheet structure for day-of coordination",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "EVENT_TYPE_AND_PURPOSE",
+          "label": "Event type and purpose",
+          "default": ""
+        },
+        {
+          "key": "DATE_TIME_AND_DURATION",
+          "label": "Date, time, and duration",
+          "default": ""
+        },
+        {
+          "key": "EXPECTED_ATTENDANCE",
+          "label": "Expected attendance",
+          "default": ""
+        },
+        {
+          "key": "SECURED_SEARCHING_INSERT_DETAILS",
+          "label": "Venue status",
+          "default": ""
+        },
+        {
+          "key": "BUDGET",
+          "label": "Budget",
+          "default": ""
+        },
+        {
+          "key": "IN_PERSON_VIRTUAL_HYBRID",
+          "label": "Format",
+          "default": ""
+        },
+        {
+          "key": "ACCESSIBILITY_AND_LANGUAGE_NEEDS",
+          "label": "Accessibility and language needs",
+          "default": ""
+        },
+        {
+          "key": "FOOD_MATERIALS_AND_TECHNOLOGY_NEEDED",
+          "label": "Food, materials, and technology needed",
+          "default": ""
+        },
+        {
+          "key": "WHO_IS_HELPING",
+          "label": "Who is helping",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "prep-yourself-for-a-high-stakes-meeting",
+      "title": "Prep yourself for a high-stakes meeting",
+      "summary": "Preparing a briefing for yourself before a meeting where you need to hold your own.",
+      "functions": [
+        "admin",
+        "business-services"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "meeting prep",
+        "briefing",
+        "negotiation"
+      ],
+      "blocks": {
+        "role": "Act as a chief of staff preparing your executive for an important meeting.",
+        "context": "Prepare me for this meeting:\n- Who I am meeting and their role: {{WHO_I_AM_MEETING_AND_THEIR_ROLE}}\n- Their likely goals and pressures: {{THEIR_LIKELY_GOALS_AND_PRESSURES}}\n- My goal for this meeting: {{MY_GOAL_FOR_THIS_MEETING}}\n- My minimum acceptable outcome: {{MY_MINIMUM_ACCEPTABLE_OUTCOME}}\n- Background and history between us: {{BACKGROUND_AND_HISTORY_BETWEEN_US}}\n- Relevant documents or data: {{RELEVANT_DOCUMENTS_OR_DATA}}",
+        "steps": [
+          "Give me a briefing I can read in four minutes.",
+          "Where you are inferring rather than using what I gave you, mark the line with (assumption)."
+        ],
+        "output": "Output format:\n1. \"Bottom line\" \u2014 my objective in one sentence\n2. Three talking points, each with the one number or fact that supports it\n3. Five questions they are most likely to ask me, each with a two-sentence answer\n4. Two questions I should ask them\n5. A \"If it goes sideways\" section: the two hardest objections and how I respond",
+        "constraints": [
+          "Do not invent facts about the other party."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHO_I_AM_MEETING_AND_THEIR_ROLE",
+          "label": "Who I am meeting and their role",
+          "default": ""
+        },
+        {
+          "key": "THEIR_LIKELY_GOALS_AND_PRESSURES",
+          "label": "Their likely goals and pressures",
+          "default": ""
+        },
+        {
+          "key": "MY_GOAL_FOR_THIS_MEETING",
+          "label": "My goal for this meeting",
+          "default": ""
+        },
+        {
+          "key": "MY_MINIMUM_ACCEPTABLE_OUTCOME",
+          "label": "My minimum acceptable outcome",
+          "default": ""
+        },
+        {
+          "key": "BACKGROUND_AND_HISTORY_BETWEEN_US",
+          "label": "Background and history between us",
+          "default": ""
+        },
+        {
+          "key": "RELEVANT_DOCUMENTS_OR_DATA",
+          "label": "Relevant documents or data",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
       "notes": ""
     },
     {
@@ -1001,6 +2886,329 @@
       }
     },
     {
+      "id": "prioritize-an-overloaded-week",
+      "title": "Prioritize an overloaded week",
+      "summary": "Prioritizing when everything on your list is marked urgent.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "prioritization",
+        "workload"
+      ],
+      "blocks": {
+        "role": "Act as a productivity coach who works with overloaded administrative and program staff.",
+        "context": "Context:\n- Hours I actually have this week: {{HOURS_I_ACTUALLY_HAVE_THIS_WEEK}}\n- Hard external deadlines: {{HARD_EXTERNAL_DEADLINES}}\n- Consequences of missing each deadline: {{CONSEQUENCES_OF_MISSING_EACH_DEADLINE}}\n- Tasks someone else could do: {{TASKS_SOMEONE_ELSE_COULD_DO}}\n- What my manager would say is most important: {{WHAT_MY_MANAGER_WOULD_SAY_IS_MOST_IMPORTANT}}",
+        "steps": [
+          "Help me prioritize this workload.\n{{PASTE_YOUR_TASK_LIST_INCLUDE_ANY_DEADLINES_AND}}",
+          "Tell me plainly if the list does not fit in the hours."
+        ],
+        "output": "Output format:\n1. A prioritized table: Task | Do it when | Estimated time | Consequence if delayed a week | Recommended action (Do / Delegate / Defer / Drop)\n2. A realistic plan for the week, showing what fits in my available hours and what does not\n3. A specific list of what to drop or defer, with one sentence each on how to communicate that\n4. A short script for telling the requester of the lowest-priority item that it will not happen this week",
+        "constraints": [
+          "Sort by consequence of delay, not by who asked loudest.",
+          "Do not tell me to work more hours or wake up earlier."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "PASTE_YOUR_TASK_LIST_INCLUDE_ANY_DEADLINES_AND",
+          "label": "PASTE YOUR TASK LIST \u2014 INCLUDE ANY DEADLINES AND WHO ASKED FOR EACH",
+          "default": ""
+        },
+        {
+          "key": "HOURS_I_ACTUALLY_HAVE_THIS_WEEK",
+          "label": "Hours I actually have this week",
+          "default": ""
+        },
+        {
+          "key": "HARD_EXTERNAL_DEADLINES",
+          "label": "Hard external deadlines",
+          "default": ""
+        },
+        {
+          "key": "CONSEQUENCES_OF_MISSING_EACH_DEADLINE",
+          "label": "Consequences of missing each deadline",
+          "default": ""
+        },
+        {
+          "key": "TASKS_SOMEONE_ELSE_COULD_DO",
+          "label": "Tasks someone else could do",
+          "default": ""
+        },
+        {
+          "key": "WHAT_MY_MANAGER_WOULD_SAY_IS_MOST_IMPORTANT",
+          "label": "What my manager would say is most important",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "pull-every-action-item-from-a-transcript",
+      "title": "Pull every action item from a transcript",
+      "summary": "Pulling every action item and owner out of a long transcript so nothing gets dropped.",
+      "functions": [
+        "admin"
+      ],
+      "category": "summarize",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "transcript",
+        "action items",
+        "accountability"
+      ],
+      "blocks": {
+        "role": "Act as a project manager who is responsible for making sure nothing agreed in a meeting gets forgotten.",
+        "context": "Additional context:\n- Team members present and their roles: {{TEAM_MEMBERS_PRESENT_AND_THEIR_ROLES}}\n- Our current project deadlines: {{OUR_CURRENT_PROJECT_DEADLINES}}\n- Today's date: {{TODAY_S_DATE}}",
+        "steps": [
+          "Paste the meeting text below.",
+          "If your meeting was recorded, export the transcript from your recording platform first and paste that text \u2014 I process written transcripts rather than audio files.",
+          "Extract every commitment, including the vague ones.",
+          "A commitment counts if someone said they would do something, or if a task was assigned and not refused.",
+          "Below the table, list every task that has no clear owner under the heading \"Needs an owner assigned.\" Do not assign owners yourself."
+        ],
+        "output": "Output format: a single table with columns Action | Owner | Stated due date | My suggested due date | Confidence (High/Medium/Low) | Exact phrase it came from.",
+        "constraints": [
+          "Set Confidence to Low where the owner or the task was never explicitly named."
+        ],
+        "data": "Transcript or notes:\n{{TRANSCRIPT_OR_NOTES}}"
+      },
+      "placeholders": [
+        {
+          "key": "TRANSCRIPT_OR_NOTES",
+          "label": "Transcript or notes",
+          "default": ""
+        },
+        {
+          "key": "TEAM_MEMBERS_PRESENT_AND_THEIR_ROLES",
+          "label": "Team members present and their roles",
+          "default": ""
+        },
+        {
+          "key": "OUR_CURRENT_PROJECT_DEADLINES",
+          "label": "Our current project deadlines",
+          "default": ""
+        },
+        {
+          "key": "TODAY_S_DATE",
+          "label": "Today's date",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Paste a text transcript rather than an audio or video file."
+    },
+    {
+      "id": "raise-a-missed-deadline-with-a-colleague",
+      "title": "Raise a missed deadline with a colleague",
+      "summary": "Raising a missed deadline with a colleague without damaging the working relationship.",
+      "functions": [
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "difficult conversation",
+        "deadlines"
+      ],
+      "blocks": {
+        "role": "Act as an experienced workplace communications coach who specializes in preserving working relationships during difficult conversations.",
+        "context": "I need to write an email to a colleague about a missed deadline. Here is the situation:\n- Who they are and our relationship: {{WHO_THEY_ARE_AND_OUR_RELATIONSHIP}}\n- What was due and when: {{WHAT_WAS_DUE_AND_WHEN}}\n- The impact of the delay: {{THE_IMPACT_OF_THE_DELAY}}\n- Whether this has happened before: {{WHETHER_THIS_HAS_HAPPENED_BEFORE}}\n- What I need from them now: {{WHAT_I_NEED_FROM_THEM_NOW}}",
+        "steps": [
+          "Write the email so it is direct about the problem but assumes good faith."
+        ],
+        "output": "Output format:\n1. A subject line under 8 words.\n2. The email body, 150 words maximum, in short paragraphs.\n3. Below the email, a 3-bullet list titled \"What this email is doing\" explaining the strategy so I can adjust it.",
+        "constraints": [
+          "Lead with the ask, not the grievance.",
+          "Do not use sarcasm, passive aggression, or a list of past failures.",
+          "Do not add pleasantries about the weather or weekends."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHO_THEY_ARE_AND_OUR_RELATIONSHIP",
+          "label": "Who they are and our relationship",
+          "default": ""
+        },
+        {
+          "key": "WHAT_WAS_DUE_AND_WHEN",
+          "label": "What was due and when",
+          "default": ""
+        },
+        {
+          "key": "THE_IMPACT_OF_THE_DELAY",
+          "label": "The impact of the delay",
+          "default": ""
+        },
+        {
+          "key": "WHETHER_THIS_HAS_HAPPENED_BEFORE",
+          "label": "Whether this has happened before \u2014 yes / no \u2014 add detail",
+          "default": ""
+        },
+        {
+          "key": "WHAT_I_NEED_FROM_THEM_NOW",
+          "label": "What I need from them now",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "reply-to-an-angry-complaint",
+      "title": "Reply to an angry complaint",
+      "summary": "Responding to an angry complaint from a client, participant, or member of the public.",
+      "functions": [
+        "case-management",
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "complaint",
+        "de-escalation"
+      ],
+      "blocks": {
+        "role": "Act as a customer relations manager with 15 years of experience de-escalating complaints in a public-facing service organization.",
+        "context": "Context you need:\n- My organization and role: {{MY_ORGANIZATION_AND_ROLE}}\n- What actually happened, from my side: {{WHAT_ACTUALLY_HAPPENED_FROM_MY_SIDE}}\n- What we can offer: {{WHAT_WE_CAN_OFFER}}\n- What we cannot offer: {{WHAT_WE_CANNOT_OFFER}}",
+        "steps": [
+          "Draft a reply to this complaint:\n{{DRAFT_A_REPLY_TO_THIS_COMPLAINT}}",
+          "Rules for the reply: acknowledge the specific frustration in the first two sentences before explaining anything.",
+          "Offer one concrete next step with a date."
+        ],
+        "output": "Output format:\n- Subject line\n- Reply body, 200 words maximum\n- A separate short section listing any statement in my complaint summary that I should verify before sending",
+        "constraints": [
+          "Never say \"I understand your frustration, but.\" Do not admit legal fault or promise anything outside the limits above."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "DRAFT_A_REPLY_TO_THIS_COMPLAINT",
+          "label": "Draft a reply to this complaint",
+          "default": ""
+        },
+        {
+          "key": "MY_ORGANIZATION_AND_ROLE",
+          "label": "My organization and role",
+          "default": ""
+        },
+        {
+          "key": "WHAT_ACTUALLY_HAPPENED_FROM_MY_SIDE",
+          "label": "What actually happened, from my side",
+          "default": ""
+        },
+        {
+          "key": "WHAT_WE_CAN_OFFER",
+          "label": "What we can offer",
+          "default": ""
+        },
+        {
+          "key": "WHAT_WE_CANNOT_OFFER",
+          "label": "What we cannot offer",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "request-and-compare-vendor-quotes",
+      "title": "Request and compare vendor quotes",
+      "summary": "Requesting quotes from vendors and comparing them on the same terms.",
+      "functions": [
+        "fiscal",
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "procurement",
+        "vendors"
+      ],
+      "blocks": {
+        "role": "Act as a procurement coordinator who runs small competitive solicitations for a public or nonprofit organization.",
+        "context": "Write a vendor inquiry and a comparison framework.\n- What we need to purchase: {{WHAT_WE_NEED_TO_PURCHASE}}\n- Quantity and specifications: {{QUANTITY_AND_SPECIFICATIONS}}\n- Budget range, if I am disclosing it: {{BUDGET_RANGE_IF_I_AM_DISCLOSING_IT}}\n- Delivery or completion date needed: {{DELIVERY_OR_COMPLETION_DATE_NEEDED}}\n- Number of vendors I am contacting: {{NUMBER_OF_VENDORS_I_AM_CONTACTING}}\n- Procurement rules that apply: {{PROCUREMENT_RULES_THAT_APPLY}}\n- Deadline for their response: {{DEADLINE_FOR_THEIR_RESPONSE}}",
+        "steps": [
+          "Every vendor must receive identical information so their quotes are comparable."
+        ],
+        "output": "Output format:\n1. An inquiry email under 250 words, including specifications, the response deadline, the format required, and my contact\n2. A specification list to attach, written so quotes cannot vary on what is included\n3. A comparison matrix I can fill in: Criterion | Weight | Vendor A | Vendor B | Vendor C \u2014 covering price, timeline, references, warranty, and total cost of ownership rather than sticker price alone\n4. Five questions to ask each vendor's references\n5. A short list of the red flags that should disqualify a vendor regardless of price",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_WE_NEED_TO_PURCHASE",
+          "label": "What we need to purchase",
+          "default": ""
+        },
+        {
+          "key": "QUANTITY_AND_SPECIFICATIONS",
+          "label": "Quantity and specifications",
+          "default": ""
+        },
+        {
+          "key": "BUDGET_RANGE_IF_I_AM_DISCLOSING_IT",
+          "label": "Budget range, if I am disclosing it",
+          "default": ""
+        },
+        {
+          "key": "DELIVERY_OR_COMPLETION_DATE_NEEDED",
+          "label": "Delivery or completion date needed",
+          "default": ""
+        },
+        {
+          "key": "NUMBER_OF_VENDORS_I_AM_CONTACTING",
+          "label": "Number of vendors I am contacting",
+          "default": ""
+        },
+        {
+          "key": "PROCUREMENT_RULES_THAT_APPLY",
+          "label": "Procurement rules that apply",
+          "default": ""
+        },
+        {
+          "key": "DEADLINE_FOR_THEIR_RESPONSE",
+          "label": "Deadline for their response",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
       "id": "email-rewrite-for-reply",
       "title": "Rewrite an email so it gets read and answered",
       "summary": "Cuts an email to its ask, fixes the subject line, and gives a short and a formal version.",
@@ -1042,6 +3250,193 @@
       ],
       "source": "frwdb",
       "sensitivity": "none",
+      "notes": ""
+    },
+    {
+      "id": "rewrite-jargon-in-plain-language",
+      "title": "Rewrite jargon in plain language",
+      "summary": "Turning dense technical or bureaucratic information into plain language for the public.",
+      "functions": [
+        "communications",
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "plain language",
+        "accessibility",
+        "public-facing"
+      ],
+      "blocks": {
+        "role": "Act as a plain-language editor who rewrites government and nonprofit material to a sixth-to-eighth grade reading level without losing accuracy.",
+        "context": "Context:\n- Who will read this: {{WHO_WILL_READ_THIS}}\n- Where it will appear: {{WEBSITE_FLYER_LETTER_INTAKE_FORM}}\n- What the reader needs to do after reading: {{WHAT_THE_READER_NEEDS_TO_DO_AFTER_READING}}\n- Any wording that is legally required and cannot change: {{ANY_WORDING_THAT_IS_LEGALLY_REQUIRED_AND_CANNO}}",
+        "steps": [
+          "Rewrite the following for a general public audience:\n{{REWRITE_THE_FOLLOWING_FOR_A_GENERAL_PUBLIC_AUD}}",
+          "Replace jargon and acronyms with everyday words, use active voice, and keep sentences under 20 words."
+        ],
+        "output": "Output format:\n1. The rewritten version\n2. A two-column table of every term you replaced: Original term | Plain-language replacement\n3. A short flag list of anything in the original that was ambiguous and needs a human decision",
+        "constraints": [
+          "Do not remove any requirement, deadline, or eligibility condition from the original."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "REWRITE_THE_FOLLOWING_FOR_A_GENERAL_PUBLIC_AUD",
+          "label": "Rewrite the following for a general public audience",
+          "default": ""
+        },
+        {
+          "key": "WHO_WILL_READ_THIS",
+          "label": "Who will read this",
+          "default": ""
+        },
+        {
+          "key": "WEBSITE_FLYER_LETTER_INTAKE_FORM",
+          "label": "Where it will appear",
+          "default": ""
+        },
+        {
+          "key": "WHAT_THE_READER_NEEDS_TO_DO_AFTER_READING",
+          "label": "What the reader needs to do after reading",
+          "default": ""
+        },
+        {
+          "key": "ANY_WORDING_THAT_IS_LEGALLY_REQUIRED_AND_CANNO",
+          "label": "Any wording that is legally required and cannot change",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "run-a-pre-mortem-before-launch",
+      "title": "Run a pre-mortem before launch",
+      "summary": "Finding what will go wrong before you launch something.",
+      "functions": [
+        "admin"
+      ],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "risk",
+        "pre-mortem",
+        "planning"
+      ],
+      "blocks": {
+        "role": "Act as a risk analyst running a pre-mortem exercise for an operations team.",
+        "context": "Run a pre-mortem on this plan.\n- What we are launching or changing: {{WHAT_WE_ARE_LAUNCHING_OR_CHANGING}}\n- Launch date: {{LAUNCH_DATE}}\n- Who is affected: {{INTERNAL_AND_EXTERNAL_LIST}}\n- What success looks like: {{WHAT_SUCCESS_LOOKS_LIKE}}\n- Dependencies outside our control: {{DEPENDENCIES_OUTSIDE_OUR_CONTROL}}\n- Resources committed: {{PEOPLE_BUDGET_TIME}}\n- What we have already worried about: {{WHAT_WE_HAVE_ALREADY_WORRIED_ABOUT}}",
+        "steps": [
+          "Work backward from the failure to the causes.",
+          "Include the causes that are awkward to name \u2014 unclear ownership, an assumption nobody verified, a person who was never actually asked."
+        ],
+        "output": "Output format:\n1. Five failure scenarios, each written as a short narrative of what happened\n2. A risk table: Risk | Early warning sign | Likelihood | Impact | Owner | Mitigation\n3. The three risks that deserve attention now, ranked, with the specific action for each\n4. The assumptions in this plan that nobody has verified, phrased as questions to go answer\n5. One \"kill criteria\" statement: the condition under which we should stop rather than push through",
+        "constraints": [
+          "Assume it is six months from now and this failed badly."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "WHAT_WE_ARE_LAUNCHING_OR_CHANGING",
+          "label": "What we are launching or changing",
+          "default": ""
+        },
+        {
+          "key": "LAUNCH_DATE",
+          "label": "Launch date",
+          "default": ""
+        },
+        {
+          "key": "INTERNAL_AND_EXTERNAL_LIST",
+          "label": "Who is affected",
+          "default": ""
+        },
+        {
+          "key": "WHAT_SUCCESS_LOOKS_LIKE",
+          "label": "What success looks like",
+          "default": ""
+        },
+        {
+          "key": "DEPENDENCIES_OUTSIDE_OUR_CONTROL",
+          "label": "Dependencies outside our control",
+          "default": ""
+        },
+        {
+          "key": "PEOPLE_BUDGET_TIME",
+          "label": "Resources committed",
+          "default": ""
+        },
+        {
+          "key": "WHAT_WE_HAVE_ALREADY_WORRIED_ABOUT",
+          "label": "What we have already worried about",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "separate-decisions-from-open-questions",
+      "title": "Separate decisions from open questions",
+      "summary": "Separating what was actually decided from what is still open.",
+      "functions": [
+        "admin"
+      ],
+      "category": "analyze",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "decision log",
+        "documentation"
+      ],
+      "blocks": {
+        "role": "Act as a program manager who keeps a decision log so teams stop relitigating settled questions.",
+        "context": "Context:\n- Project or initiative: {{PROJECT_OR_INITIATIVE}}\n- Who has authority to make final decisions: {{WHO_HAS_AUTHORITY_TO_MAKE_FINAL_DECISIONS}}",
+        "steps": [
+          "Review this meeting record:\n{{REVIEW_THIS_MEETING_RECORD}}",
+          "Sort everything discussed into one of three buckets and nothing else: Decided, Still open, or Not actually discussed but assumed.",
+          "If nobody with authority actually said yes, it goes in table 2 or 3, not table 1."
+        ],
+        "output": "Output format, three tables:\n1. Decided \u2014 columns: Decision | Who decided | Date effective | What it now rules out\n2. Still open \u2014 columns: Question | Who must resolve it | What is blocking it | By when\n3. Assumed but never confirmed \u2014 columns: Assumption | Who seems to hold it | Risk if wrong",
+        "constraints": [
+          "Be strict about the first table."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "REVIEW_THIS_MEETING_RECORD",
+          "label": "Review this meeting record",
+          "default": ""
+        },
+        {
+          "key": "PROJECT_OR_INITIATIVE",
+          "label": "Project or initiative",
+          "default": ""
+        },
+        {
+          "key": "WHO_HAS_AUTHORITY_TO_MAKE_FINAL_DECISIONS",
+          "label": "Who has authority to make final decisions",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
       "notes": ""
     },
     {
@@ -1160,6 +3555,69 @@
       "notes": ""
     },
     {
+      "id": "summarize-open-ended-survey-results",
+      "title": "Summarize open-ended survey results",
+      "summary": "Summarizing open-ended survey results into something reportable.",
+      "functions": [
+        "research"
+      ],
+      "category": "analyze",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": [
+        "survey",
+        "qualitative analysis"
+      ],
+      "blocks": {
+        "role": "Act as a research analyst who summarizes survey data for program staff and funders.",
+        "context": "Context:\n- What the survey asked: {{WHAT_THE_SURVEY_ASKED}}\n- Who responded and how many: {{WHO_RESPONDED_AND_HOW_MANY}}\n- Response rate, if known: {{RESPONSE_RATE_IF_KNOWN}}\n- What decision this summary will inform: {{WHAT_DECISION_THIS_SUMMARY_WILL_INFORM}}",
+        "steps": [
+          "Here are my survey results:\n{{HERE_ARE_MY_SURVEY_RESULTS}}",
+          "For open-ended responses, build themes from what people actually wrote.",
+          "Report how many responses fall in each theme, and do not merge distinct complaints into one comfortable category.",
+          "With fewer than 30 responses, report counts rather than percentages."
+        ],
+        "output": "Output format:\n1. A themes table: Theme | Count | Percent of responses | One representative response, lightly trimmed\n2. Three findings stated in plain sentences, each tied to its numbers\n3. Anything notable in what was not said\n4. A \"Read this carefully\" section naming the limits of this data: sample size, self-selection, question wording problems",
+        "constraints": [
+          "Do not round percentages to make them look tidier than the sample supports."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "HERE_ARE_MY_SURVEY_RESULTS",
+          "label": "Here are my survey results",
+          "default": ""
+        },
+        {
+          "key": "WHAT_THE_SURVEY_ASKED",
+          "label": "What the survey asked",
+          "default": ""
+        },
+        {
+          "key": "WHO_RESPONDED_AND_HOW_MANY",
+          "label": "Who responded and how many",
+          "default": ""
+        },
+        {
+          "key": "RESPONSE_RATE_IF_KNOWN",
+          "label": "Response rate, if known",
+          "default": ""
+        },
+        {
+          "key": "WHAT_DECISION_THIS_SUMMARY_WILL_INFORM",
+          "label": "What decision this summary will inform",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
       "id": "resume-tailor-posting",
       "title": "Tailor a resume to a specific job posting",
       "summary": "Maps a job seeker's experience against a posting's requirements and rewrites the bullets that matter.",
@@ -1242,6 +3700,69 @@
       "source": "frwdb",
       "sensitivity": "none",
       "notes": ""
+    },
+    {
+      "id": "translate-a-compliance-requirement-for-staff",
+      "title": "Translate a compliance requirement for staff",
+      "summary": "Translating a dense compliance requirement into instructions staff can follow.",
+      "functions": [
+        "grants",
+        "research"
+      ],
+      "category": "analyze",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "compliance",
+        "policy",
+        "plain language"
+      ],
+      "blocks": {
+        "role": "Act as a compliance analyst who translates regulation into operational guidance for frontline staff.",
+        "context": "Context:\n- Source and citation: {{SOURCE_AND_CITATION}}\n- Who has to comply day to day: {{WHO_HAS_TO_COMPLY_DAY_TO_DAY}}\n- What we currently do: {{WHAT_WE_CURRENTLY_DO}}\n- Effective date or deadline: {{EFFECTIVE_DATE_OR_DEADLINE}}",
+        "steps": [
+          "Here is the requirement:\n{{HERE_IS_THE_REQUIREMENT}}"
+        ],
+        "output": "Output format:\n1. \"What this requires\" in three sentences a new employee would understand\n2. A requirements table: Requirement | What staff must do | Who does it | What documentation proves we did it | How often\n3. What is explicitly prohibited\n4. Deadlines and retention periods as a dated list\n5. A gap analysis comparing my current practice against each requirement: Compliant / Partially compliant / Not compliant, with the specific gap\n6. The ambiguities in this text that need an interpretation from our funder or counsel, phrased as questions I can send them",
+        "constraints": [
+          "Quote the source language only where the exact wording controls the requirement.",
+          "This is a reading of the text, not legal advice \u2014 confirm interpretations with your compliance officer or counsel before acting."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "HERE_IS_THE_REQUIREMENT",
+          "label": "Here is the requirement",
+          "default": ""
+        },
+        {
+          "key": "SOURCE_AND_CITATION",
+          "label": "Source and citation",
+          "default": ""
+        },
+        {
+          "key": "WHO_HAS_TO_COMPLY_DAY_TO_DAY",
+          "label": "Who has to comply day to day",
+          "default": ""
+        },
+        {
+          "key": "WHAT_WE_CURRENTLY_DO",
+          "label": "What we currently do",
+          "default": ""
+        },
+        {
+          "key": "EFFECTIVE_DATE_OR_DEADLINE",
+          "label": "Effective date or deadline",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Ends by telling you to confirm interpretations with a compliance officer or counsel."
     },
     {
       "id": "resume-transferable-skills",
@@ -1573,6 +4094,64 @@
       }
     },
     {
+      "id": "turn-a-transcript-into-an-executive-summary",
+      "title": "Turn a transcript into an executive summary",
+      "summary": "Converting a raw meeting transcript into an executive summary leadership will read.",
+      "functions": [
+        "admin"
+      ],
+      "category": "summarize",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "transcript",
+        "executive summary"
+      ],
+      "blocks": {
+        "role": "Act as an executive chief of staff who turns long meetings into summaries senior leaders actually read.",
+        "context": "Context:\n- Meeting purpose: {{MEETING_PURPOSE}}\n- Who the summary is for: {{WHO_THE_SUMMARY_IS_FOR}}\n- Anything confidential to leave out: {{ANYTHING_CONFIDENTIAL_TO_LEAVE_OUT}}",
+        "steps": [
+          "A note on format: paste the transcript as text below.",
+          "If you have an audio or video recording, run it through your meeting platform's transcript export or a transcription tool first, then paste the resulting text here \u2014 I work with text rather than audio or video files.",
+          "Attribute only what was actually said.",
+          "If something was implied but never stated, list it under a final heading \"Unclear from the transcript\" instead of asserting it."
+        ],
+        "output": "Output format, in this order:\n1. \"In one line\" \u2014 the single most important outcome, under 25 words\n2. Decisions made \u2014 bulleted, each with who decided\n3. Open questions \u2014 bulleted, each with who owns resolving it\n4. Risks or concerns raised \u2014 bulleted\n5. Action items \u2014 a table with columns Action | Owner | Due date | Source (approximate point in the meeting)",
+        "constraints": [
+          "Total length under 400 words."
+        ],
+        "data": "Transcript:\n{{TRANSCRIPT}}"
+      },
+      "placeholders": [
+        {
+          "key": "TRANSCRIPT",
+          "label": "Transcript",
+          "default": ""
+        },
+        {
+          "key": "MEETING_PURPOSE",
+          "label": "Meeting purpose",
+          "default": ""
+        },
+        {
+          "key": "WHO_THE_SUMMARY_IS_FOR",
+          "label": "Who the summary is for",
+          "default": ""
+        },
+        {
+          "key": "ANYTHING_CONFIDENTIAL_TO_LEAVE_OUT",
+          "label": "Anything confidential to leave out",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Paste a text transcript rather than an audio or video file."
+    },
+    {
       "id": "meeting-agenda-from-thread",
       "title": "Turn an email thread into an agenda and follow-ups",
       "summary": "Extracts what is already decided, what is still open, and who actually needs to be in the room.",
@@ -1608,6 +4187,375 @@
       "source": "frwdb",
       "sensitivity": "none",
       "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "turn-rough-notes-into-circulated-minutes",
+      "title": "Turn rough notes into circulated minutes",
+      "summary": "Cleaning up scrappy personal notes into minutes you can circulate.",
+      "functions": [
+        "admin"
+      ],
+      "category": "summarize",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "meeting notes",
+        "minutes"
+      ],
+      "blocks": {
+        "role": "Act as an administrative coordinator who produces clean, circulated minutes from rough notes.",
+        "context": "Details:\n- Meeting name and date: {{MEETING_NAME_AND_DATE}}\n- Attendees: {{ATTENDEES}}\n- Absent: {{ABSENT}}\n- Who will read these minutes: {{WHO_WILL_READ_THESE_MINUTES}}",
+        "steps": [
+          "Here are my raw notes, typed fast during the meeting:\n{{HERE_ARE_MY_RAW_NOTES_TYPED_FAST_DURING_THE_ME}}",
+          "Turn my shorthand into complete sentences without adding content I did not record.",
+          "Where my notes are ambiguous or cut off, do not guess \u2014 flag them."
+        ],
+        "output": "Output format:\n- A standard minutes document: header block, attendance, then one subheading per topic discussed\n- Under each topic: what was discussed (under 60 words), and any decision reached\n- An action items table: Action | Owner | Due date\n- A final section titled \"Needs your confirmation\" listing every point where my notes were unclear, quoting my original shorthand",
+        "constraints": [
+          "Keep the whole document under 600 words."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "HERE_ARE_MY_RAW_NOTES_TYPED_FAST_DURING_THE_ME",
+          "label": "Here are my raw notes, typed fast during the meeting",
+          "default": ""
+        },
+        {
+          "key": "MEETING_NAME_AND_DATE",
+          "label": "Meeting name and date",
+          "default": ""
+        },
+        {
+          "key": "ATTENDEES",
+          "label": "Attendees",
+          "default": ""
+        },
+        {
+          "key": "ABSENT",
+          "label": "Absent",
+          "default": ""
+        },
+        {
+          "key": "WHO_WILL_READ_THESE_MINUTES",
+          "label": "Who will read these minutes",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "write-a-board-decision-memo",
+      "title": "Write a board decision memo",
+      "summary": "Writing a memo that asks your board or leadership to decide something.",
+      "functions": [
+        "grants",
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "board",
+        "decision memo",
+        "governance"
+      ],
+      "blocks": {
+        "role": "Act as a policy analyst who writes decision memos for boards and executive teams.",
+        "context": "Write a decision memo.\n- Audience: {{BOARD_EXECUTIVE_TEAM_COMMITTEE}}\n- The decision being requested: {{THE_DECISION_BEING_REQUESTED}}\n- Background they need: {{BACKGROUND_THEY_NEED}}\n- Options considered: {{OPTIONS_CONSIDERED}}\n- My recommendation and why: {{MY_RECOMMENDATION_AND_WHY}}\n- Financial implications: {{FINANCIAL_IMPLICATIONS}}\n- Risks of acting and of not acting: {{RISKS_OF_ACTING_AND_OF_NOT_ACTING}}\n- Deadline for the decision: {{DEADLINE_FOR_THE_DECISION}}\n- Page limit: {{PAGE_LIMIT}}",
+        "steps": [
+          "A board member who reads only the first paragraph should know what they are being asked to approve."
+        ],
+        "output": "Output format:\n1. \"Recommendation\" \u2014 one sentence naming the action requested\n2. \"Background\" \u2014 under 150 words\n3. An options table: Option | Cost | Pros | Cons | Risk level\n4. \"Rationale\" \u2014 under 150 words on why the recommended option beats the others\n5. \"If approved, next steps\" \u2014 three bullets with dates\n6. \"Questions the board should ask\" \u2014 three questions, including at least one that challenges my recommendation",
+        "constraints": [
+          "Put the recommendation on the first line.",
+          "Use no jargon and no acronym without spelling it out once."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "BOARD_EXECUTIVE_TEAM_COMMITTEE",
+          "label": "Audience",
+          "default": ""
+        },
+        {
+          "key": "THE_DECISION_BEING_REQUESTED",
+          "label": "The decision being requested",
+          "default": ""
+        },
+        {
+          "key": "BACKGROUND_THEY_NEED",
+          "label": "Background they need",
+          "default": ""
+        },
+        {
+          "key": "OPTIONS_CONSIDERED",
+          "label": "Options considered",
+          "default": ""
+        },
+        {
+          "key": "MY_RECOMMENDATION_AND_WHY",
+          "label": "My recommendation and why",
+          "default": ""
+        },
+        {
+          "key": "FINANCIAL_IMPLICATIONS",
+          "label": "Financial implications",
+          "default": ""
+        },
+        {
+          "key": "RISKS_OF_ACTING_AND_OF_NOT_ACTING",
+          "label": "Risks of acting and of not acting",
+          "default": ""
+        },
+        {
+          "key": "DEADLINE_FOR_THE_DECISION",
+          "label": "Deadline for the decision",
+          "default": ""
+        },
+        {
+          "key": "PAGE_LIMIT",
+          "label": "Page limit",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "write-a-budget-narrative",
+      "title": "Write a budget narrative",
+      "summary": "Justifying budget lines in plain language a reviewer will accept.",
+      "functions": [
+        "grants",
+        "fiscal"
+      ],
+      "category": "draft",
+      "complexity": "high",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "grant writing",
+        "budget narrative",
+        "compliance"
+      ],
+      "blocks": {
+        "role": "Act as a grants compliance specialist who writes budget narratives for public and foundation funders.",
+        "context": "Write a budget narrative.\n- Funder and program: {{FUNDER_AND_PROGRAM}}\n- Total request: {{TOTAL_REQUEST}}\n- Period of performance: {{PERIOD_OF_PERFORMANCE}}\n- Budget lines with amounts: {{BUDGET_LINES_WITH_AMOUNTS}}\n- How each figure was calculated: {{HOW_EACH_FIGURE_WAS_CALCULATED}}\n- Indirect cost rate and basis: {{INDIRECT_COST_RATE_AND_BASIS}}\n- Match or cost share required: {{MATCH_OR_COST_SHARE_REQUIRED}}\n- Allowability rules or cost principles that apply: {{ALLOWABILITY_RULES_OR_COST_PRINCIPLES_THAT_APP}}",
+        "steps": [
+          "Report the discrepancy."
+        ],
+        "output": "Output format: a narrative organized by budget category, and for each line item: the calculation written out, the program activity it supports, and why the amount is reasonable.\n\nThen add:\n- A table verifying that the line items sum to the total request, with your arithmetic\n- A flag list of any line that a reviewer is likely to question, unallowable costs I may have included, or calculations I did not give you enough information to verify",
+        "constraints": [
+          "Every line needs the arithmetic shown and a sentence tying it to a program activity.",
+          "Do not adjust my numbers to make them add up."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "FUNDER_AND_PROGRAM",
+          "label": "Funder and program",
+          "default": ""
+        },
+        {
+          "key": "TOTAL_REQUEST",
+          "label": "Total request",
+          "default": ""
+        },
+        {
+          "key": "PERIOD_OF_PERFORMANCE",
+          "label": "Period of performance",
+          "default": ""
+        },
+        {
+          "key": "BUDGET_LINES_WITH_AMOUNTS",
+          "label": "Budget lines with amounts",
+          "default": ""
+        },
+        {
+          "key": "HOW_EACH_FIGURE_WAS_CALCULATED",
+          "label": "How each figure was calculated",
+          "default": ""
+        },
+        {
+          "key": "INDIRECT_COST_RATE_AND_BASIS",
+          "label": "Indirect cost rate and basis",
+          "default": ""
+        },
+        {
+          "key": "MATCH_OR_COST_SHARE_REQUIRED",
+          "label": "Match or cost share required",
+          "default": ""
+        },
+        {
+          "key": "ALLOWABILITY_RULES_OR_COST_PRINCIPLES_THAT_APP",
+          "label": "Allowability rules or cost principles that apply",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Will not adjust your figures to make a budget reconcile; it reports the discrepancy."
+    },
+    {
+      "id": "write-a-data-dictionary",
+      "title": "Write a data dictionary",
+      "summary": "Documenting what each field in a spreadsheet actually means.",
+      "functions": [
+        "research"
+      ],
+      "category": "summarize",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": [
+        "data dictionary",
+        "documentation",
+        "data governance"
+      ],
+      "blocks": {
+        "role": "Act as a data steward who writes data dictionaries that outlast the staff who built the system.",
+        "context": "Write a data dictionary for this dataset.\n- Dataset name and purpose: {{DATASET_NAME_AND_PURPOSE}}\n- Column headers exactly as they appear: {{COLUMN_HEADERS_EXACTLY_AS_THEY_APPEAR}}\n- Sample rows: {{SAMPLE_ROWS}}\n- Where the data originates: {{WHERE_THE_DATA_ORIGINATES}}\n- Who maintains it: {{WHO_MAINTAINS_IT}}\n- Any coded values and what they mean: {{ANY_CODED_VALUES_AND_WHAT_THEY_MEAN}}",
+        "steps": [
+          "Where you are inferring from the field name alone, mark it (inferred)."
+        ],
+        "output": "Output format: one table with columns Field name | Plain-English definition | Data type | Format or allowed values | Required? | Who or what populates it | Common errors to watch for.\n\nBelow the table, add:\n- A list of fields whose meaning you could not determine from the sample, phrased as questions for me\n- Any two fields that appear to overlap or contradict each other\n- A short note on which fields contain personal or sensitive information and should be handled accordingly",
+        "constraints": [
+          "Do not invent definitions."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "DATASET_NAME_AND_PURPOSE",
+          "label": "Dataset name and purpose",
+          "default": ""
+        },
+        {
+          "key": "COLUMN_HEADERS_EXACTLY_AS_THEY_APPEAR",
+          "label": "Column headers exactly as they appear",
+          "default": ""
+        },
+        {
+          "key": "SAMPLE_ROWS",
+          "label": "Sample rows",
+          "default": ""
+        },
+        {
+          "key": "WHERE_THE_DATA_ORIGINATES",
+          "label": "Where the data originates",
+          "default": ""
+        },
+        {
+          "key": "WHO_MAINTAINS_IT",
+          "label": "Who maintains it",
+          "default": ""
+        },
+        {
+          "key": "ANY_CODED_VALUES_AND_WHAT_THEY_MEAN",
+          "label": "Any coded values and what they mean",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "write-a-delegation-brief",
+      "title": "Write a delegation brief",
+      "summary": "Handing a task to someone else without having to redo it later.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "delegation",
+        "management"
+      ],
+      "blocks": {
+        "role": "Act as a manager known for delegating cleanly, so work comes back done rather than needing rescue.",
+        "context": "Write a delegation brief.\n- Task being handed off: {{TASK_BEING_HANDED_OFF}}\n- Who is taking it and their experience level: {{WHO_IS_TAKING_IT_AND_THEIR_EXPERIENCE_LEVEL}}\n- Why this task and why this person: {{WHY_THIS_TASK_AND_WHY_THIS_PERSON}}\n- What a finished version looks like: {{WHAT_A_FINISHED_VERSION_LOOKS_LIKE}}\n- Deadline and any interim checkpoints: {{DEADLINE_AND_ANY_INTERIM_CHECKPOINTS}}\n- Their decision authority: {{WHAT_THEY_CAN_DECIDE_ALONE_WHAT_NEEDS_MY_APPRO}}\n- Background and context they are missing: {{BACKGROUND_AND_CONTEXT_THEY_ARE_MISSING}}\n- Resources, files, and access they need: {{RESOURCES_FILES_AND_ACCESS_THEY_NEED}}\n- What I should not care about: {{WHAT_I_SHOULD_NOT_CARE_ABOUT}}",
+        "steps": [
+          "Be explicit about the boundaries so they do not have to guess."
+        ],
+        "output": "Output format:\n1. A handoff brief: objective, definition of done, deadline, decision authority, and resources\n2. A context section covering what I know that they do not, including history and politics\n3. Two checkpoint dates, each with the specific question I will ask\n4. A short list of what I will not be reviewing, so they know where they have room\n5. Three questions they should ask me before starting, so I can answer them up front",
+        "constraints": [
+          "Delegate the outcome, not the method."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "TASK_BEING_HANDED_OFF",
+          "label": "Task being handed off",
+          "default": ""
+        },
+        {
+          "key": "WHO_IS_TAKING_IT_AND_THEIR_EXPERIENCE_LEVEL",
+          "label": "Who is taking it and their experience level",
+          "default": ""
+        },
+        {
+          "key": "WHY_THIS_TASK_AND_WHY_THIS_PERSON",
+          "label": "Why this task and why this person",
+          "default": ""
+        },
+        {
+          "key": "WHAT_A_FINISHED_VERSION_LOOKS_LIKE",
+          "label": "What a finished version looks like",
+          "default": ""
+        },
+        {
+          "key": "DEADLINE_AND_ANY_INTERIM_CHECKPOINTS",
+          "label": "Deadline and any interim checkpoints",
+          "default": ""
+        },
+        {
+          "key": "WHAT_THEY_CAN_DECIDE_ALONE_WHAT_NEEDS_MY_APPRO",
+          "label": "Their decision authority",
+          "default": ""
+        },
+        {
+          "key": "BACKGROUND_AND_CONTEXT_THEY_ARE_MISSING",
+          "label": "Background and context they are missing",
+          "default": ""
+        },
+        {
+          "key": "RESOURCES_FILES_AND_ACCESS_THEY_NEED",
+          "label": "Resources, files, and access they need",
+          "default": ""
+        },
+        {
+          "key": "WHAT_I_SHOULD_NOT_CARE_ABOUT",
+          "label": "What I should not care about",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
       "notes": ""
     },
     {
@@ -1661,6 +4609,143 @@
       "notes": "If the source data is a CSV, use a model with a data analysis tool and have it show the computation."
     },
     {
+      "id": "write-a-donor-impact-update",
+      "title": "Write a donor impact update",
+      "summary": "Writing a donor update that shows impact without overstating it.",
+      "functions": [
+        "grants",
+        "communications"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "deidentify",
+      "source": "frwdb",
+      "tags": [
+        "donor relations",
+        "stewardship"
+      ],
+      "blocks": {
+        "role": "Act as a development director who writes donor communications that get repeat gifts.",
+        "context": "Write an update to a donor or funder.\n- Recipient: {{INDIVIDUAL_DONOR_FOUNDATION_PROGRAM_OFFICER_CO}}\n- Their name and history with us: {{THEIR_NAME_AND_HISTORY_WITH_US}}\n- What their gift funded specifically: {{WHAT_THEIR_GIFT_FUNDED_SPECIFICALLY}}\n- Results so far, with numbers: {{RESULTS_SO_FAR_WITH_NUMBERS}}\n- A specific story that illustrates it: {{A_SPECIFIC_STORY_THAT_ILLUSTRATES_IT}}\n- What did not go as planned: {{WHAT_DID_NOT_GO_AS_PLANNED}}\n- Whether I am asking for anything: {{WHETHER_I_AM_ASKING_FOR_ANYTHING}}",
+        "steps": [
+          "Include the setback honestly and briefly if I gave you one."
+        ],
+        "output": "Output format:\n- Subject line\n- Body under 300 words\n- A postscript line, since donors read those\n- A separate note listing any detail in the story that should be changed or generalized before sending, and confirming whether I have a release on file",
+        "constraints": [
+          "Open with a result or a person, never with \"I hope this finds you well.\" Connect their specific gift to a specific outcome.",
+          "Use no more than three numbers in the body."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "INDIVIDUAL_DONOR_FOUNDATION_PROGRAM_OFFICER_CO",
+          "label": "Recipient",
+          "default": ""
+        },
+        {
+          "key": "THEIR_NAME_AND_HISTORY_WITH_US",
+          "label": "Their name and history with us",
+          "default": ""
+        },
+        {
+          "key": "WHAT_THEIR_GIFT_FUNDED_SPECIFICALLY",
+          "label": "What their gift funded specifically",
+          "default": ""
+        },
+        {
+          "key": "RESULTS_SO_FAR_WITH_NUMBERS",
+          "label": "Results so far, with numbers",
+          "default": ""
+        },
+        {
+          "key": "A_SPECIFIC_STORY_THAT_ILLUSTRATES_IT",
+          "label": "A specific story that illustrates it",
+          "default": ""
+        },
+        {
+          "key": "WHAT_DID_NOT_GO_AS_PLANNED",
+          "label": "What did not go as planned",
+          "default": ""
+        },
+        {
+          "key": "WHETHER_I_AM_ASKING_FOR_ANYTHING",
+          "label": "Whether I am asking for anything",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "write-a-formula-from-a-plain-english-description",
+      "title": "Write a formula from a plain-English description",
+      "summary": "Getting the right formula when you can describe the result but not the function.",
+      "functions": [
+        "admin",
+        "research"
+      ],
+      "category": "plan",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "Excel",
+        "formulas",
+        "Google Sheets"
+      ],
+      "blocks": {
+        "role": "Act as an Excel and Google Sheets expert who teaches non-technical office staff.",
+        "context": "I need a formula. Here is what I have and what I want:\n- Spreadsheet program: {{EXCEL_GOOGLE_SHEETS_BOTH}}\n- My version, if Excel: {{MICROSOFT_365_EXCEL_2019_EXCEL_2016_UNSURE}}\n- What my columns contain, with their letters: {{WHAT_MY_COLUMNS_CONTAIN_WITH_THEIR_LETTERS}}\n- Which row my data starts on: {{WHICH_ROW_MY_DATA_STARTS_ON}}\n- In plain English, what I want the formula to do: {{IN_PLAIN_ENGLISH_WHAT_I_WANT_THE_FORMULA_TO_DO}}\n- Where the formula will go: {{WHERE_THE_FORMULA_WILL_GO}}",
+        "steps": [
+          "If my version does not support the best function, give me the version that works in mine and say what I am missing."
+        ],
+        "output": "Output format:\n1. The formula, on its own line, ready to paste\n2. A plain-English walkthrough of each part of the formula, one bullet per function\n3. The two most likely ways this breaks (blank cells, text stored as numbers, mismatched ranges) and what I would see when it does\n4. A simpler alternative if one exists, even if it takes an extra helper column",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "EXCEL_GOOGLE_SHEETS_BOTH",
+          "label": "Spreadsheet program",
+          "default": ""
+        },
+        {
+          "key": "MICROSOFT_365_EXCEL_2019_EXCEL_2016_UNSURE",
+          "label": "My version, if Excel",
+          "default": ""
+        },
+        {
+          "key": "WHAT_MY_COLUMNS_CONTAIN_WITH_THEIR_LETTERS",
+          "label": "What my columns contain, with their letters \u2014 describe \u2014 e.g. \"column a = participant name, column b = enrollment date, column c = program\"",
+          "default": ""
+        },
+        {
+          "key": "WHICH_ROW_MY_DATA_STARTS_ON",
+          "label": "Which row my data starts on",
+          "default": ""
+        },
+        {
+          "key": "IN_PLAIN_ENGLISH_WHAT_I_WANT_THE_FORMULA_TO_DO",
+          "label": "In plain English, what I want the formula to do",
+          "default": ""
+        },
+        {
+          "key": "WHERE_THE_FORMULA_WILL_GO",
+          "label": "Where the formula will go",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
       "id": "social-post-set",
       "title": "Write a set of social posts for an event",
       "summary": "Produces pre-event, day-of, and follow-up posts with alt text and platform variants.",
@@ -1695,6 +4780,243 @@
       "source": "frwdb",
       "sensitivity": "none",
       "placeholders": [],
+      "notes": ""
+    },
+    {
+      "id": "write-a-status-update-that-replaces-a-meeting",
+      "title": "Write a status update that replaces a meeting",
+      "summary": "Writing a status update that replaces a meeting.",
+      "functions": [
+        "admin"
+      ],
+      "category": "summarize",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "status update",
+        "reporting"
+      ],
+      "blocks": {
+        "role": "Act as a program manager who keeps stakeholders informed in writing so status meetings can be cancelled.",
+        "context": "Write a project status update.\n- Project name and purpose: {{PROJECT_NAME_AND_PURPOSE}}\n- Audience: {{AUDIENCE}}\n- Reporting period: {{REPORTING_PERIOD}}\n- Current status: {{ON_TRACK_AT_RISK_OFF_TRACK}}\n- What got done this period: {{WHAT_GOT_DONE_THIS_PERIOD}}\n- What is planned next period: {{WHAT_IS_PLANNED_NEXT_PERIOD}}\n- Blockers and what I need from whom: {{BLOCKERS_AND_WHAT_I_NEED_FROM_WHOM}}\n- Budget or timeline changes: {{BUDGET_OR_TIMELINE_CHANGES}}\n- Key metrics: {{KEY_METRICS}}",
+        "steps": [
+          "A reader who stops after 30 seconds should know whether to worry and whether they owe me anything.",
+          "Under 300 words.",
+          "If the status is at risk or off track, say so in the first line and never soften it with the words \"slight\" or \"minor\"."
+        ],
+        "output": "Output format:\n1. A status line: overall status, and whether the date and budget have changed\n2. \"What I need from you\" \u2014 named asks with owners and dates, or the words \"Nothing this period\"\n3. Progress since last update, three bullets maximum\n4. Next period, three bullets maximum\n5. A risks and blockers table: Item | Impact | What I am doing | What I need",
+        "constraints": [
+          "Lead with the status and the asks."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "PROJECT_NAME_AND_PURPOSE",
+          "label": "Project name and purpose",
+          "default": ""
+        },
+        {
+          "key": "AUDIENCE",
+          "label": "Audience",
+          "default": ""
+        },
+        {
+          "key": "REPORTING_PERIOD",
+          "label": "Reporting period",
+          "default": ""
+        },
+        {
+          "key": "ON_TRACK_AT_RISK_OFF_TRACK",
+          "label": "Current status",
+          "default": ""
+        },
+        {
+          "key": "WHAT_GOT_DONE_THIS_PERIOD",
+          "label": "What got done this period",
+          "default": ""
+        },
+        {
+          "key": "WHAT_IS_PLANNED_NEXT_PERIOD",
+          "label": "What is planned next period",
+          "default": ""
+        },
+        {
+          "key": "BLOCKERS_AND_WHAT_I_NEED_FROM_WHOM",
+          "label": "Blockers and what I need from whom",
+          "default": ""
+        },
+        {
+          "key": "BUDGET_OR_TIMELINE_CHANGES",
+          "label": "Budget or timeline changes",
+          "default": ""
+        },
+        {
+          "key": "KEY_METRICS",
+          "label": "Key metrics",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "write-a-volunteer-role-description",
+      "title": "Write a volunteer role description",
+      "summary": "Recruiting volunteers with a role description people can say yes to.",
+      "functions": [
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "volunteers",
+        "recruitment"
+      ],
+      "blocks": {
+        "role": "Act as a volunteer program manager who recruits and retains volunteers for community organizations.",
+        "context": "Write a volunteer role description and recruitment post.\n- Organization and mission in one sentence: {{ORGANIZATION_AND_MISSION_IN_ONE_SENTENCE}}\n- The role and what the volunteer actually does: {{THE_ROLE_AND_WHAT_THE_VOLUNTEER_ACTUALLY_DOES}}\n- Time commitment and schedule: {{TIME_COMMITMENT_AND_SCHEDULE}}\n- Location or remote: {{LOCATION_OR_REMOTE}}\n- Skills genuinely required versus nice to have: {{SKILLS_GENUINELY_REQUIRED_VERSUS_NICE_TO_HAVE}}\n- Screening requirements: {{BACKGROUND_CHECK_REFERENCES_TRAINING_LIST}}\n- Training and support provided: {{TRAINING_AND_SUPPORT_PROVIDED}}\n- Who they report to: {{WHO_THEY_REPORT_TO}}\n- Where this will be posted: {{WHERE_THIS_WILL_BE_POSTED}}",
+        "steps": [
+          "Vague descriptions attract people who quit."
+        ],
+        "output": "Output format:\n1. A formal role description: purpose, responsibilities, requirements, commitment, support provided, and how to apply\n2. A shorter recruitment post suited to the platform I named, under 150 words\n3. Five screening questions to ask applicants, each with what a good answer sounds like\n4. A one-line statement of the impact this role has, written from the volunteer's point of view",
+        "constraints": [
+          "Be specific about the time commitment and honest about the least appealing parts of the role."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "ORGANIZATION_AND_MISSION_IN_ONE_SENTENCE",
+          "label": "Organization and mission in one sentence",
+          "default": ""
+        },
+        {
+          "key": "THE_ROLE_AND_WHAT_THE_VOLUNTEER_ACTUALLY_DOES",
+          "label": "The role and what the volunteer actually does",
+          "default": ""
+        },
+        {
+          "key": "TIME_COMMITMENT_AND_SCHEDULE",
+          "label": "Time commitment and schedule",
+          "default": ""
+        },
+        {
+          "key": "LOCATION_OR_REMOTE",
+          "label": "Location or remote",
+          "default": ""
+        },
+        {
+          "key": "SKILLS_GENUINELY_REQUIRED_VERSUS_NICE_TO_HAVE",
+          "label": "Skills genuinely required versus nice to have",
+          "default": ""
+        },
+        {
+          "key": "BACKGROUND_CHECK_REFERENCES_TRAINING_LIST",
+          "label": "Screening requirements",
+          "default": ""
+        },
+        {
+          "key": "TRAINING_AND_SUPPORT_PROVIDED",
+          "label": "Training and support provided",
+          "default": ""
+        },
+        {
+          "key": "WHO_THEY_REPORT_TO",
+          "label": "Who they report to",
+          "default": ""
+        },
+        {
+          "key": "WHERE_THIS_WILL_BE_POSTED",
+          "label": "Where this will be posted",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": ""
+    },
+    {
+      "id": "write-an-sop-for-a-process-in-your-head",
+      "title": "Write an SOP for a process in your head",
+      "summary": "Turning a process that lives in your head into a written procedure.",
+      "functions": [
+        "admin"
+      ],
+      "category": "plan",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "SOP",
+        "documentation",
+        "operations"
+      ],
+      "blocks": {
+        "role": "Act as an operations manager who writes standard operating procedures that new staff can follow unsupervised.",
+        "context": "Write an SOP for this process:\n- Process name and purpose: {{PROCESS_NAME_AND_PURPOSE}}\n- Who performs it and their typical experience level: {{WHO_PERFORMS_IT_AND_THEIR_TYPICAL_EXPERIENCE_L}}\n- How often it is performed: {{HOW_OFTEN_IT_IS_PERFORMED}}\n- What triggers it: {{WHAT_TRIGGERS_IT}}\n- The steps as I know them: {{THE_STEPS_AS_I_KNOW_THEM}}\n- Systems, forms, and logins involved: {{SYSTEMS_FORMS_AND_LOGINS_INVOLVED}}\n- What must not happen: {{WHAT_MUST_NOT_HAPPEN}}\n- Who approves or reviews anything in the process: {{WHO_APPROVES_OR_REVIEWS_ANYTHING_IN_THE_PROCES}}",
+        "steps": [
+          "Write each step so someone who has never done this could complete it.",
+          "Where my description skips a step or assumes knowledge, flag it rather than filling it in."
+        ],
+        "output": "Output format:\n1. Header block: purpose, scope, owner, last reviewed, review frequency\n2. Prerequisites \u2014 access, materials, and information needed before starting\n3. Numbered steps, each with the action, the system where it happens, and the expected result\n4. Decision points written as \"If X, then Y\" statements\n5. A troubleshooting table: Problem | Likely cause | What to do | Who to escalate to\n6. \"Questions for the process owner\" \u2014 every gap or assumption in my description",
+        "constraints": [],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "PROCESS_NAME_AND_PURPOSE",
+          "label": "Process name and purpose",
+          "default": ""
+        },
+        {
+          "key": "WHO_PERFORMS_IT_AND_THEIR_TYPICAL_EXPERIENCE_L",
+          "label": "Who performs it and their typical experience level",
+          "default": ""
+        },
+        {
+          "key": "HOW_OFTEN_IT_IS_PERFORMED",
+          "label": "How often it is performed",
+          "default": ""
+        },
+        {
+          "key": "WHAT_TRIGGERS_IT",
+          "label": "What triggers it",
+          "default": ""
+        },
+        {
+          "key": "THE_STEPS_AS_I_KNOW_THEM",
+          "label": "The steps as I know them",
+          "default": ""
+        },
+        {
+          "key": "SYSTEMS_FORMS_AND_LOGINS_INVOLVED",
+          "label": "Systems, forms, and logins involved",
+          "default": ""
+        },
+        {
+          "key": "WHAT_MUST_NOT_HAPPEN",
+          "label": "What must not happen",
+          "default": ""
+        },
+        {
+          "key": "WHO_APPROVES_OR_REVIEWS_ANYTHING_IN_THE_PROCES",
+          "label": "Who approves or reviews anything in the process",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
       "notes": ""
     },
     {
@@ -1774,6 +5096,139 @@
           "default": "Fresno Regional Workforce Development Board"
         }
       ],
+      "notes": ""
+    },
+    {
+      "id": "write-the-post-meeting-recap-email",
+      "title": "Write the post-meeting recap email",
+      "summary": "Writing the post-meeting recap email that gets people to follow through.",
+      "functions": [
+        "admin"
+      ],
+      "category": "draft",
+      "complexity": "low",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "recap",
+        "follow-up"
+      ],
+      "blocks": {
+        "role": "Act as a project coordinator writing the recap email that makes commitments stick.",
+        "context": "Context:\n- Meeting name and date: {{MEETING_NAME_AND_DATE}}\n- Recipients: {{RECIPIENTS}}\n- Next meeting date: {{NEXT_MEETING_DATE}}\n- Tone: {{COLLEGIAL_FORMAL_CHOOSE}}",
+        "steps": [
+          "Meeting record:\n{{MEETING_RECORD}}",
+          "Write a recap email that a busy person can act on in 90 seconds.",
+          "Put each person's own commitments where they will see them.",
+          "Decisions and actions only."
+        ],
+        "output": "Output format:\n- Subject line including the meeting name and date\n- A three-bullet \"What we decided\" section\n- An action table with columns Owner | Action | Due date, sorted by owner\n- A closing line with the next meeting or next checkpoint\n- Under 250 words total",
+        "constraints": [
+          "Do not thank everyone for their valuable time or summarize the discussion."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "MEETING_RECORD",
+          "label": "Meeting record",
+          "default": ""
+        },
+        {
+          "key": "MEETING_NAME_AND_DATE",
+          "label": "Meeting name and date",
+          "default": ""
+        },
+        {
+          "key": "RECIPIENTS",
+          "label": "Recipients",
+          "default": ""
+        },
+        {
+          "key": "NEXT_MEETING_DATE",
+          "label": "Next meeting date",
+          "default": ""
+        },
+        {
+          "key": "COLLEGIAL_FORMAL_CHOOSE",
+          "label": "Tone",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "notes": "Takes pasted notes, a summary, or transcript text."
+    },
+    {
+      "id": "write-to-a-board-member-or-elected-official",
+      "title": "Write to a board member or elected official",
+      "summary": "Writing to a board member, elected official, or other high-level stakeholder.",
+      "functions": [
+        "admin",
+        "grants"
+      ],
+      "category": "draft",
+      "complexity": "medium",
+      "sensitivity": "none",
+      "source": "frwdb",
+      "tags": [
+        "email",
+        "board",
+        "stakeholders"
+      ],
+      "blocks": {
+        "role": "Act as a chief of staff who writes briefing correspondence for executives and elected officials.",
+        "context": "Write a message to a senior stakeholder.\n- Recipient and their role: {{RECIPIENT_AND_THEIR_ROLE}}\n- My role and organization: {{MY_ROLE_AND_ORGANIZATION}}\n- The single thing I want them to know, do, or decide: {{THE_SINGLE_THING_I_WANT_THEM_TO_KNOW_DO_OR_DEC}}\n- Relevant background they may not have: {{RELEVANT_BACKGROUND_THEY_MAY_NOT_HAVE}}\n- Supporting facts or numbers: {{SUPPORTING_FACTS_OR_NUMBERS}}\n- Political or relational sensitivities: {{POLITICAL_OR_RELATIONAL_SENSITIVITIES}}",
+        "steps": [
+          "Assume the recipient reads only the first four lines.",
+          "Put the ask and the decision needed at the top.",
+          "Keep it under 200 words."
+        ],
+        "output": "Output format:\n- Subject line\n- A bolded one-line \"Bottom line\" statement\n- 3 to 5 bullets of supporting context, each under 25 words\n- A closing line naming exactly what happens next and by when",
+        "constraints": [
+          "Use no acronyms without spelling them out once."
+        ],
+        "data": ""
+      },
+      "placeholders": [
+        {
+          "key": "RECIPIENT_AND_THEIR_ROLE",
+          "label": "Recipient and their role",
+          "default": ""
+        },
+        {
+          "key": "MY_ROLE_AND_ORGANIZATION",
+          "label": "My role and organization",
+          "default": ""
+        },
+        {
+          "key": "THE_SINGLE_THING_I_WANT_THEM_TO_KNOW_DO_OR_DEC",
+          "label": "The single thing I want them to know, do, or decide",
+          "default": ""
+        },
+        {
+          "key": "RELEVANT_BACKGROUND_THEY_MAY_NOT_HAVE",
+          "label": "Relevant background they may not have",
+          "default": ""
+        },
+        {
+          "key": "SUPPORTING_FACTS_OR_NUMBERS",
+          "label": "Supporting facts or numbers",
+          "default": ""
+        },
+        {
+          "key": "POLITICAL_OR_RELATIONAL_SENSITIVITIES",
+          "label": "Political or relational sensitivities",
+          "default": ""
+        }
+      ],
+      "license": {
+        "id": "CC-BY-4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
       "notes": ""
     }
   ]

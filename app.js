@@ -20,7 +20,7 @@ function save(key, val) {
 }
 
 var S = {
-  base: [], taxonomy: null, collection: 'Prompt Cookbook',
+  base: [], taxonomy: null, collection: 'Prompt Cookbook', defaults: {},
   favorites: load(LS.fav, []),
   custom: load(LS.custom, []),
   overrides: load(LS.over, {}),
@@ -81,6 +81,54 @@ function fnMeta(id) {
 function catLabel(id) {
   var c = S.taxonomy.categories.filter(function (x) { return x.id === id; })[0];
   return c ? c.label : id;
+}
+
+
+/* ------------------------------------------------------------------
+   Attribution and licensing
+
+   Both fields accept a string or an object, so prompts.json stays
+   pleasant to hand-edit:
+
+     "author": "Jane Doe"
+     "author": { "name": "Jane Doe", "url": "https://example.org" }
+     "license": "CC-BY-4.0"
+     "license": { "id": "CC-BY-4.0", "url": "https://..." }
+
+   A prompt with neither inherits the collection defaults, so the
+   common case costs nothing per prompt. The URL is optional on both;
+   for a known license id it is filled in from the table below.
+------------------------------------------------------------------ */
+function licenseUrl(id) {
+  var list = (S.taxonomy && S.taxonomy.licenses) || [];
+  var hit = list.filter(function (l) {
+    return l.id.toLowerCase() === String(id || '').toLowerCase();
+  })[0];
+  return hit ? hit.url : '';
+}
+
+function asParty(v, idKey) {
+  if (!v) return null;
+  if (typeof v === 'string') return { name: v, url: '' };
+  var name = v.name || v[idKey] || '';
+  if (!name) return null;
+  return { name: name, url: v.url || '' };
+}
+
+function attribution(p) {
+  var author = asParty(p.author, 'name') || asParty(S.defaults.author, 'name');
+  var license = asParty(p.license, 'id') || asParty(S.defaults.license, 'id');
+  if (license && !license.url) license.url = licenseUrl(license.name);
+  return { author: author, license: license };
+}
+
+function partyHtml(party, prefix) {
+  if (!party) return '';
+  var label = esc(party.name);
+  var body = party.url
+    ? '<a href="' + esc(party.url) + '" target="_blank" rel="noopener">' + label + '</a>'
+    : label;
+  return prefix + ' ' + body;
 }
 
 /* ------------------------------------------------------------------
@@ -231,6 +279,9 @@ function compose(p, model) {
 function haystack(p) {
   if (p._hay) return p._hay;
   var parts = [p.title, p.summary, (p.tags || []).join(' '), catLabel(p.category), p.complexity];
+  var credit = attribution(p);
+  if (credit.author) parts.push(credit.author.name);
+  if (credit.license) parts.push(credit.license.name);
   (p.functions || []).forEach(function (f) { parts.push(fnMeta(f).label); });
   var b = p.blocks || {};
   parts.push(b.role, b.context, b.output, (b.steps || []).join(' '), (b.constraints || []).join(' '));
@@ -448,7 +499,18 @@ function renderReader() {
   h.push('<p class="placeholder-note">' + icon('info') + esc(model.note) + '</p>');
   h.push('</div>');
 
-  if (p.notes) h.push('<footer><strong>Staff note.</strong> ' + esc(p.notes) + '</footer>');
+  var credit = attribution(p);
+  if (p.notes || credit.author || credit.license) {
+    h.push('<footer>');
+    if (p.notes) h.push('<p><strong>Staff note.</strong> ' + esc(p.notes) + '</p>');
+    if (credit.author || credit.license) {
+      var line = [];
+      if (credit.author) line.push(partyHtml(credit.author, 'Written by'));
+      if (credit.license) line.push(partyHtml(credit.license, 'Licensed'));
+      h.push('<p class="attrib"><span class="micro">Attribution</span>' + line.join(' &middot; ') + '</p>');
+    }
+    h.push('</footer>');
+  }
   h.push('</div>');
   r.innerHTML = h.join('');
   r.scrollTop = 0;
@@ -463,6 +525,7 @@ function blankPrompt() {
     title: '', summary: '', functions: [S.taxonomy.functions[0].id],
     category: S.taxonomy.categories[0].id, complexity: 'medium',
     sensitivity: 'none', source: 'user', tags: [],
+    author: S.settings.author ? JSON.parse(JSON.stringify(S.settings.author)) : null,
     blocks: { role: '', context: '', steps: [], output: '', constraints: [], data: '' },
     placeholders: [], notes: ''
   };
@@ -498,6 +561,36 @@ function renderEditor() {
   h.push('</select></div></div>');
 
   h.push('<label for="e-tags">Tags, comma separated</label><input id="e-tags" type="text" value="' + esc((p.tags || []).join(', ')) + '">');
+
+  var pAuthor = asParty(p.author, 'name') || { name: '', url: '' };
+  var pLicense = asParty(p.license, 'id') || { name: '', url: '' };
+  var dAuthor = asParty(S.defaults.author, 'name');
+  var dLicense = asParty(S.defaults.license, 'id');
+
+  h.push('<div class="two"><div><label for="e-author">Author</label>' +
+    '<input id="e-author" type="text" value="' + esc(pAuthor.name) + '" placeholder="' +
+    esc(dAuthor ? dAuthor.name : 'Name or organization') + '"></div>' +
+    '<div><label for="e-author-url">Author link, optional</label>' +
+    '<input id="e-author-url" type="text" value="' + esc(pAuthor.url) + '" placeholder="https://"></div></div>');
+
+  h.push('<div class="two"><div><label for="e-license">License</label>' +
+    '<input id="e-license" type="text" list="license-ids" value="' + esc(pLicense.name) + '" placeholder="' +
+    esc(dLicense ? dLicense.name : 'CC-BY-4.0') + '"></div>' +
+    '<div><label for="e-license-url">License link, optional</label>' +
+    '<input id="e-license-url" type="text" value="' + esc(pLicense.url) + '" placeholder="filled in for known licenses"></div></div>');
+
+  h.push('<datalist id="license-ids">');
+  ((S.taxonomy.licenses) || []).forEach(function (l) {
+    h.push('<option value="' + esc(l.id) + '"></option>');
+  });
+  h.push('</datalist>');
+
+  var inherit = [];
+  if (dAuthor) inherit.push(dAuthor.name);
+  if (dLicense) inherit.push(dLicense.name);
+  if (inherit.length) {
+    h.push('<p class="hint">Leave either blank to inherit the collection default: ' + esc(inherit.join(', ')) + '.</p>');
+  }
   h.push('<label for="e-role">Role — who the model is acting as</label><textarea id="e-role" rows="3">' + esc(p.blocks.role) + '</textarea>');
   h.push('<label for="e-context">Context — what it needs to know about our setting</label><textarea id="e-context" rows="3">' + esc(p.blocks.context) + '</textarea>');
   h.push('<label for="e-steps">Steps — one per line</label><textarea id="e-steps" rows="7">' + esc((p.blocks.steps || []).join('\n')) + '</textarea>');
@@ -533,12 +626,27 @@ function readEditor() {
     data: el('e-data').value.trim()
   };
   p.notes = el('e-notes').value.trim();
+
+  var authorName = el('e-author').value.trim();
+  var authorUrl = el('e-author-url').value.trim();
+  p.author = authorName ? (authorUrl ? { name: authorName, url: authorUrl } : { name: authorName }) : null;
+  if (!p.author) delete p.author;
+
+  var licenseId = el('e-license').value.trim();
+  var licenseUrlValue = el('e-license-url').value.trim() || licenseUrl(licenseId);
+  p.license = licenseId ? (licenseUrlValue ? { id: licenseId, url: licenseUrlValue } : { id: licenseId }) : null;
+  if (!p.license) delete p.license;
+
   return p;
 }
 
 function saveDraft() {
   var p = readEditor();
   if (!p.title) { toast('Give the prompt a title before saving.', true); return; }
+  if (p.author) {
+    S.settings.author = p.author;
+    save(LS.settings, S.settings);
+  }
   var isBase = S.base.some(function (b) { return b.id === p.id; });
   if (isBase) {
     S.overrides[p.id] = p;
@@ -566,6 +674,31 @@ function renderGuide() {
 
   h.push('<div class="card stale"><h3>Check the model names before you rely on them</h3>' +
     '<p>Model lineups turn over every few months. As of September 2026, Anthropic is shipping Claude Opus 5 and Sonnet 5; OpenAI is on GPT-6 Astra with the GPT-5.6 family beneath it, and GPT-4o was retired in February 2026; Google has Gemini 3.1 Pro alongside the faster 3.8 Flash. The habits below outlive the version numbers, which is why they are written as habits.</p></div>');
+
+  h.push('<h2>Context engineering</h2>');
+  h.push('<p>Wording matters less than what you put in front of the model. Anthropic describes the shift as moving from finding the right words toward deciding what configuration of context is most likely to produce the behavior you want, and defines context engineering as curating and maintaining the best set of information available to the model during inference \u2014 not just the prompt itself.</p>');
+  h.push('<table><thead><tr><th>Instead of only\u2026</th><th>Add context such as\u2026</th></tr></thead><tbody>' +
+    '<tr><td>Write a summary</td><td>Audience, purpose, length, tone, source text, what to emphasize</td></tr>' +
+    '<tr><td>Make quiz questions</td><td>Learning goals, student level, prior lesson content, question style</td></tr>' +
+    '<tr><td>Improve this script</td><td>Target audience, constraints, examples of preferred style, what not to change</td></tr>' +
+    '<tr><td>Find problems with this idea</td><td>Your goals, risks you care about, institutional context, decision criteria</td></tr>' +
+    '</tbody></table>');
+  h.push('<p>The prompts in this cookbook are context engineering with the blanks already drawn: the role says who the model is being, the context carries the standing facts about our setting, the rules say what not to do, and the source material slot is where the evidence goes. When you write your own, the parts you are tempted to leave out \u2014 who reads this, what it is for, what must not change \u2014 are usually the parts doing the work.</p>');
+  h.push('<p>The same idea applies across a whole session. A Project or a Gem holding your board name, your funding streams, and your local policies is context you stop re-typing. A long thread that has drifted through three unrelated tasks is context working against you; start a new one.</p>');
+  h.push('<p class="source">The context engineering section above is adapted from the Student Guide to Generative AI. Attribution: \u201cUniversity of Arizona Libraries, \u00a9 2026 The Arizona Board of Regents on behalf of The University of Arizona, licensed under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution 4.0 International License</a>.\u201d <a href="https://libguides.library.arizona.edu/students-chatgpt/use" target="_blank" rel="noopener">Original guide</a>. The Anthropic framing it cites is in <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noopener">Effective context engineering for AI agents</a>.</p>');
+
+  h.push('<h2>The CLEAR framework</h2>');
+  h.push('<p>CLEAR, from librarian Leo S. Lo at the University of New Mexico, is five tests to run a prompt against before blaming the model for the answer. It is the shortest useful checklist we have found, and it maps onto how the prompts here are built.</p>');
+  h.push('<ul>' +
+    '<li><strong>Concise</strong> \u2014 brevity and clarity in prompts. Cut the throat-clearing, keep the specifics. Length is not the enemy; vagueness is. \u201cReview this policy\u201d is short and useless. \u201cList every requirement this policy places on the subrecipient and mark each one met, partly met, or not addressed\u201d is longer and does the job.</li>' +
+    '<li><strong>Logical</strong> \u2014 structured and coherent prompts. Put the instructions in the sequence you want them carried out, one idea per step. If you would not hand the list to a new hire in that order, the model will not follow it in that order either.</li>' +
+    '<li><strong>Explicit</strong> \u2014 clear output specifications. Name the format, the length, the sections, and what must not appear. \u201cA table with columns Finding, Criteria, Status, then a short list of open questions\u201d beats \u201csummarize the findings\u201d every time, and it makes a wrong answer obvious at a glance.</li>' +
+    '<li><strong>Adaptive</strong> \u2014 flexibility and customization. If the answer is generic, change the framing rather than adding adjectives: give it a role, show an example of what good looks like, ask for three options instead of one, or ask it to argue the opposite case. The model buttons above each prompt are this test applied to structure.</li>' +
+    '<li><strong>Reflective</strong> \u2014 continuous evaluation and improvement. When an answer disappoints, the useful question is which part of the prompt permitted it. Missing constraint? Unstated audience? No format? Fix that part and keep the fixed version. A prompt that has been through this loop three times is worth adding to this cookbook; one that has not usually is not.</li>' +
+    '</ul>');
+  h.push('<p>Run the loop on a real task rather than a test one. A prompt tuned against a made-up example fails the first time it meets an actual monitoring finding.</p>');
+  h.push('<p>There is a prompt for this too: <strong>Build a better prompt with a prompt engineering coach</strong> turns the model into the thing that interviews you and drafts it.</p>');
+  h.push('<p class="source">Lo, L. S. (2023). The CLEAR path: A framework for enhancing information literacy through prompt engineering. <em>The Journal of Academic Librarianship</em>, 49(4). The five short definitions are Lo\u2019s; the examples are ours.</p>');
 
   h.push('<h2>Claude — say what the parts are</h2>');
   h.push('<p>Claude follows structure that is explicitly marked. Wrapping each part of a prompt in a tag makes it much harder for the model to blur your source document into your instructions, which is the usual failure on a long policy review or a grant evaluation. Tag names are yours to choose; they just have to be consistent.</p>');
@@ -619,33 +752,52 @@ function renderAbout() {
   h.push('<div class="guide">');
   h.push('<button class="chip backlink" type="button" data-act="back">Back to prompt list</button>');
   h.push('<h1>About this cookbook</h1>');
-  h.push('<p>A prompt library focused for use by workforce development boards. ' +
-    'It holds ' + all.length + ' prompts' +
+  h.push('<p>A prompt library for staff at WIOA-funded local workforce development boards. ' +
+    'It holds ' + all.length + ' prompts for the work that actually fills the week: case notes and service ' +
     'strategies, employer outreach, cost allocation and monitoring responses, funding announcements, ' +
-    'state directives, and labor market briefs.</p>');
+    'state directives, and labor market briefs. Everything runs in the browser. There is no account, ' +
+    'no server, and nothing you type here leaves your machine.</p>');
 
   h.push('<h2>Who built it</h2>');
-  h.push('<p>Kyle Hamilton, Research Analyst at the ' +
+  h.push('<p>Kyle Hamilton, Research Analyst and ETPL Coordinator at the ' +
     '<a href="https://workforce-connection.com" target="_blank" rel="noopener">Fresno Regional Workforce ' +
-    'Development Board</a>. It is shared in the hope that other local boards ' +
-    'find it useful. Expect to ' +
-    'adjust the specifics for your own area and population.</p>');
+    'Development Board</a>, built this for FRWDB staff. It is shared in the hope that other local boards ' +
+    'find it useful; the prompts assume WIOA Title I practice and California reporting, so expect to ' +
+    'adjust the specifics for your own area.</p>');
 
   h.push('<h2>Where it came from</h2>');
   h.push('<p>The structure and a large share of the templates come from the ' +
     '<a href="https://github.com/jakeporway/prompt-cookbook" target="_blank" rel="noopener">Prompt Cookbook</a> ' +
-    'by Jake Porway, built for the OpenAI and Decoded Futures Nonprofit Jam.</p>');
+    'by Jake Porway, built for the OpenAI and Decoded Futures Nonprofit Jam. That project worked out the ' +
+    'hard part: that a prompt worth reusing has a role, a set of steps, a stated output format, and rules ' +
+    'about what not to do, and that the same task is worth writing at three levels of effort. ' +
+    'This cookbook is that idea carried into workforce development.</p>');
+  h.push('<p>What changed in the move:</p>');
+  h.push('<ul>' +
+    '<li>Templates were re-tagged from nonprofit roles to workforce functions — case management, business services, fiscal and contracts, grants, research and policy.</li>' +
+    '<li>Each prompt is stored as separate parts rather than one block of text, so the same prompt can render three ways for three models.</li>' +
+    '<li>Prompts that touch participant records carry a de-identification banner.</li>' +
+    '<li>' + mine + ' prompts are new, written for WIOA-specific tasks with no analog in the original: ISS goals, corrective action plans, ETPL provider review, WARN response, demand occupation briefs.</li>' +
+    (inherited ? '<li>' + inherited + ' prompts are adapted from the original cookbook.</li>' : '') +
+    '</ul>');
 
   h.push('<h2>How it works</h2>');
   h.push('<ul>' +
-    '<li>Pick a prompt, fill in the variables, choose your model, copy.</li>' +
+    '<li>Pick a prompt, fill in the variables, choose your model, copy. Variables are saved in your browser and reused across every prompt that asks for the same thing.</li>' +
     '<li>Favorites, edits, and prompts you write yourself live in this browser only. Clearing site data clears them, so use <strong>Back up my prompts</strong> if they matter.</li>' +
+    '<li>Every prompt carries an author and a license, shown in the attribution line beneath the composed prompt. Prompts that name neither inherit the collection default.</li>' +
     '<li>The three model buttons do not change what the prompt asks for. They change how it is laid out — XML tags for Claude, markdown sections for ChatGPT, source-first for Gemini. The model tuning guide explains why.</li>' +
     '</ul>');
 
   h.push('<h2>Contributing a prompt</h2>');
   h.push('<p>Write it in the app, then use <strong>Export full prompts.json</strong> and send the file, or open ' +
-    'a pull request against the repository.</p>');
+    'a pull request against the repository. A prompt is worth adding when it survives contact with a real ' +
+    'task twice — not when it reads well.</p>');
+
+  h.push('<div class="card"><h3>The output is a draft</h3>' +
+    '<p>Every model here will produce a confident citation to a regulation that does not say what it claims, ' +
+    'and a total that does not add up. Staff sign the case note, the memo, and the monitoring response. ' +
+    'Check the numbers and open the citations.</p></div>');
   h.push('</div>');
 
   el('reader').innerHTML = h.join('');
@@ -724,7 +876,7 @@ function exportAll() {
   });
   download('prompts.json', {
     schema_version: '1.0', generated: new Date().toISOString().slice(0, 10),
-    collection: S.collection, taxonomy: S.taxonomy, prompts: merged
+    collection: S.collection, defaults: S.defaults, taxonomy: S.taxonomy, prompts: merged
   });
   toast('prompts.json downloaded. Hand it to the vault maintainer to publish.');
 }
@@ -921,6 +1073,7 @@ function wire() {
 function adopt(data) {
   S.base = data.prompts || [];
   S.taxonomy = data.taxonomy;
+  S.defaults = data.defaults || {};
   S.collection = data.collection || S.collection;
 }
 
