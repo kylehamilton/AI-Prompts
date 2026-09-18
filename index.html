@@ -6337,8 +6337,6 @@ function renderGuide() {
 ------------------------------------------------------------------ */
 function renderAbout() {
   var all = prompts();
-  var mine = all.filter(function (p) { return p.source === 'frwdb'; }).length;
-  var inherited = all.filter(function (p) { return p.source === 'cookbook'; }).length;
   var h = [];
 
   h.push('<div class="guide">');
@@ -6357,22 +6355,6 @@ function renderAbout() {
     'find it useful; the prompts assume WIOA Title I practice and California reporting, so expect to ' +
     'adjust the specifics for your own area.</p>');
 
-  h.push('<h2>Where it came from</h2>');
-  h.push('<p>The structure and a large share of the templates come from the ' +
-    '<a href="https://github.com/jakeporway/prompt-cookbook" target="_blank" rel="noopener">Prompt Cookbook</a> ' +
-    'by Jake Porway, built for the OpenAI and Decoded Futures Nonprofit Jam. That project worked out the ' +
-    'hard part: that a prompt worth reusing has a role, a set of steps, a stated output format, and rules ' +
-    'about what not to do, and that the same task is worth writing at three levels of effort. ' +
-    'This cookbook is that idea carried into workforce development.</p>');
-  h.push('<p>What changed in the move:</p>');
-  h.push('<ul>' +
-    '<li>Templates were re-tagged from nonprofit roles to workforce functions — case management, business services, fiscal and contracts, grants, research and policy.</li>' +
-    '<li>Each prompt is stored as separate parts rather than one block of text, so the same prompt can render three ways for three models.</li>' +
-    '<li>Prompts that touch participant records carry a de-identification banner.</li>' +
-    '<li>' + mine + ' prompts are new, written for WIOA-specific tasks with no analog in the original: ISS goals, corrective action plans, ETPL provider review, WARN response, demand occupation briefs.</li>' +
-    (inherited ? '<li>' + inherited + ' prompts are adapted from the original cookbook.</li>' : '') +
-    '</ul>');
-
   h.push('<h2>How it works</h2>');
   h.push('<ul>' +
     '<li>Pick a prompt, fill in the variables, choose your model, copy. Variables are saved in your browser and reused across every prompt that asks for the same thing.</li>' +
@@ -6380,11 +6362,6 @@ function renderAbout() {
     '<li>Every prompt carries an author and a license, shown in the attribution line beneath the composed prompt. Prompts that name neither inherit the collection default.</li>' +
     '<li>The three model buttons do not change what the prompt asks for. They change how it is laid out — XML tags for Claude, markdown sections for ChatGPT, source-first for Gemini. The model tuning guide explains why.</li>' +
     '</ul>');
-
-  h.push('<h2>Contributing a prompt</h2>');
-  h.push('<p>Write it in the app, then use <strong>Export full prompts.json</strong> and send the file, or open ' +
-    'a pull request against the repository. A prompt is worth adding when it survives contact with a real ' +
-    'task twice — not when it reads well.</p>');
 
   h.push('<div class="card"><h3>The output is a draft</h3>' +
     '<p>Every model here will produce a confident citation to a regulation that does not say what it claims, ' +
