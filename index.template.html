@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Prompt Cookbook — workforce prompt library</title>
+<script>
+  // Before first paint: light unless this browser has saved a choice of dark.
+  (function () {
+    var theme = 'light';
+    try { var s = JSON.parse(localStorage.getItem('wpv.settings') || '{}'); if (s.theme === 'dark') theme = 'dark'; }
+    catch (e) {}
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -22,6 +31,13 @@
   --verify:#1C5E45;
   --notice:#F7F1E1;
   --notice-ink:#6E5312;
+  --notice-rule:#EADFB8;
+  --stripe:#F8F8F5;
+  --focus-bg:#FFFDF7;
+  --mark-bg:#F6ECC9;
+  --mark-line:#D8C27E;
+  --btn-hover:#000000;
+  --on-ink:#FFFFFF;
 
   --serif:"Newsreader","Iowan Old Style",Georgia,serif;
   --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
@@ -30,8 +46,36 @@
   --rail:236px;
   --head:60px;
 }
+/* Dark theme: same tokens, re-pointed, applied only when someone picks it.
+   Light is the default on every machine regardless of the OS setting.
+   Function colors come from the data and read fine on either ground. */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#1B1D20;
+  --app:#141618;
+  --wash:#25282C;
+  --ink:#E9E6E0;
+  --ink-2:#B9B5AD;
+  --ink-3:#85817A;
+  --rule:#33363B;
+  --rule-strong:#4A4E55;
+  --marker:#D8705F;
+  --verify:#55A984;
+  --notice:#2A2519;
+  --notice-ink:#D9BE6C;
+  --notice-rule:#4A4128;
+  --stripe:#1F2124;
+  --focus-bg:#22252A;
+  --mark-bg:#4A3F14;
+  --mark-line:#8A7530;
+  --btn-hover:#FFFFFF;
+  --on-ink:#16191C;
+}
+:root[data-theme="dark"] pre.compose mark{color:var(--ink)}
+
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
+html{color-scheme:light}
 body{
   background:var(--app);color:var(--ink);
   font:13.5px/1.55 var(--sans);
@@ -71,7 +115,8 @@ button,input,select,textarea{font:inherit;color:inherit;border-radius:0}
   position:absolute;right:4px;top:50%;transform:translateY(-50%);
   font:400 10.5px/1 var(--mono);color:var(--ink-3);border:1px solid var(--rule);padding:3px 5px;
 }
-.format{display:flex;align-items:center;gap:12px}
+.format{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.format .ctl{display:flex;align-items:center;gap:10px}
 .seg{display:inline-flex;border:1px solid var(--rule-strong)}
 .seg button{
   border:0;border-right:1px solid var(--rule);background:var(--paper);
@@ -79,11 +124,11 @@ button,input,select,textarea{font:inherit;color:inherit;border-radius:0}
 }
 .seg button:last-child{border-right:0}
 .seg button:hover{background:var(--wash)}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);font-weight:500}
 
 /* ---------- notice strip ---------- */
 .notice{
-  flex:0 0 auto;background:var(--notice);border-bottom:1px solid var(--rule);
+  flex:0 0 auto;background:var(--notice);border-bottom:1px solid var(--notice-rule);
   padding:5px 20px;display:flex;align-items:center;gap:12px;
   font-size:12px;color:var(--notice-ink);
 }
@@ -103,6 +148,16 @@ button,input,select,textarea{font:inherit;color:inherit;border-radius:0}
   font:500 10.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
   margin:0;padding:16px 18px 7px;border-bottom:1px solid var(--rule);
 }
+.sect{
+  display:flex;align-items:center;gap:8px;width:100%;
+  font:500 10.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  margin:0;padding:16px 18px 7px;border:0;border-bottom:1px solid var(--rule);
+  background:transparent;cursor:pointer;text-align:left;
+}
+.sect:hover{color:var(--ink)}
+.sect svg{margin-left:auto;transition:transform .12s linear}
+.sect[aria-expanded="false"] svg{transform:rotate(-90deg)}
+.sect .count.on{margin-left:0;color:var(--marker)}
 .filt{
   display:flex;align-items:center;gap:9px;width:100%;
   padding:5px 18px;border:0;background:transparent;cursor:pointer;text-align:left;
@@ -142,7 +197,7 @@ button,input,select,textarea{font:inherit;color:inherit;border-radius:0}
   border-bottom:1px solid var(--rule);cursor:pointer;width:100%;text-align:left;
   background:var(--paper);
 }
-.row:nth-of-type(even){background:#F8F8F5}   /* alternating stripes, not cards */
+.row:nth-of-type(even){background:var(--stripe)}   /* alternating stripes, not cards */
 .row:hover{background:var(--wash)}
 .row[aria-current="true"]{background:var(--wash)}
 .rowtab{grid-row:1/3;height:100%;width:3px}
@@ -190,14 +245,26 @@ button,input,select,textarea{font:inherit;color:inherit;border-radius:0}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .btn{
   display:inline-flex;align-items:center;gap:7px;
-  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  border:1px solid var(--ink);background:var(--ink);color:var(--on-ink);
   padding:8px 15px;cursor:pointer;font-size:13px;font-weight:500;
 }
-.btn:hover{background:#000}
+.btn:hover{background:var(--btn-hover);border-color:var(--btn-hover)}
 .btn.ghost{background:var(--paper);color:var(--ink-2);border-color:var(--rule-strong)}
 .btn.ghost:hover{color:var(--ink);border-color:var(--ink);background:var(--wash)}
 .btn.copied{background:var(--verify);border-color:var(--verify);color:#fff}
+.toolbar.secondary{margin-top:8px}
+.toolbar.secondary .btn{padding:6px 12px;font-size:12.5px}
 .btn.danger:hover{color:var(--marker);border-color:var(--marker)}
+
+.model-tips{margin:12px 0 0;padding:0;border-top:1px solid var(--rule)}
+.model-tips div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:12.5px;color:var(--ink-2)}
+.model-tips div.on{color:var(--ink)}
+.model-tips div.on dt{color:var(--ink)}
+.model-tips dt{margin:0;padding-top:2px}
+.model-tips dd{margin:0}
+.usenext{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.chip.next{margin-left:0;display:inline-flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font:400 12.5px/1 var(--sans);padding:5px 9px}
+.chip.next:hover{border-color:var(--ink)}
 
 /* panels are rule-delimited sections, not floating cards */
 .panel{border-bottom:1px solid var(--rule-strong)}
@@ -218,14 +285,31 @@ button,input,select,textarea{font:inherit;color:inherit;border-radius:0}
 .field input{
   width:100%;padding:6px 8px;border:1px solid var(--rule);background:var(--paper);font-size:13px;
 }
-.field input:focus{border-color:var(--ink);outline:none;background:#FFFDF7}
+
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--ink);outline:none;background:var(--focus-bg)}
+.field textarea{
+  width:100%;padding:7px 8px;border:1px solid var(--rule);background:var(--paper);
+  font:400 13px/1.5 var(--sans);resize:vertical;min-height:44px;max-height:320px;display:block;
+}
+.field select{
+  width:100%;padding:6px 30px 6px 8px;border:1px solid var(--rule);background:var(--paper);font-size:13px;
+  -webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);
+  background-position:calc(100% - 15px) 13px,calc(100% - 10px) 13px;background-size:5px 5px;background-repeat:no-repeat;
+}
+.field.tall{align-items:start}
+.field.tall label{padding-top:8px}
+.field label .scope{
+  display:inline-block;margin-left:6px;padding:1px 5px;border:1px solid var(--rule-strong);
+  font:500 9.5px/1.3 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);vertical-align:1px;
+}
 .hint{margin:10px 0 2px;font-size:12px;color:var(--ink-3);max-width:70ch}
 
 pre.compose{
   margin:0;padding:20px 30px;background:var(--paper);
   font:400 12.5px/1.75 var(--mono);white-space:pre-wrap;word-break:break-word;
 }
-pre.compose mark{background:#F6ECC9;color:var(--ink);padding:0 3px;box-shadow:inset 0 -1px 0 #D8C27E}
+pre.compose mark{background:var(--mark-bg);color:var(--ink);padding:0 3px;box-shadow:inset 0 -1px 0 var(--mark-line)}
 .placeholder-note{
   display:flex;gap:8px;align-items:center;
   padding:10px 30px;border-top:1px solid var(--rule);margin:0;
@@ -249,6 +333,16 @@ pre.compose mark{background:#F6ECC9;color:var(--ink);padding:0 3px;box-shadow:in
 }
 .editor textarea{font:400 12.5px/1.7 var(--mono);resize:vertical}
 .editor .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.editor .two.three{grid-template-columns:1fr 1fr 1fr}
+.ph-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:18px}
+.ph-head label{margin:0}
+.ph-head .chip{margin-left:0}
+.ph-table{border:1px solid var(--rule);margin-top:6px;overflow-x:auto}
+.ph-row{display:grid;grid-template-columns:minmax(150px,1.2fr) minmax(140px,1.4fr) 110px 110px minmax(90px,1fr) minmax(120px,1.2fr);gap:6px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--rule);min-width:760px}
+.ph-row:last-child{border-bottom:0}
+.ph-row.head{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);background:var(--app)}
+.ph-row code{font:400 11px/1.4 var(--mono);color:var(--ink-2);word-break:break-all}
+.editor .ph-row input,.editor .ph-row select{padding:5px 7px;font-size:12.5px}
 
 /* ---------- guide ---------- */
 .guide{padding:30px 36px 70px;max-width:78ch;margin:0 auto}
@@ -289,7 +383,7 @@ body.guide-mode .backlink{display:inline-flex}
 /* ---------- toast ---------- */
 .toast{
   position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
-  background:var(--ink);color:var(--paper);padding:9px 16px;
+  background:var(--ink);color:var(--on-ink);padding:9px 16px;
   font:400 12.5px/1 var(--sans);opacity:0;pointer-events:none;
   transition:opacity .15s linear;z-index:60;
 }
@@ -317,6 +411,41 @@ body.guide-mode .backlink{display:inline-flex}
   .guide{padding:22px 18px 60px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- print: the reader alone, black on white ---------- */
+@media print{
+  :root,:root[data-theme="dark"]{
+    color-scheme:light;
+    --paper:#FFFFFF;--app:#FFFFFF;--wash:#FFFFFF;--ink:#000000;--ink-2:#222222;--ink-3:#555555;
+    --rule:#BBBBBB;--rule-strong:#888888;--notice:#FFFFFF;--notice-ink:#000000;--notice-rule:#888888;
+    --mark-bg:#FFFFFF;--mark-line:#000000;--stripe:#FFFFFF;
+  }
+  html,body{height:auto;overflow:visible;background:#fff;color:#000}
+  body{display:block;font-size:11pt}
+  .topbar,.notice,.drawer,.index,.toast,.drawer-toggle,.backlink,
+  .toolbar,.model-tips,.panel-head svg,.placeholder-note,.usenext,.hint,.field label .scope{display:none!important}
+  .workspace{display:block;height:auto}
+  .reader{position:static;overflow:visible;display:block!important;border:0}
+  .reader-inner{max-width:none;padding:0}
+  .reader-header{padding:0 0 12pt;border-bottom:1px solid #000}
+  .reader h1{font-size:20pt}
+  .badges{margin-bottom:8pt}
+  .badge{border-color:#888}
+  .sens{border-left:3px solid #000;background:#fff;padding-left:10pt}
+  .panel{border-bottom:0;page-break-inside:avoid}
+  .panel-head{padding:10pt 0 4pt;background:#fff;border-bottom:1px solid #888}
+  .panel-body{padding:0}
+  .field{grid-template-columns:150pt minmax(0,1fr);padding:4pt 0;border-bottom:1px solid #ddd}
+  .field input,.field textarea,.field select{border:0;padding:0;background:transparent;font:inherit;-webkit-appearance:none;appearance:none;background-image:none;resize:none}
+  pre.compose{padding:8pt 0;font-size:9.5pt;white-space:pre-wrap;page-break-inside:auto}
+  pre.compose mark{background:#fff;color:#000;box-shadow:inset 0 -1px 0 #000}
+  .reader footer{padding:8pt 0 0;border-top:1px solid #888;font-size:9.5pt}
+  .reader footer a{color:#000;text-decoration:none}
+  .reader footer a[href]:after{content:" (" attr(href) ")";font-size:8.5pt;color:#555}
+  .guide{max-width:none;padding:0}
+  .guide pre,.guide .card{border-color:#000;background:#fff}
+  @page{margin:18mm 16mm}
+}
 </style>
 </head>
 <body>
@@ -329,11 +458,20 @@ body.guide-mode .backlink{display:inline-flex}
     <span class="slash" aria-hidden="true">/</span>
   </div>
   <div class="format">
+    <div class="ctl">
     <span class="micro">AI Model</span>
     <div class="seg" role="group" aria-label="Target model">
       <button type="button" data-model="claude" aria-pressed="true">Claude</button>
       <button type="button" data-model="chatgpt" aria-pressed="false">ChatGPT</button>
       <button type="button" data-model="gemini" aria-pressed="false">Gemini</button>
+    </div>
+    </div>
+    <div class="ctl">
+    <span class="micro">Theme</span>
+    <div class="seg" role="group" aria-label="Color theme">
+      <button type="button" data-theme-choice="light" aria-pressed="true">Light</button>
+      <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+    </div>
     </div>
     <button class="drawer-toggle" type="button" id="drawerToggle">Filters</button>
   </div>

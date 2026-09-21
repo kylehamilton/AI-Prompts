@@ -9,6 +9,17 @@ var LS = {
   hidden: 'wpv.hidden', recents: 'wpv.recents', values: 'wpv.values',
   settings: 'wpv.settings'
 };
+// Prompt-scoped fill-in values live here: they survive a reload of this tab
+// and nothing else, so pasted material never follows a person to next week.
+var SS = { local: 'wpv.session.values' };
+
+function loadSession(key, fallback) {
+  try { var raw = sessionStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+  catch (e) { return fallback; }
+}
+function saveSession(key, val) {
+  try { sessionStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* private mode: in-memory only */ }
+}
 
 function load(key, fallback) {
   try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
@@ -20,15 +31,16 @@ function save(key, val) {
 }
 
 var S = {
-  base: [], taxonomy: null, collection: 'Prompt Cookbook', defaults: {},
+  base: [], taxonomy: null, collection: 'Prompt Cookbook', defaults: {}, collections: [],
   favorites: load(LS.fav, []),
   custom: load(LS.custom, []),
   overrides: load(LS.over, {}),
   hidden: load(LS.hidden, []),
   recents: load(LS.recents, []),
-  values: load(LS.values, {}),
-  settings: Object.assign({ model: 'claude' }, load(LS.settings, {})),
-  q: '', fn: [], cat: [], cx: [], view: 'all',
+  values: load(LS.values, {}),          // shared placeholders only
+  local: loadSession(SS.local, {}),     // prompt-scoped placeholders, keyed promptId|KEY
+  settings: Object.assign({ model: 'claude', theme: 'light', collapsed: {} }, load(LS.settings, {})),
+  q: '', fn: [], cat: [], cx: [], coll: null, view: 'all',
   selected: null, mode: 'read', draft: null
 };
 
@@ -144,14 +156,84 @@ function collectKeys(p) {
   (p.placeholders || []).forEach(function (x) { keys.push(x.key); });
   return uniq(keys);
 }
+/* A placeholder definition:
+     { key, label, default, scope: "shared" | "prompt", type: "text" | "textarea", options: [...] }
+   scope defaults to "prompt". Only "shared" keys persist in localStorage;
+   everything else is session-only and keyed to the prompt it belongs to. */
 function phMeta(p, key) {
   var d = (p.placeholders || []).filter(function (x) { return x.key === key; })[0];
-  return d || { key: key, label: key.replace(/_/g, ' ').toLowerCase(), default: '' };
+  var meta = d ? Object.assign({}, d)
+               : { key: key, label: key.replace(/_/g, ' ').toLowerCase(), default: '' };
+  meta.scope = meta.scope === 'shared' ? 'shared' : 'prompt';
+  meta.options = Array.isArray(meta.options) && meta.options.length ? meta.options.slice() : null;
+  meta.type = meta.options ? 'select' : (meta.type === 'textarea' ? 'textarea' : 'text');
+  meta.default = meta.default || '';
+  return meta;
+}
+function localKey(p, key) { return p.id + '|' + key; }
+
+function storedValue(p, key) {
+  return phMeta(p, key).scope === 'shared' ? S.values[key] : S.local[localKey(p, key)];
 }
 function valueFor(p, key) {
-  if (S.values[key] !== undefined && S.values[key] !== '') return S.values[key];
-  var d = phMeta(p, key).default;
-  return d || '';
+  var v = storedValue(p, key);
+  if (v !== undefined && v !== '') return v;
+  return phMeta(p, key).default;
+}
+function setValue(p, key, v) {
+  if (phMeta(p, key).scope === 'shared') {
+    if (v === '' || v === undefined) delete S.values[key]; else S.values[key] = v;
+    save(LS.values, S.values);
+  } else {
+    var lk = localKey(p, key);
+    if (v === '' || v === undefined) delete S.local[lk]; else S.local[lk] = v;
+    saveSession(SS.local, S.local);
+  }
+}
+// Anything in localStorage that no prompt declares as shared came from an
+// older version of the app and would bleed across prompts. Drop it.
+function pruneSharedValues() {
+  var shared = {};
+  prompts().forEach(function (p) {
+    (p.placeholders || []).forEach(function (x) { if (x.scope === 'shared') shared[x.key] = true; });
+  });
+  var changed = false;
+  Object.keys(S.values).forEach(function (k) {
+    if (!shared[k]) { delete S.values[k]; changed = true; }
+  });
+  if (changed) save(LS.values, S.values);
+}
+
+/* Sensitivity. A declared level wins; `sensitive: false` switches the banner
+   off; otherwise a prompt that takes pasted material about people gets the
+   de-identification banner by default. */
+var SENSITIVE_SUBJECT = /transcript|case ?notes?|participant|client|complaint|grievance|survey|responses|intake|interview|r\u00e9sum\u00e9|resume|testimonial|donor/i;
+var TAKES_PASTE = /paste|attach|upload|transcript/i;
+
+// What a prompt takes in: its title, its source-material line, and the
+// labels of its multi-line fields. Example text after "e.g." is stripped so a
+// column called "participant name" in an illustration does not count.
+function intakeText(p) {
+  var b = p.blocks || {};
+  var parts = [p.title || '', b.data || ''];
+  (p.placeholders || []).forEach(function (x) {
+    if (x.type !== 'textarea') return;
+    parts.push(x.key.replace(/_/g, ' '));
+    parts.push(String(x.label || '').replace(/\be\.g\..*$/i, ''));
+  });
+  return parts.join(' ');
+}
+function effectiveSensitivity(p) {
+  if (p.sensitive === false) return 'none';
+  var declared = p.sensitivity || 'none';
+  if (declared !== 'none') return declared;
+  var b = p.blocks || {};
+  var hasTextarea = (p.placeholders || []).some(function (x) { return x.type === 'textarea'; });
+  var takesPaste = hasTextarea || TAKES_PASTE.test((b.data || '') + ' ' + (b.context || ''));
+  return takesPaste && SENSITIVE_SUBJECT.test(intakeText(p)) ? 'deidentify' : 'none';
+}
+function sensitivityIsAuto(p) {
+  return p.sensitive !== false && (p.sensitivity || 'none') === 'none' && effectiveSensitivity(p) !== 'none';
 }
 function fill(text, p) {
   if (!text) return '';
@@ -180,7 +262,11 @@ var ICON = {
   vars:   'M20 7h-9M14 17H5M17 12H3',
   code:   'M16 18l6-6-6-6M8 6l-6 6 6 6',
   info:   'M12 11v5M12 7.5v.5',
-  shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'
+  shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
+  ext:    'M14 4h6v6M20 4l-9 9M18 13v7H4V6h7',
+  sys:    'M4 6h16M4 12h10M4 18h13',
+  next:   'M5 12h14M13 6l6 6-6 6',
+  chev:   'M8 10l4 4 4-4'
 };
 function icon(name, size) {
   var d = ICON[name] || '';
@@ -290,21 +376,60 @@ function haystack(p) {
   return h;
 }
 
+/* Weighted ranking: title 10, tags/category/function 5, everything else 1,
+   per search term. Every term still has to match somewhere, so a two-word
+   query narrows rather than widens; the weights decide the order. */
+function metaText(p) {
+  if (p._meta) return p._meta;
+  var m = [(p.tags || []).join(' '), catLabel(p.category)]
+    .concat((p.functions || []).map(function (f) { return fnMeta(f).label; }))
+    .join(' ').toLowerCase();
+  try { Object.defineProperty(p, '_meta', { value: m, enumerable: false }); } catch (e) { p._meta = m; }
+  return m;
+}
+function scoreFor(p, terms) {
+  var title = (p.title || '').toLowerCase();
+  var meta = metaText(p);
+  var body = haystack(p);
+  var total = 0;
+  for (var i = 0; i < terms.length; i++) {
+    var t = terms[i], s = 0;
+    if (title.indexOf(t) !== -1) s += 10;
+    if (meta.indexOf(t) !== -1) s += 5;
+    if (body.indexOf(t) !== -1) s += 1;
+    if (!s) return 0;
+    total += s;
+  }
+  return total;
+}
+function activeCollection() {
+  if (!S.coll) return null;
+  return S.collections.filter(function (c) { return c.id === S.coll; })[0] || null;
+}
+
 function visible() {
   var terms = S.q.toLowerCase().split(/\s+/).filter(Boolean);
-  return prompts().filter(function (p) {
+  var coll = activeCollection();
+  var order = coll ? coll.prompts : null;
+  var scores = {};
+  var list = prompts().filter(function (p) {
     if (S.view === 'favorites' && S.favorites.indexOf(p.id) === -1) return false;
     if (S.view === 'mine' && p.source !== 'user' && !p.edited) return false;
     if (S.view === 'recent' && S.recents.indexOf(p.id) === -1) return false;
+    if (order && order.indexOf(p.id) === -1) return false;
     if (S.fn.length && !(p.functions || []).some(function (f) { return S.fn.indexOf(f) !== -1; })) return false;
     if (S.cat.length && S.cat.indexOf(p.category) === -1) return false;
     if (S.cx.length && S.cx.indexOf(p.complexity) === -1) return false;
     if (terms.length) {
-      var h = haystack(p);
-      for (var i = 0; i < terms.length; i++) if (h.indexOf(terms[i]) === -1) return false;
+      var sc = scoreFor(p, terms);
+      if (!sc) return false;
+      scores[p.id] = sc;
     }
     return true;
-  }).sort(function (a, b) {
+  });
+  return list.sort(function (a, b) {
+    if (terms.length && scores[a.id] !== scores[b.id]) return scores[b.id] - scores[a.id];
+    if (order) return order.indexOf(a.id) - order.indexOf(b.id);
     if (S.view === 'recent') return S.recents.indexOf(a.id) - S.recents.indexOf(b.id);
     return a.title.localeCompare(b.title);
   });
@@ -331,27 +456,55 @@ function renderDrawer() {
       '<span>' + esc(v[1]) + '</span><span class="count">' + v[2] + '</span></button>');
   });
 
-  h.push('<h2>Domains &amp; functions</h2>');
-  S.taxonomy.functions.forEach(function (f) {
-    var n = countBy(function (p) { return (p.functions || []).indexOf(f.id) !== -1; });
-    h.push('<button class="filt" type="button" data-fn="' + f.id + '" aria-pressed="' + (S.fn.indexOf(f.id) !== -1) + '">' +
-      '<span class="tab" style="background:' + f.tab + '"></span><span>' + esc(f.label) + '</span>' +
-      '<span class="count">' + n + '</span></button>');
-  });
+  // Every facet below collapses. An active filter inside a collapsed section
+  // still shows as a count on its header so nothing is hidden silently.
+  var collapsed = S.settings.collapsed || {};
+  function sectionHead(id, label, activeCount) {
+    var open = !collapsed[id];
+    return '<button class="sect" type="button" data-sect="' + id + '" aria-expanded="' + open + '">' +
+      '<span>' + esc(label) + '</span>' +
+      (!open && activeCount ? '<span class="count on">' + activeCount + ' on</span>' : '') +
+      icon('chev', 14) + '</button>';
+  }
 
-  h.push('<h2>Task type</h2>');
-  S.taxonomy.categories.forEach(function (c) {
-    var n = countBy(function (p) { return p.category === c.id; });
-    h.push('<button class="filt" type="button" data-cat="' + c.id + '" aria-pressed="' + (S.cat.indexOf(c.id) !== -1) + '">' +
-      '<span>' + esc(c.label) + '</span><span class="count">' + n + '</span></button>');
-  });
+  if (S.collections.length) {
+    h.push(sectionHead('coll', 'Collections', S.coll ? 1 : 0));
+    if (!collapsed.coll) {
+      S.collections.forEach(function (c) {
+        var n = c.prompts.filter(function (id) { return byId(id); }).length;
+        h.push('<button class="filt" type="button" data-coll="' + esc(c.id) + '" aria-pressed="' + (S.coll === c.id) + '" title="' + esc(c.description || '') + '">' +
+          '<span>' + esc(c.title) + '</span><span class="count">' + n + '</span></button>');
+      });
+    }
+  }
 
-  h.push('<h2>Prompt complexity</h2>');
-  ['low', 'medium', 'high'].forEach(function (cx) {
-    var n = countBy(function (p) { return p.complexity === cx; });
-    h.push('<button class="filt" type="button" data-cx="' + cx + '" aria-pressed="' + (S.cx.indexOf(cx) !== -1) + '">' +
-      '<span>' + cx.charAt(0).toUpperCase() + cx.slice(1) + '</span><span class="count">' + n + '</span></button>');
-  });
+  h.push(sectionHead('fn', 'Domains & functions', S.fn.length));
+  if (!collapsed.fn) {
+    S.taxonomy.functions.forEach(function (f) {
+      var n = countBy(function (p) { return (p.functions || []).indexOf(f.id) !== -1; });
+      h.push('<button class="filt" type="button" data-fn="' + f.id + '" aria-pressed="' + (S.fn.indexOf(f.id) !== -1) + '">' +
+        '<span class="tab" style="background:' + f.tab + '"></span><span>' + esc(f.label) + '</span>' +
+        '<span class="count">' + n + '</span></button>');
+    });
+  }
+
+  h.push(sectionHead('cat', 'Task type', S.cat.length));
+  if (!collapsed.cat) {
+    S.taxonomy.categories.forEach(function (c) {
+      var n = countBy(function (p) { return p.category === c.id; });
+      h.push('<button class="filt" type="button" data-cat="' + c.id + '" aria-pressed="' + (S.cat.indexOf(c.id) !== -1) + '">' +
+        '<span>' + esc(c.label) + '</span><span class="count">' + n + '</span></button>');
+    });
+  }
+
+  h.push(sectionHead('cx', 'Prompt complexity', S.cx.length));
+  if (!collapsed.cx) {
+    ['low', 'medium', 'high'].forEach(function (cx) {
+      var n = countBy(function (p) { return p.complexity === cx; });
+      h.push('<button class="filt" type="button" data-cx="' + cx + '" aria-pressed="' + (S.cx.indexOf(cx) !== -1) + '">' +
+        '<span>' + cx.charAt(0).toUpperCase() + cx.slice(1) + '</span><span class="count">' + n + '</span></button>');
+    });
+  }
 
   h.push('<div class="tools">');
   h.push('<button class="linkish" type="button" data-act="new">' + icon('plus', 14) + 'Write a new prompt</button>');
@@ -424,6 +577,39 @@ function markPlaceholders(text) {
   });
 }
 
+function fieldHtml(p, k, meta) {
+  var id = 'f-' + esc(k), val = valueFor(p, k), control;
+  var attrs = 'id="' + id + '" data-key="' + esc(k) + '"';
+  if (meta.type === 'select') {
+    control = '<select ' + attrs + '><option value="">' + esc(meta.default ? meta.default : 'Choose\u2026') + '</option>' +
+      meta.options.map(function (o) {
+        return '<option value="' + esc(o) + '"' + (val === o ? ' selected' : '') + '>' + esc(o) + '</option>';
+      }).join('') + '</select>';
+  } else if (meta.type === 'textarea') {
+    control = '<textarea ' + attrs + ' rows="2" placeholder="' + esc(meta.default) + '">' + esc(val) + '</textarea>';
+  } else {
+    control = '<input ' + attrs + ' type="text" value="' + esc(val) + '" placeholder="' + esc(meta.default) + '">';
+  }
+  return '<div class="field' + (meta.type === 'textarea' ? ' tall' : '') + '"><label for="' + id + '">' + esc(meta.label) +
+    (meta.scope === 'shared' ? ' <span class="scope">shared</span>' : '') + '</label>' + control + '</div>';
+}
+
+function autosize(ta) {
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(Math.max(ta.scrollHeight, 44), 320) + 'px';
+}
+
+// Role, context and rules only: the standing part of a prompt, for a Claude
+// Project or ChatGPT custom instructions. Steps and output format belong
+// to the task, not the workspace.
+function composeSystem(p) {
+  var b = blocks(p), out = [];
+  if (b.role) out.push(b.role);
+  if (b.context) out.push(b.context);
+  if (b.constraints.length) out.push('Rules:\n' + b.constraints.map(function (c) { return '- ' + c; }).join('\n'));
+  return out.join('\n\n');
+}
+
 function renderReader() {
   var r = el('reader');
   if (S.mode === 'guide') { renderGuide(); return; }
@@ -441,7 +627,8 @@ function renderReader() {
   var model = MODELS[S.settings.model];
   var keys = collectKeys(p);
   var text = compose(p, S.settings.model);
-  var sens = S.taxonomy.sensitivity[p.sensitivity || 'none'];
+  var level = effectiveSensitivity(p);
+  var sens = S.taxonomy.sensitivity[level];
   var isFav = S.favorites.indexOf(p.id) !== -1;
   var h = [];
 
@@ -463,15 +650,34 @@ function renderReader() {
   (p.tags || []).forEach(function (t) { h.push('<span class="badge">#' + esc(t) + '</span>'); });
   h.push('</div>');
 
-  if ((p.sensitivity || 'none') !== 'none') {
-    h.push('<div class="sens">' + icon('shield', 15) + '<span>' + esc(sens) + '</span></div>');
+  if (level !== 'none') {
+    h.push('<div class="sens">' + icon('shield', 15) + '<span>' + esc(sens) +
+      (sensitivityIsAuto(p) ? ' <span class="micro">Set from the material this prompt takes</span>' : '') +
+      '</span></div>');
   }
 
   h.push('<div class="toolbar">');
   h.push('<button class="btn" type="button" data-act="copy">' + icon('copy', 14) + 'Copy for ' + model.label + '</button>');
+  h.push('<button class="btn ghost" type="button" data-act="open-claude">' + icon('ext') + 'Open in Claude</button>');
+  h.push('<button class="btn ghost" type="button" data-act="open-chatgpt">' + icon('ext') + 'Open in ChatGPT</button>');
+  h.push('<button class="btn ghost" type="button" data-act="copy-system" title="Role, context and rules only \u2014 for a Claude Project or ChatGPT custom instructions">' + icon('sys') + 'Copy as system prompt</button>');
+  h.push('</div>');
+
+  var tips = p.models || {};
+  var tipKeys = Object.keys(MODELS).filter(function (k) { return tips[k]; });
+  if (tipKeys.length) {
+    h.push('<dl class="model-tips">');
+    tipKeys.forEach(function (k) {
+      h.push('<div class="' + (k === S.settings.model ? 'on' : '') + '"><dt class="micro">' + esc(MODELS[k].label) + '</dt><dd>' + esc(tips[k]) + '</dd></div>');
+    });
+    h.push('</dl>');
+  }
+
+  h.push('<div class="toolbar secondary">');
   h.push('<button class="btn ghost" type="button" data-act="fav">' + (isFav ? '\u2605 Saved to favorites' : '\u2606 Add to favorites') + '</button>');
   h.push('<button class="btn ghost" type="button" data-act="edit">' + icon('edit') + 'Customize</button>');
   h.push('<button class="btn ghost" type="button" data-act="duplicate">' + icon('dup') + 'Duplicate</button>');
+  h.push('<button class="btn ghost" type="button" data-act="print">Print</button>');
   if (p.edited) h.push('<button class="btn ghost" type="button" data-act="revert">Restore published version</button>');
   if (p.source === 'user') h.push('<button class="btn ghost danger" type="button" data-act="delete">Delete</button>');
   h.push('</div>');
@@ -481,13 +687,15 @@ function renderReader() {
   if (keys.length) {
     h.push('<div class="panel"><div class="panel-head">' + icon('vars', 14) +
       '<span class="micro">Template variables</span></div><div class="panel-body">');
+    var anyShared = false;
     keys.forEach(function (k) {
       var meta = phMeta(p, k);
-      h.push('<div class="field"><label for="f-' + esc(k) + '">' + esc(meta.label) + '</label>' +
-        '<input id="f-' + esc(k) + '" type="text" data-key="' + esc(k) + '" value="' + esc(valueFor(p, k)) +
-        '" placeholder="' + esc(meta.default || ('Enter ' + meta.label)) + '"></div>');
+      if (meta.scope === 'shared') anyShared = true;
+      h.push(fieldHtml(p, k, meta));
     });
-    h.push('<p class="hint">Saved in this browser and applied to every prompt that uses the same variable.</p>');
+    h.push('<p class="hint">' + (anyShared
+      ? 'Fields marked shared are saved in this browser and reused by every prompt that asks for them. The rest clear when this tab closes.'
+      : 'These clear when this tab closes. Nothing pasted here is kept.') + '</p>');
     h.push('</div></div>');
   }
 
@@ -500,8 +708,16 @@ function renderReader() {
   h.push('</div>');
 
   var credit = attribution(p);
-  if (p.notes || credit.author || credit.license) {
+  var related = (p.related || []).map(byId).filter(Boolean);
+  if (p.notes || credit.author || credit.license || related.length) {
     h.push('<footer>');
+    if (related.length) {
+      h.push('<p class="usenext"><span class="micro">Use next</span>' +
+        related.map(function (rp) {
+          return '<button class="chip next" type="button" data-act="goto" data-id="' + esc(rp.id) + '">' +
+            esc(rp.title) + ' ' + icon('next', 12) + '</button>';
+        }).join('') + '</p>');
+    }
     if (p.notes) h.push('<p><strong>Staff note.</strong> ' + esc(p.notes) + '</p>');
     if (credit.author || credit.license) {
       var line = [];
@@ -513,6 +729,7 @@ function renderReader() {
   }
   h.push('</div>');
   r.innerHTML = h.join('');
+  r.querySelectorAll('textarea[data-key]').forEach(autosize);
   r.scrollTop = 0;
 }
 
@@ -529,6 +746,62 @@ function blankPrompt() {
     blocks: { role: '', context: '', steps: [], output: '', constraints: [], data: '' },
     placeholders: [], notes: ''
   };
+}
+
+function placeholderTableHtml(p) {
+  var keys = collectKeys(p);
+  var h = ['<div class="ph-head"><label>Variables found in the text</label>' +
+    '<button class="chip" type="button" data-act="detect">Rescan the text</button></div>'];
+  if (!keys.length) {
+    h.push('<p class="hint">No {{VARIABLES}} yet.</p>');
+    return h.join('');
+  }
+  h.push('<div class="ph-table"><div class="ph-row head">' +
+    '<span>Variable</span><span>Label</span><span>Scope</span><span>Input</span><span>Default</span><span>Choices</span></div>');
+  keys.forEach(function (k) {
+    var m = phMeta(p, k);
+    h.push('<div class="ph-row" data-ph-key="' + esc(k) + '">' +
+      '<code>' + esc(k) + '</code>' +
+      '<input class="ph-label" type="text" value="' + esc(m.label) + '">' +
+      '<select class="ph-scope">' +
+        '<option value="prompt"' + (m.scope === 'prompt' ? ' selected' : '') + '>This prompt</option>' +
+        '<option value="shared"' + (m.scope === 'shared' ? ' selected' : '') + '>Shared</option></select>' +
+      '<select class="ph-type">' +
+        '<option value="text"' + (m.type === 'text' ? ' selected' : '') + '>Text</option>' +
+        '<option value="textarea"' + (m.type === 'textarea' ? ' selected' : '') + '>Multi-line</option>' +
+        '<option value="select"' + (m.type === 'select' ? ' selected' : '') + '>Choices</option></select>' +
+      '<input class="ph-default" type="text" value="' + esc(m.default) + '">' +
+      '<input class="ph-options" type="text" placeholder="one, two, three" value="' + esc((m.options || []).join(', ')) + '">' +
+      '</div>');
+  });
+  h.push('</div>');
+  h.push('<p class="hint">Shared variables are saved in the browser and reused by every prompt that asks for the same one \u2014 board name, county, funding stream. Everything else clears when the tab closes.</p>');
+  return h.join('');
+}
+
+function readPlaceholderTable(p) {
+  var rows = document.querySelectorAll('.ph-row[data-ph-key]');
+  var out = [];
+  rows.forEach(function (row) {
+    var key = row.dataset.phKey;
+    var type = row.querySelector('.ph-type').value;
+    var options = row.querySelector('.ph-options').value.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+    var def = {
+      key: key,
+      label: row.querySelector('.ph-label').value.trim() || key.replace(/_/g, ' ').toLowerCase(),
+      default: row.querySelector('.ph-default').value,
+      scope: row.querySelector('.ph-scope').value === 'shared' ? 'shared' : 'prompt'
+    };
+    if (type === 'select' && options.length) def.options = options;
+    else if (type === 'textarea') def.type = 'textarea';
+    out.push(def);
+  });
+  // keep declared metadata for tokens the table did not show (none today, but
+  // an import can declare a key before the text uses it)
+  (p.placeholders || []).forEach(function (x) {
+    if (!out.some(function (o) { return o.key === x.key; })) out.push(x);
+  });
+  return out;
 }
 
 function renderEditor() {
@@ -555,9 +828,13 @@ function renderEditor() {
     h.push('<option value="' + c + '"' + (p.complexity === c ? ' selected' : '') + '>' + c + '</option>');
   });
   h.push('</select></div><div><label for="e-sens">Participant data</label><select id="e-sens">');
+  var sensValue = p.sensitive === false ? 'off' : (p.sensitivity || 'none');
+  h.push('<option value="none"' + (sensValue === 'none' ? ' selected' : '') + '>Decide from the material it takes (default)</option>');
   Object.keys(S.taxonomy.sensitivity).forEach(function (k) {
-    h.push('<option value="' + k + '"' + ((p.sensitivity || 'none') === k ? ' selected' : '') + '>' + esc(S.taxonomy.sensitivity[k]) + '</option>');
+    if (k === 'none') return;
+    h.push('<option value="' + k + '"' + (sensValue === k ? ' selected' : '') + '>' + esc(S.taxonomy.sensitivity[k]) + '</option>');
   });
+  h.push('<option value="off"' + (sensValue === 'off' ? ' selected' : '') + '>No banner, even if it takes pasted material</option>');
   h.push('</select></div></div>');
 
   h.push('<label for="e-tags">Tags, comma separated</label><input id="e-tags" type="text" value="' + esc((p.tags || []).join(', ')) + '">');
@@ -598,6 +875,22 @@ function renderEditor() {
   h.push('<label for="e-constraints">Rules — one per line</label><textarea id="e-constraints" rows="5">' + esc((p.blocks.constraints || []).join('\n')) + '</textarea>');
   h.push('<label for="e-data">Source material line — what the user pastes or attaches</label><textarea id="e-data" rows="2">' + esc(p.blocks.data) + '</textarea>');
   h.push('<label for="e-notes">Staff notes</label><textarea id="e-notes" rows="2">' + esc(p.notes || '') + '</textarea>');
+
+  h.push('<label for="e-related">Use next \u2014 ids of prompts that follow this one, comma separated</label>' +
+    '<input id="e-related" type="text" list="prompt-ids" value="' + esc((p.related || []).join(', ')) + '">');
+  h.push('<datalist id="prompt-ids">');
+  prompts().forEach(function (x) { if (x.id !== p.id) h.push('<option value="' + esc(x.id) + '">' + esc(x.title) + '</option>'); });
+  h.push('</datalist>');
+
+  var tips = p.models || {};
+  h.push('<label>Model-specific tips, shown under the action buttons</label><div class="two three">');
+  Object.keys(MODELS).forEach(function (k) {
+    h.push('<input id="e-tip-' + k + '" type="text" placeholder="' + esc(MODELS[k].label) + '" value="' + esc(tips[k] || '') + '">');
+  });
+  h.push('</div>');
+
+  h.push(placeholderTableHtml(p));
+
   h.push('<p class="placeholder-note">Write reusable fields as {{LIKE_THIS}} anywhere above. They become fill-in boxes for everyone.</p>');
 
   h.push('<div class="toolbar" style="margin-top:20px">');
@@ -615,7 +908,9 @@ function readEditor() {
   p.functions = [el('e-fn').value];
   p.category = el('e-cat').value;
   p.complexity = el('e-cx').value;
-  p.sensitivity = el('e-sens').value;
+  var sensChoice = el('e-sens').value;
+  if (sensChoice === 'off') { p.sensitivity = 'none'; p.sensitive = false; }
+  else { p.sensitivity = sensChoice; delete p.sensitive; }
   p.tags = el('e-tags').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
   p.blocks = {
     role: el('e-role').value.trim(),
@@ -626,6 +921,19 @@ function readEditor() {
     data: el('e-data').value.trim()
   };
   p.notes = el('e-notes').value.trim();
+
+  p.related = el('e-related').value.split(',').map(function (x) { return x.trim(); })
+    .filter(function (x) { return x && x !== p.id && byId(x); });
+  if (!p.related.length) delete p.related;
+
+  var models = {};
+  Object.keys(MODELS).forEach(function (k) {
+    var v = el('e-tip-' + k).value.trim();
+    if (v) models[k] = v;
+  });
+  if (Object.keys(models).length) p.models = models; else delete p.models;
+
+  p.placeholders = readPlaceholderTable(p);
 
   var authorName = el('e-author').value.trim();
   var authorUrl = el('e-author-url').value.trim();
@@ -706,13 +1014,13 @@ function renderGuide() {
   h.push('<ul>' +
     '<li>Put long documents <em>before</em> the instructions. Accuracy on long inputs improves when the question comes after the material.</li>' +
     '<li>For anything scored or evaluative, ask for reasoning in a <code>&lt;scratchpad&gt;</code> and the deliverable in <code>&lt;answer&gt;</code>, then read the scratchpad to check the logic before you trust the answer.</li>' +
-    '<li>Keep recurring context — the board name, the funding streams, the local policies — in a Project so you are not re-pasting it every session.</li>' +
+    '<li>Keep recurring context — the board name, the funding streams, the local policies — in a Project so you are not re-pasting it every session. <strong>Copy as system prompt</strong> on any prompt gives you exactly that standing part \u2014 role, context and rules, without the task steps.</li>' +
     '</ul>');
 
   h.push('<h2>ChatGPT — set the standing context, then hand it the file</h2>');
   h.push('<p>ChatGPT reads markdown headings cleanly, so numbered steps under <code>#&nbsp;Task</code> are enough structure for most work. The larger win is the two features around the chat box.</p>');
   h.push('<ul>' +
-    '<li><strong>Custom instructions</strong> hold the things you would otherwise type every time: that you work for a local workforce development board, that outputs are read by auditors and board members, that you want plain language and no invented figures. Set it once in settings and every chat starts there.</li>' +
+    '<li><strong>Custom instructions</strong> hold the things you would otherwise type every time: that you work for a local workforce development board, that outputs are read by auditors and board members, that you want plain language and no invented figures. Set it once in settings and every chat starts there. <strong>Copy as system prompt</strong> produces the text to paste in.</li>' +
     '<li><strong>The data analysis tool</strong> should do any work involving a spreadsheet. Upload the CSV rather than pasting rows, and ask it to report row and column counts, show the code it ran, and list anything it dropped. A model reading numbers by eye will produce a plausible total that is wrong; a model running code on the file will produce one you can check.</li>' +
     '<li>For a task you repeat monthly, put the prompt and the reference files in a Project so the context comes back with it.</li>' +
     '</ul>');
@@ -828,6 +1136,54 @@ function doCopy(btn) {
   });
 }
 
+/* Deep links. Both services accept a prefilled draft in ?q=. Browsers and
+   proxies start truncating around 2,000 characters of URL, so past that the
+   prompt goes to the clipboard and the bare new-chat page opens instead. */
+var DEEPLINK = {
+  claude:  { prefill: 'https://claude.ai/new?q=', bare: 'https://claude.ai/new' },
+  chatgpt: { prefill: 'https://chatgpt.com/?q=',  bare: 'https://chatgpt.com/' }
+};
+var URL_LIMIT = 2000;
+
+function openIn(model) {
+  var p = byId(S.selected);
+  var link = DEEPLINK[model];
+  if (!p || !link) return;
+  var text = compose(p, model);
+  var url = link.prefill + encodeURIComponent(text);
+  var label = MODELS[model].label;
+  S.recents = uniq([p.id].concat(S.recents)).slice(0, 12);
+  save(LS.recents, S.recents);
+  renderDrawer();
+  if (url.length <= URL_LIMIT) {
+    window.open(url, '_blank', 'noopener');
+    toast('Opened in ' + label + ' with the prompt filled in.');
+    return;
+  }
+  // open synchronously inside the click so popup blockers allow it
+  window.open(link.bare, '_blank', 'noopener');
+  copyText(text).then(function (ok) {
+    if (ok) toast('Prompt copied to clipboard (exceeds URL length limit for direct prefill). Paste it into ' + label + '.');
+    else toast('Too long for a prefill link, and the browser blocked the copy. Copy the prompt text manually.', true);
+  });
+}
+
+function copySystemPrompt(btn) {
+  var p = byId(S.selected);
+  if (!p) return;
+  var text = composeSystem(p);
+  if (!text) { toast('This prompt has no role, context, or rules to use as a system prompt.', true); return; }
+  copyText(text).then(function (ok) {
+    if (!ok) { toast('The browser blocked the copy. Select the text and copy it manually.', true); return; }
+    if (btn) {
+      btn.classList.add('copied');
+      btn.innerHTML = icon('sys') + 'Copied';
+      setTimeout(function () { btn.classList.remove('copied'); btn.innerHTML = icon('sys') + 'Copy as system prompt'; }, 1400);
+    }
+    toast('Copied role, context and rules. Paste into a Claude Project or ChatGPT custom instructions.');
+  });
+}
+
 /* ------------------------------------------------------------------
    Import / export
 ------------------------------------------------------------------ */
@@ -852,8 +1208,9 @@ function exportAll() {
     var c = Object.assign({}, p); delete c.edited; return c;
   });
   download('prompts.json', {
-    schema_version: '1.0', generated: new Date().toISOString().slice(0, 10),
-    collection: S.collection, defaults: S.defaults, taxonomy: S.taxonomy, prompts: merged
+    schema_version: '1.1', generated: new Date().toISOString().slice(0, 10),
+    collection: S.collection, defaults: S.defaults, taxonomy: S.taxonomy,
+    collections: S.collections, prompts: merged
   });
   toast('prompts.json downloaded. Hand it to the vault maintainer to publish.');
 }
@@ -890,24 +1247,54 @@ function importBackup(file) {
 ------------------------------------------------------------------ */
 function renderAll() {
   document.body.classList.toggle('guide-mode', S.mode === 'guide' || S.mode === 'about');
-  document.querySelectorAll('.seg button').forEach(function (b) {
+  document.querySelectorAll('.seg button[data-model]').forEach(function (b) {
     b.setAttribute('aria-pressed', String(b.dataset.model === S.settings.model));
   });
+  applyTheme();
   renderDrawer();
   renderIndex();
   renderReader();
 }
 
+// Light unless the person has chosen dark. The OS preference is deliberately
+// ignored: the app looks the same on every machine in the office until
+// someone asks otherwise. A script in <head> applies the saved choice before
+// first paint so dark users do not see a flash of light.
+function applyTheme() {
+  var theme = S.settings.theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.querySelectorAll('.seg button[data-theme-choice]').forEach(function (b) {
+    b.setAttribute('aria-pressed', String(b.dataset.themeChoice === theme));
+  });
+}
+
 function clearFilters() {
   S.q = ''; el('q').value = '';
-  S.fn = []; S.cat = []; S.cx = []; S.view = 'all';
+  S.fn = []; S.cat = []; S.cx = []; S.coll = null; S.view = 'all';
   renderAll();
+}
+
+function gotoPrompt(id) {
+  if (!byId(id)) return;
+  S.selected = id; S.mode = 'read';
+  document.body.classList.add('reading');
+  renderIndex(); renderReader();
+  var row = document.querySelector('.row[aria-current="true"]');
+  if (row) row.scrollIntoView({ block: 'nearest' });
 }
 
 function wire() {
   el('q').addEventListener('input', function () { S.q = this.value; renderIndex(); });
 
-  document.querySelectorAll('.seg button').forEach(function (b) {
+  document.querySelectorAll('.seg button[data-theme-choice]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      S.settings.theme = b.dataset.themeChoice === 'dark' ? 'dark' : 'light';
+      save(LS.settings, S.settings);
+      applyTheme();
+    });
+  });
+
+  document.querySelectorAll('.seg button[data-model]').forEach(function (b) {
     b.addEventListener('click', function () {
       S.settings.model = b.dataset.model;
       save(LS.settings, S.settings);
@@ -926,7 +1313,15 @@ function wire() {
   el('drawer').addEventListener('click', function (e) {
     var b = e.target.closest('button');
     if (!b) return;
+    if (b.dataset.sect) {
+      S.settings.collapsed = S.settings.collapsed || {};
+      S.settings.collapsed[b.dataset.sect] = !S.settings.collapsed[b.dataset.sect];
+      save(LS.settings, S.settings);
+      renderDrawer();
+      return;
+    }
     if (b.dataset.view) { S.view = b.dataset.view; S.mode = 'read'; }
+    else if (b.dataset.coll) { S.coll = S.coll === b.dataset.coll ? null : b.dataset.coll; S.mode = 'read'; }
     else if (b.dataset.fn) { toggleIn(S.fn, b.dataset.fn); S.mode = 'read'; }
     else if (b.dataset.cat) { toggleIn(S.cat, b.dataset.cat); S.mode = 'read'; }
     else if (b.dataset.cx) { toggleIn(S.cx, b.dataset.cx); S.mode = 'read'; }
@@ -975,6 +1370,12 @@ function wire() {
     var act = b.dataset.act;
     var p = byId(S.selected);
     if (act === 'copy') doCopy(b);
+    else if (act === 'open-claude') openIn('claude');
+    else if (act === 'open-chatgpt') openIn('chatgpt');
+    else if (act === 'copy-system') copySystemPrompt(b);
+    else if (act === 'print') window.print();
+    else if (act === 'goto') gotoPrompt(b.dataset.id);
+    else if (act === 'detect' && S.draft) { readEditor(); renderEditor(); }
     else if (act === 'back') { document.body.classList.remove('reading'); S.mode = 'read'; renderAll(); }
     else if (act === 'fav' && p) {
       toggleIn(S.favorites, p.id); save(LS.fav, S.favorites); renderAll();
@@ -1004,14 +1405,17 @@ function wire() {
     else if (act === 'cancel') { S.mode = 'read'; S.draft = null; renderReader(); }
   });
 
-  el('reader').addEventListener('input', function (e) {
+  function onFieldChange(e) {
     var f = e.target.closest('[data-key]');
     if (!f) return;
-    S.values[f.dataset.key] = f.value;
-    save(LS.values, S.values);
     var p = byId(S.selected);
-    if (p && el('composed')) el('composed').innerHTML = markPlaceholders(compose(p, S.settings.model));
-  });
+    if (!p) return;
+    setValue(p, f.dataset.key, f.value);
+    if (f.tagName === 'TEXTAREA') autosize(f);
+    if (el('composed')) el('composed').innerHTML = markPlaceholders(compose(p, S.settings.model));
+  }
+  el('reader').addEventListener('input', onFieldChange);
+  el('reader').addEventListener('change', onFieldChange);
 
   el('importer').addEventListener('change', function () {
     if (this.files && this.files[0]) importBackup(this.files[0]);
@@ -1052,6 +1456,11 @@ function adopt(data) {
   S.taxonomy = data.taxonomy;
   S.defaults = data.defaults || {};
   S.collection = data.collection || S.collection;
+  S.collections = (data.collections || []).filter(function (c) {
+    return c && c.id && c.title && Array.isArray(c.prompts);
+  });
+  if (S.coll && !activeCollection()) S.coll = null;
+  pruneSharedValues();
 }
 
 function boot() {
