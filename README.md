@@ -4,8 +4,6 @@ A collection of prompts for popular AI models, written for workforce development
 
 [https://kylehamilton.github.io/AI-Prompts/](https://kylehamilton.github.io/AI-Prompts/)
 
-
-
 ## Files
 
 | File | What it is |
@@ -48,14 +46,21 @@ Each button lays those same parts out the way that model handles best:
 The Model tuning guide in the app explains why each one is shaped that way, so you can do
 it by hand in a chat window.
 
-## What lives in your browser
+## What lives in the browser
 
-Favorites, prompts you write, edits to published prompts, saved variable values, and your
-model choice are all in `localStorage`. They are per person, per browser, and clearing site
-data wipes them.
+`localStorage`, per user, per browser:
 
-- **Back up my prompts** exports that as a JSON file; **Restore from a backup** merges it back.
-- **Export full prompts.json** writes the entire prompt collection.
+- `wpv.favorites`: starred prompt ids
+- `wpv.custom`: prompts the user wrote
+- `wpv.overrides`: user edits to published prompts, keyed by id
+- `wpv.values`: fill-in values for placeholders with `scope: "shared"` only; on load, any key no prompt declares shared is dropped
+- `wpv.session.values` (sessionStorage) prompt-scoped values, keyed `promptId|KEY`; gone when the tab closes
+- `wpv.recents`: last 12 prompts copied
+- `wpv.hidden`, `wpv.settings`: archived ids, model choice, theme (`light` unless set), collapsed rail sections, last author
+
+Clearing site data wipes all of it. **Back up my prompts** in the left rail exports it as
+JSON; **Restore from a backup** merges it back. **Export full prompts.json** writes the whole
+merged collection, which is how a staff member hands you a prompt worth publishing.
 
 ## Prompt schema
 
@@ -81,17 +86,23 @@ data wipes them.
   "placeholders": [
     { "key": "BOARD_NAME", "label": "Board name", "default": "Fresno Regional Workforce Development Board" }
   ],
+  "author": { "name": "Kyle Hamilton", "url": "https://www.workforce-connection.com/" },
+  "license": { "id": "CC-BY-4.0", "url": "https://creativecommons.org/licenses/by/4.0/" },
   "notes": "Shown under the composed prompt."
 }
 ```
 
-`sensitivity` drives a banner notice above the prompt: `none`, `deidentify`, or `prohibited`.
+`{{TOKENS}}` anywhere in `blocks` become fill-in fields. A token used in ten prompts is
+typed once — the value is stored by key, not by prompt.
 
-`functions` are `case-management`, `business-services`, `fiscal`, `grants`, `research`,
-`admin`. `category` is `draft`, `review`, `analyze`, `summarize`, or `plan`. `complexity` is
-`low`, `medium`, or `high` and only affects filtering and how much reasoning scaffolding the
-composed prompt carries. Both lists, along with their labels and colors, live in the
-`taxonomy` block at the top of `prompts.json`.
+`sensitivity` drives the banner above the prompt: `none`, `deidentify`, or `prohibited`.
+
+`author` and `license` are optional per prompt and fall back to the `defaults` block at the
+top of `prompts.json`. Both take a string or an object; the URL is optional on both, and a
+license id listed in `taxonomy.licenses` gets its link filled in automatically. Migrated
+prompts get their credit from `cookbook_author` and `cookbook_license` in `build_vault.R` —
+`cookbook_license` is `NULL` on purpose until the upstream repository states a license, since
+a NULL field is dropped rather than guessed at.
 
 ## Building
 
