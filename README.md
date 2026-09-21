@@ -93,14 +93,14 @@ merged collection, which is how a staff member hands you a prompt worth publishi
 ```
 
 `{{TOKENS}}` anywhere in `blocks` become fill-in fields. A token used in ten prompts is
-typed once — the value is stored by key, not by prompt.
+typed once with the value stored by key, not by prompt.
 
 `sensitivity` drives the banner above the prompt: `none`, `deidentify`, or `prohibited`.
 
 `author` and `license` are optional per prompt and fall back to the `defaults` block at the
 top of `prompts.json`. Both take a string or an object; the URL is optional on both, and a
 license id listed in `taxonomy.licenses` gets its link filled in automatically. Migrated
-prompts get their credit from `cookbook_author` and `cookbook_license` in `build_vault.R` —
+prompts get their credit from `cookbook_author` and `cookbook_license` in `build_vault.R` 
 `cookbook_license` is `NULL` on purpose until the upstream repository states a license, since
 a NULL field is dropped rather than guessed at.
 
